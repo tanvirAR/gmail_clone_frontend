@@ -1,7 +1,7 @@
-import classes from "../../../../../styles/inboxPage/EmailSendPopup.module.css";
-import schedule_send_icon from "../../../../../assets/schedule_send_icon.svg";
-import open_in_full from "../../../../../assets/open_in_full.svg";
-import close_icon_2 from "../../../../../assets/close_icon.svg";
+import classes from "./EmailSendPopup.module.css";
+import schedule_send_icon from "../../assets/schedule_send_icon.svg";
+import open_in_full from "../../assets/open_in_full.svg";
+import close_icon_2 from "../../assets/close_icon.svg";
 import Image from "next/image";
 import Email_Attachment from "./Email_Attachment";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,7 @@ import {
   sentAEmailSubject,
   sentEmailTo,
   sentAEmailMessage,
-} from "../../../../../features/UI/UISlice";
+} from "../../features/UI/UISlice";
 import React, { useState } from "react";
 
 function EmailSendPopup() {

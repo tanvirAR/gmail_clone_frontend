@@ -179,14 +179,6 @@ const override = {
           )}
           {response && <p style={{ color: "#3c73e9" }}>Signup Successfull!</p>}
           {!isLoading && <input disabled={isLoading} type="submit" name="sign-in" value="Signup" />}
-          <ClipLoader
-            color={"#ccc"}
-            loading={isLoading}
-            cssOverride={override}
-            size={50}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
         </form>
       </div>
     </div>

@@ -1,9 +1,9 @@
-import classes from "../../../../../styles/inboxPage/EmailSendPopupFullScreen.module.css";
+import classes from "./EmailSendPopupFullScreen.module.css";
 import Image from "next/image";
 // import classes from "../../../../../styles/inboxPage/EmailSendPopup.module.css";
-import schedule_send_icon from "../../../../../assets/schedule_send_icon.svg";
-import hideFullScreen from "../../../../../assets/hide.svg";
-import close_icon_2 from "../../../../../assets/close_icon.svg";
+import schedule_send_icon from "../../assets/schedule_send_icon.svg";
+import hideFullScreen from "../../assets/hide.svg";
+import close_icon_2 from "../../assets/close_icon.svg";
 import Email_Attachment from "./Email_Attachment";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,7 +14,7 @@ import {
   sentAEmailSubject,
   sentEmailTo,
   sentAEmailMessage,
-} from "../../../../../features/UI/UISlice";
+} from "../../features/UI/UISlice";
 import React, { useState } from "react";
 
 export default function EmailSendPopupFullScreen() {

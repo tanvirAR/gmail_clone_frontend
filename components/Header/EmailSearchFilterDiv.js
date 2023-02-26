@@ -1,4 +1,4 @@
-import styles from "../../../../../styles/inboxPage/EmailSearchFilterDiv.module.css"
+import styles from "./EmailSearchFilterDiv.module.css"
 
 export default function EmailSearchFilterDiv() {
   return (

@@ -1,4 +1,4 @@
-import styles from "../../../../../styles/inboxPage/MoreOptions.module.css";
+import styles from "./MoreOptions.module.css";
 
 export default function MoreOptions() {
   return (

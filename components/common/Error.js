@@ -1,6 +1,6 @@
-import errorIcon from "../assets/error.svg"
+import errorIcon from "../../assets/error.svg"
 import Image from "next/image"
-import styles from "../styles/Error.module.css"
+import styles from "./Error.module.css"
 
 export default function error({message}) {
 

@@ -1,6 +1,6 @@
 import Options from "./Options";
 import EmailSection from "./EmailSection";
-import styles from "../../../../../../styles/inboxPage/RightContainer.module.css";
+import styles from "./RightContainer.module.css";
 import AllEmails from "./AllEmails";
 import EmailSendPopup from "./EmailSendPopup";
 import EmailSendPopupFullScreen from "./EmailSendPopupFullScreen";

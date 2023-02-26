@@ -1,4 +1,4 @@
-import styles from "../../../../../styles/inboxPage/SelectMailByCategory.module.css"
+import styles from "./SelectMailByCategory.module.css"
 
 export default function SelectMailByCategory() {
   return (

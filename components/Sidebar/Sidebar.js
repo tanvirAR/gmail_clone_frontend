@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import styles from '../../../../../styles/inboxPage/Sidebar.module.css'
-import { sentEmailBoxSmall } from "../../../../../features/UI/UISlice";
-import { sidebarByHover } from "../../../../../features/UI/UISlice";
-import starIcon from "../../../../../assets/star.svg"
-import labelIcon from "../../../../../assets/label_important.svg"
-import sendIcon from "../../../../../assets/sendMailicon.svg"
-import scheduleSendIcon from "../../../../../assets/schedule_send_icon.svg"
+import styles from './Sidebar.module.css'
+import { sentEmailBoxSmall, sidebarByHover } from "../../features/UI/UISlice";
+import starIcon from "../../assets/star.svg"
+import labelIcon from "../../assets/label_important.svg"
+import sendIcon from "../../assets/sendMailicon.svg"
+import scheduleSendIcon from "../../assets/schedule_send_icon.svg"
 import Image from 'next/image';
 
 

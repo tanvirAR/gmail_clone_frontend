@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { showEmailSelectCategoryDiv } from "../../../../../features/UI/UISlice";
-import styles from "../../../../../styles/inboxPage/Options.module.css";
+import { showEmailSelectCategoryDiv } from "../../features/UI/UISlice";
+import styles from "./Options.module.css";
 import MoreOptions from "./MoreOptions";
 import SelectMailByCategory from "./SelectMailByCategory";
 

@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { useState } from "react";
-import gmail_logo from "../../../../../assets/logo.png";
-import styles from "../../../../../styles/inboxPage/Header.module.css";
-import {sidebarByToggle } from "../../../../../features/UI/UISlice";
+import gmail_logo from "../../assets/logo.png";
+import styles from "./Header.module.css";
+import {sidebarByToggle } from "../../features/UI/UISlice";
 import { useDispatch, useSelector } from "react-redux";
 import EmailSearchFilterDiv from "./EmailSearchFilterDiv";
-import helpIcon from "../../../../../assets/help.svg";
+import helpIcon from "../../assets/help.svg";
 
 export default function Header() {
   const [inputFocus, setInputFocus] = useState(false);

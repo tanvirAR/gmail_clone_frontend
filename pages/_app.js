@@ -2,9 +2,9 @@ import '../styles/globals.css'
 import { store } from "../store/store"
 import { Provider } from 'react-redux';
 import { useRouter } from 'next/router';
-import Header from '../components/mail/u/id/inboxPage/header';
-import Sidebar from '../components/mail/u/id/inboxPage/Sidebar';
-import classes from "../styles/inboxPage/Inbox.module.css"
+import Header from "../components/Header/Header";
+import Sidebar from "../components/Sidebar/Sidebar";
+import classes from "./Inbox.module.css"
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter()

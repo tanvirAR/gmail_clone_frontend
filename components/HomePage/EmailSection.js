@@ -1,4 +1,4 @@
-import styles from "../../../../../styles/inboxPage/EmailSection.module.css"
+import styles from "./EmailSection.module.css"
 
 
 export default function EmailSection() {

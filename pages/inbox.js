@@ -1,7 +1,7 @@
-import Header from "../../../../components/mail/u/id/inboxPage/header";
-import Sidebar from "../../../../components/mail/u/id/inboxPage/Sidebar";
-import RightContainer from "../../../../components/mail/u/id/inboxPage/RightContainer";
-import classes from "../../../../styles/inboxPage/Inbox.module.css"
+import Header from "../components/Header/Header";
+import Sidebar from "../components/Sidebar/Sidebar";
+import RightContainer from "../components/HomePage/RightContainer";
+import classes from "./Inbox.module.css"
 
 export default function Inbox() {
   return (
@@ -14,12 +14,4 @@ export default function Inbox() {
     </>
   );
 }
-
-
-// style={{ display: "flex", height: "100vh" }}
-
-// .main {
-//  display: flex;
-//  height: 100vh;   
-// }
 

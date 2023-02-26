@@ -1,11 +1,11 @@
 import { ClipLoader } from "react-spinners";
 
 import { useEffect, useState } from "react";
-import styles from "../styles/SignInPage/SignIn.module.css";
+import styles from "./SignIn.module.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useLoginMutation } from "../features/auth/authApi";
-import Error from "../components/error";
+import Error from "../components/common/Error";
 import validateEmail from "../utils/emailValidate";
 
 export default function Home() {
@@ -107,14 +107,14 @@ export default function Home() {
             disabled={isLoading}
           />
         )}
-        <ClipLoader
+        {/* <ClipLoader
           color={"#ccc"}
           loading={isLoading}
           cssOverride={override}
           size={40}
           aria-label="Loading Spinner"
           data-testid="loader"
-        />
+        /> */}
       </form>
     </div>
   );

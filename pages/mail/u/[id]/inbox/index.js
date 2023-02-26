@@ -1,4 +1,4 @@
-import RightContainer from "../../../../../components/mail/u/id/inboxPage/RightContainer";
+import RightContainer from "../../../../../components/HomePage/RightContainer";
 
 export default function SingleMail() {
   return (

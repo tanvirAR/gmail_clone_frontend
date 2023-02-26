@@ -1,11 +1,11 @@
 import Image from "next/image";
-import important_logo1 from "../../../../../assets/label_important_FILL1_wght100_GRAD-25_opsz48.svg"
-import important_logo2 from '../../../../../assets/label_important.svg'
-import deleteEmail_logo from "../../../../../assets/deleteSingleEmail.svg"
-import unread_logo from "../../../../../assets/emailUnread.svg";
-import read_logo from "../../../../../assets/emailRead.svg";
-import snooze_logo from "../../../../../assets/snooze.svg";
-import styles from "../../../../../styles/inboxPage/SingleEmail.module.css"
+import important_logo1 from "../../assets/label_important_FILL1_wght100_GRAD-25_opsz48.svg"
+import important_logo2 from '../../assets/label_important.svg'
+import deleteEmail_logo from "../../assets/deleteSingleEmail.svg"
+import unread_logo from "../../assets/emailUnread.svg";
+import read_logo from "../../assets/emailRead.svg";
+import snooze_logo from "../../assets/snooze.svg";
+import styles from "./SingleEmail.module.css"
 
 
 
