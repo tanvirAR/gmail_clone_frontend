@@ -1,0 +1,119 @@
+.sidebar {
+    flex: 0.3;
+    padding-right: 20px;
+    user-select: none;
+    background: #f6f8fc;
+    transition: max-width 0.25s, background-color 2s, transform 3s ;
+}
+
+
+
+
+.sidebar > * {
+    margin-left: 8px;
+   margin-right: -14px;
+}
+
+
+.sidebar:hover {
+    /* animation-name: sidebar_animation;
+    animation-duration: 2s;
+
+    @keyframes sidebar_animation {
+        0% {
+            width: 70px
+        }
+        30% {
+            width: 120px
+        }
+         65% {
+            width: 180px
+        }
+         100% {
+            width: 230px
+        }
+    } */
+    max-width: 350px ;
+}
+
+.starImage{
+filter: invert(47%) sepia(5%) saturate(127%) hue-rotate(131deg) brightness(96%) contrast(90%);
+
+}
+
+.labelImage {
+    height: 25px;
+    width: 25px;
+filter: invert(47%) sepia(5%) saturate(127%) hue-rotate(131deg) brightness(96%) contrast(90%);
+
+}
+
+.sidebar-compose {
+    margin-top: 15px;
+    margin-left: 10px;
+    margin-bottom: 15px;
+    text-transform: capitalize;
+    color: #10243c;
+    font-weight: 600;
+    padding: 15px;
+    border-radius: 20px;
+    background-color: #c2e7fe;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    /* box-shadow:  rgba(0, 0,0, 0.75); */
+}
+
+.sidebar-compose:hover {
+ box-shadow: 0px 4px 10px -2px rgba(0, 0,0, 0.75);
+}
+
+.sidebar-compose span {
+    margin-right: 5px;
+}
+
+.sidebarOption {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 10px;
+    border-bottom-right-radius: 20px;
+    border-top-right-radius: 20px;
+    cursor: pointer;
+    color: #737676;
+}
+
+.sidebarOption .material-icons {
+    padding: 5px;
+}
+
+.sidebarOption h3 {
+    flex: 1;
+    margin-left: 10px;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+
+.sidebarOption:hover,
+.sidebarOption:hover h3,
+.sidebarOption-active,
+.sidebarOption:hover .material-icons,
+.sidebarOption-active h3,
+.sidebarOption-active .material-icons {
+    background: #d5d7db;
+    color: black;
+    
+}
+
+/* body {
+    height: 100vh;
+    overflow-y: hidden;
+} */
+
+.main {
+ display: flex;
+ height: 100vh;   
+}

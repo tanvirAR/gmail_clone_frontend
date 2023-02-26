@@ -1,0 +1,122 @@
+
+.emailRow_options {
+    display: flex;
+    align-items: center;
+}
+
+
+.emailRow_options .material-icons, .emailRow_options input {
+    margin: 10px;
+   border-color: black;
+   margin-right: 10px;
+   
+}
+
+.emailRow_options span {
+    margin-right: 5px;
+}
+
+.email_row {
+    display: flex;
+    align-items: center;
+    height: 2.5rem;
+    /* border-bottom: 1px solid rgb(234, 234, 234); */
+    border-top: 1px solid  rgb(234, 234, 234);
+    cursor: pointer;
+    z-index: 500;
+    justify-content: space-between;
+}
+.email_row:hover .singleEmail_left  {
+    display: block;
+}
+ .email_row:hover p {
+    display: none;
+ }
+
+ .email_row p {
+    font-size: 12px;
+ } 
+
+ .email_row:hover .emailRow_message {
+    margin-left: 32px;
+ }
+
+
+ .email_row:hover {
+ box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+} 
+.email_row .singleEmail_left Image {
+    padding: 0 8px;
+} 
+ .email_row:hover .singleEmail_left Image {
+    width: 17px;
+} 
+
+.email_row .singleEmail_left {
+    display: none;
+}  
+
+
+.emailRow_message {
+    display: flex;
+    flex: 0.8;
+    align-items: center;
+    font-size: 13px;
+}
+
+.emailRow_message h4 {
+    width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
+.emailRow_title {
+font-size: 15px;
+flex: 0.3;
+}
+
+.emailRow_description {
+    font-weight: 400;
+    color: grey
+}
+
+
+.emailRow_time {
+padding-right: 15px;
+font-size: 15px;
+font-weight: bold;
+}
+
+.emailItems {
+    width: 97%;
+}
+
+/* ............ Email Items ............... end */
+
+
+
+.abcd {
+    width:25px;
+    /* filter: invert(75%) sepia(78%) saturate(3213%) hue-rotate(3deg) brightness(93%) contrast(91%); */
+    filter: invert(69%) sepia(0%) saturate(1742%) hue-rotate(315deg) brightness(74%) contrast(77%);
+    margin-right: 10px;
+    
+    border-radius: 20px;
+
+}
+
+.email_row .singleEmail_left > * {
+    width: 18px;
+    height: 19px;
+    margin-right: 10px;
+}
+
+
+.email_row .singleEmail_left .unread {
+    height: 20px;
+    width: 20px;
+}

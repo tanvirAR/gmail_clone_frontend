@@ -1,0 +1,246 @@
+.sent_box {
+  height: 600px;
+  /* width: 550px; */
+  min-width: 38vw;
+  background-color: white;
+  position: fixed;
+  z-index: 9999;
+  /* left: 100px; */
+ bottom: 0;
+ right: 40px;
+box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+ border: none;
+ outline: none;
+ display: flex;
+ flex-direction: column;
+}
+
+.main {
+  display: flex;
+  height: 100vh;
+
+}
+
+.sent_box .br {
+  background: #f1f3f5;
+  width: 95%;
+  height: 1px;
+  align-self: center;
+}
+
+.sent_box .first_column {
+width: 100%;
+height: 7%;
+display: flex;
+background-color: #f2f6fc;
+color: blue;
+justify-content: space-between;
+align-items: center;
+}
+
+/* .first_column {
+  display: flex;
+  align-items: center;
+} */
+
+.first_column span {
+  margin: 0 3px;
+}
+
+.first_column p {
+  margin-left: 20px;
+  font-size: 14px;
+  color: black;
+}
+
+.first_column .minimize {
+  margin-left: 50px;
+  margin-bottom: 10px;
+  color: #4f5151;
+  /* background: black; */
+  height: 22px;
+  cursor: pointer;
+}
+
+.close_icon_2 {
+  margin-right: 5px;
+  /* margin-top: 10px; */
+    filter: invert(31%) sepia(12%) saturate(63%) hue-rotate(131deg) brightness(90%) contrast(86%);
+    /* background: red; */
+    cursor: pointer;
+}
+
+.second_column p {
+  margin: 0 7px; 
+  font-size: 14px;
+}
+
+.second_column input, .third_column input {
+  outline: none;
+  border: none;
+  width: 100%;
+  height: 45px;
+}
+
+
+.close_minimize_options {
+  display: flex;
+  align-items: center;
+}
+
+.second_column {
+  display: flex;
+  align-items: center;
+}
+
+.third_column {
+  display: flex;
+}
+
+.third_column input {
+  padding-left: 15px;
+}
+
+
+.open_in_full {
+  height: 15px;
+  width: 15px;
+  filter: invert(31%) sepia(12%) saturate(63%) hue-rotate(131deg) brightness(90%) contrast(86%);
+  cursor: pointer;
+
+}
+
+.fourth_column textarea {
+  min-height: 200px;
+  max-height: 600px;
+  width: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  padding: 10px 20px;
+}
+
+.fourth_column { height: 75%;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+overflow: auto;
+/* overflow-y: scroll; */
+/* align-items: center;s */
+}
+
+.bottom_options {
+  background: #ffffff;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  user-select: none;
+}
+
+
+.bottom_options .send_first_part {
+  margin-left: 20px;
+  width: 70px;
+  display: flex;
+  justify-content: center;
+  background: #2f58d0;
+  font-size: 14px;
+  font-weight: 500;
+  color: whitesmoke;
+  height:50%;
+  align-items: center;
+  border-bottom-left-radius: 20px;
+  /* border-bottom-right-radius: 20px; */
+  border-top-left-radius: 20px;
+  /* border-top-right-radius: 20px; */
+}
+
+
+
+.bottom_options .send_second_part {
+  height: 50%;
+  width: 35px;
+  background: rgb(82, 128, 214);
+  color: whitesmoke;
+  border-bottom-right-radius: 20px;
+  border-top-right-radius: 20px;
+  border-left: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+
+}
+
+.attachment_div {
+   height: 27px;
+   background: #f5f5f5;
+   width: 80%;
+   margin-top: 10px;
+   margin-left: 20px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.attachment_div p {
+  margin-left: 10px;
+  font-weight: 550;
+  font-size: 14px;
+}
+.close_attachment {
+  height: 15px;
+  width: 15px;
+  margin-right: 5px;
+  filter: invert(52%) sepia(1%) saturate(0%) hue-rotate(95deg) brightness(94%) contrast(88%);
+}
+
+
+.schedule_send {
+  /* float: left;
+  width: 60px;
+  height: 50px;
+  background: green;
+  position: relative;
+  top: -40px;
+  right: -80px; */
+  position: absolute;
+  /* to */
+  background-color: white;
+  color: black;
+  width: 150px;
+  height: 40px;
+  display: flex;
+  justify-content: space-around;
+  padding: 0 8px;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 75px;
+  margin-left: 50px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-top: 6px solid white;
+  border-bottom: 6px solid white;
+  border-left: white;
+  border-right: white;
+  cursor: pointer;
+}
+
+.schedule_send:hover {
+  background: #f5f5f5;
+}
+
+.schedule_send_icon {
+filter: invert(43%) sepia(11%) saturate(5990%) hue-rotate(194deg) brightness(97%) contrast(89%);
+}
+
+
+/* .schedule_send button {
+  background-color: white;
+} */
+
+.send_option_button {
+  background: transparent;
+  border: none;
+  color: white;
+}
