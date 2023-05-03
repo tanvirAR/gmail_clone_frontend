@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    margin-top: -25px;
+    margin-bottom: 25px;
+    align-items: center;
+
+}
+
+.p {
+    display: 'block';
+    height: 20px;
+    width: 100%;
+}
+
+.imageStyles {
+    user-select: none;
+    filter: invert(14%) sepia(71%) saturate(6330%) hue-rotate(1deg) brightness(117%) contrast(126%);
+}
+
+.p p {
+    color: black;
+    font-size: 12px;
+    text-align: left;
+    margin-left: 8px;
+    color: red;
+    margin-top: 2px;
+    user-select: none;
+    cursor: default;
+
+}

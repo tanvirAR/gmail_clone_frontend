@@ -1,0 +1,92 @@
+
+
+.emailList-settings {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    z-index: 500;
+    padding: 8px;
+    user-select: none;
+    position: relative;
+    /* margin-top: 10px; */
+
+}
+
+
+.selectAll_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+}
+
+.selectAll_div button {
+    border: none;
+    background: transparent;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+  justify-content: center;
+}
+
+.settings-left span {
+    padding: 5px 5px;
+    color: #4b4e4d;
+    cursor: pointer;
+     border: 1px solid white;
+
+}
+
+.settings-left span:hover {
+     background-color: rgba(228, 228, 228, 0.7);
+     border-radius: 20px;
+     border: 1px solid rgb(218, 218, 218);
+     
+}
+
+.settings-left :nth-child(2), .settings-left :nth-child(3) {
+    scale: 0.9;
+}
+
+.settings-left input {
+    cursor: pointer;
+    /* background: red; */
+}
+
+
+
+
+.selectAll_div span:first-of-type{
+    margin: 0 2px;
+}
+.selectAll_div span:first-of-type:hover {
+    border-radius: 5px;
+    background-color:#dadce0;
+    padding: 0 0px;
+    margin-left: 6.5px;
+    margin-right: 8px;
+}
+
+
+.settings-left {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    /* background-color: red; */
+    width: 150px;
+}
+
+
+
+/* ............................................................................... */
+
+
+.settings-left button {
+    border: none;
+    background: none;
+}

@@ -1,0 +1,16 @@
+.emailList {
+  flex: 1;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: white;
+  border-radius: 2.5%;
+}
+
+
+
+
+.emailList {
+  width: 97%;
+}

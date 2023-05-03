@@ -1,0 +1,113 @@
+.header-left img {
+    object-fit: contain;
+    height: 40px;
+    margin-left: 5px;
+    margin-right: 20px;
+    user-select: none;
+}
+
+.header {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ border-bottom: 1px solid whitesmoke;   
+ user-select: none;
+ background: #f6f8fc;
+ position: relative;
+}
+
+.header-left {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    margin-left: 15px;
+}
+
+
+.header-middle {
+    display: flex;
+    flex: 0.55;
+    align-items: center;
+    padding: 10px;
+    border-radius: 9px;
+    background-color: #eaf1fb;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.header-middle button {
+    border: none;
+    background: none;
+}
+
+.material-icons {
+    color: gray;
+}
+
+.header-middle span {
+    color: #444746;
+    cursor: pointer;
+}
+
+.header-middle input {
+    border: none;
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+    outline: none;
+    font-size: medium;
+    background-color: #eaf1fb;
+    transition: background-color 0.3s ease;
+}
+
+.header-middle input:focus {
+    background-color: white;
+}
+
+.header-middle:focus-within {
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+
+.header-right span {
+    padding: 10px;
+    cursor: pointer;
+}
+
+
+.header-left span {
+    padding: 5px 5px;
+    border-radius: 20px;
+    padding: 5px 5px;
+
+}
+
+.header-left span:hover {
+    background: #dddddd;
+    
+    
+}
+
+.header-left button:focus {
+    background: #dddddd;
+}
+
+.header-left button {
+    background-color: red;
+    display: block;
+    height: 100px;
+}
+
+
+.profileIcon{
+    color: rgb(26, 115, 232);
+    scale: 1.2;
+    margin-right: 1rem;
+    transition: color 0.2s ease;
+}
+
+.profileIcon:hover {
+   color: rgb(22, 103, 208);
+}

@@ -1,0 +1,200 @@
+import { readMailInterface } from "../../interface/readMail.interface";
+import sendMailReqBodyInterface from "../../interface/sendMailReqBody.interface";
+import { resetInboxMailAdditionalData } from "../additionalEmailData/additionalEmailDataSlice";
+import { apiSlice } from "../api/apiSlice";
+import { resetInboxSelectedMails } from "./emailSlice";
+
+export const emailApi = apiSlice.injectEndpoints({
+  endpoints: (builder) => ({
+    sendMail: builder.mutation({
+      query: (data: sendMailReqBodyInterface) => ({
+        url: "/email/sendmail",
+        method: "POST",
+        body: JSON.stringify(data),
+        Credential: "include",
+        headers: {
+          "content-type": "application/json",
+        },
+      }),
+    }),
+
+    getAllMails: builder.query<any, void>({
+      query: () => ({
+        url: "/email/getmails",
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "content-type": "application/json",
+        },
+      }),
+      async onQueryStarted(arg, {queryFulfilled, dispatch}) {
+        // beforerefetch,  clear slice state data of selected mails in email slice and addtinal email data from additionalDataEmailSlice 
+        dispatch(resetInboxMailAdditionalData())
+        dispatch(resetInboxSelectedMails())
+      }
+    }),
+
+    // getSentMails: builder.query<any, void>({
+    //   query: () => ({
+    //     url: "/email/getmails/sent",
+    //     method: "GET",
+    //     credentials: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // getStarredMails: builder.query<any, void>({
+    //   query: () => ({
+    //     url: "/email/getmails/starred",
+    //     method: "GET",
+    //     credentials: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // getImportantMails: builder.query<any, void>({
+    //   query: () => ({
+    //     url: "/email/getmails/important",
+    //     method: "GET",
+    //     credentials: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // getSpamMails: builder.query<any, void>({
+    //   query: () => ({
+    //     url: "/email/getmails/spam",
+    //     method: "GET",
+    //     credentials: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // getTrashMails: builder.query<any, void>({
+    //   query: () => ({
+    //     url: "/email/getmails/trash",
+    //     method: "GET",
+    //     credentials: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // getSingleMail: builder.query({
+    //   query: (emailId: string) => ({
+    //     url: `/email/singlemail/${emailId}`,
+    //     method: "GET",
+    //     Credential: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // markReadSingleMail: builder.mutation({
+    //   query: (mailId: readMailInterface) => ({
+    //     url: "/email/mark/read",
+    //     method: "POST",
+    //     body: JSON.stringify(mailId),
+    //     Credential: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // markUnReadSingleMail: builder.mutation({
+    //   query: (mailId: readMailInterface) => ({
+    //     url: "/email/mark/unread",
+    //     method: "POST",
+    //     body: JSON.stringify(mailId),
+    //     Credential: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // markTrashSingleInboxMail: builder.query({
+    //   query: (mailId: string) => ({
+    //     url: `/email/trash/${mailId}`,
+    //     method: "GET",
+    //     Credential: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // markMailAsImportant: builder.query({
+    //   query: (mailId: string) => ({
+    //     url: `/email/mark/important/${mailId}`,
+    //     method: "GET",
+    //     Credential: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // markMailAsStarred: builder.query({
+    //   query: (mailId: string) => ({
+    //     url: `/email/mark/starred/${mailId}`,
+    //     method: "GET",
+    //     Credential: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+    // markMailAsSpam: builder.mutation({
+    //   query: (mailId: readMailInterface) => ({
+    //     url: "/email/mark/spam",
+    //     method: "POST",
+    //     body: JSON.stringify(mailId),
+    //     Credential: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+
+    // getAdditionalSingleMailProperty: builder.query({
+    //   query: (emailId: string) => ({
+    //     url: `email/singlemail/property/${emailId}`,
+    //     method: "GET",
+    //     Credential: "include",
+    //     headers: {
+    //       "content-type": "application/json",
+    //     },
+    //   }),
+    // }),
+  }),
+});
+
+export const {
+  useSendMailMutation,
+  useGetAllMailsQuery,
+  // useGetSpamMailsQuery,
+  // useMarkMailAsSpamMutation,
+  // useGetTrashMailsQuery,
+  // useGetSingleMailQuery,
+  // useMarkReadSingleMailMutation,
+  // useMarkUnReadSingleMailMutation,
+  // useMarkTrashSingleInboxMailQuery,
+  // useMarkMailAsImportantQuery,
+  // useGetSentMailsQuery,
+  // useGetStarredMailsQuery,
+  // useGetImportantMailsQuery,
+  // useMarkMailAsStarredQuery,
+  // useGetAdditionalSingleMailPropertyQuery,
+} = emailApi;

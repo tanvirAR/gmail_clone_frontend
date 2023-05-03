@@ -1,0 +1,13 @@
+.emailList {
+  flex: 1;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: white;
+}
+
+.minimizedEmailList {
+  display: flex;
+  flex-direction: row-reverse;
+}

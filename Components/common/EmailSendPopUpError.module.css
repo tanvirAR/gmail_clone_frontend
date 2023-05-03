@@ -1,0 +1,98 @@
+.sent_box {
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+
+}
+
+.innerBox {
+  margin-top: 18%;
+    height: 25%;
+    width: 32%;
+    background: rgb(255, 255, 255);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    font-size: large;
+}
+
+.innerBox .headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.innerBox .headerContainer > * {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    color: #2B2B2B;
+    font-weight: 500;
+    cursor: default;
+}
+
+/* .innerBox .headerContainer span {
+    color: ;
+} */
+
+.innerBox .headerContainer .icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.innerBox .headerContainer .icon:hover{
+    background-color: #d6d5d5;
+    transition: 0.3s;
+}
+.innerBox .headerContainer .icon:hover span {
+    color: black;
+}
+
+.innerBox .mid p {
+    color: #828589;
+    font-size: 14px;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.innerBox .mid {
+    height: 36%;
+}
+
+.innerBox .bottom {
+    height: 33%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.innerBox .bottom .btn {
+    width: 5.25rem;
+    height: 2.5rem;
+    margin-right: 1.5rem;
+    background-color: #357BE6;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: flex-start;
+    color: white;
+    cursor: pointer;
+
+}
+
+.innerBox .bottom .btn:hover {
+    box-shadow: 0 0 3px 0 #357BE6;
+}

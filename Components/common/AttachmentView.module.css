@@ -1,0 +1,28 @@
+
+.sent_box {
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+}
+
+
+
+.innerBox {
+  margin-top: 3%;
+    height: 85%;
+    width: 30%;
+    background: rgb(255, 255, 255);
+    position: relative;
+}
+
+@media (max-width: 1024px) {
+ .innerBox {
+  width: 70%;
+ }
+}

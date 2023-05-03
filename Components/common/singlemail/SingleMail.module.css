@@ -1,0 +1,176 @@
+.email_row {
+  display: flex;
+  align-items: center;
+  height: 2.5rem;
+  cursor: pointer;
+  z-index: 500;
+  justify-content: space-between;
+
+  box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
+  user-select: none;
+  border: 1px solid transparent;
+  border-left: 2px solid transparent;
+  border-top: 1px solid transparent;
+}
+
+.email_row > * {
+    margin-left: 1%;
+}
+
+.read {
+  /* background-color: #f2f6fc; */
+  background-color: red;
+}
+
+.unread {
+  background-color: white;
+}
+
+.email_row h3 {
+  color: #202124;
+}
+
+.email_row p {
+  font-size: 12px;
+}
+
+.email_row:hover {
+  box-shadow: inset 0px -2px 0px 0 rgba(145, 144, 144, 0.3);
+  border-right: 1px solid#DADCE0;
+  border-left: 2px solid#DADCE0;
+}
+
+.emailRow_options :nth-child(2) {
+    scale: 0.8;
+    color: #d8d8d8;
+    font-weight: 550;
+    font-variation-settings: "wght" 350;
+}
+
+ .email_row:hover .emailRow_options span {
+    color: rgba(32, 33, 36, 0.7);
+
+}
+
+.emailRow_options {
+    display: flex;
+    align-items: center;
+}
+
+.emailRow_options .material-icons, .emailRow_options input {
+    margin: 10px;
+   border-color: black;
+   margin-right: 10px;
+   
+}
+
+.emailRow_options span {
+    margin-right: 5px;
+}
+
+ .email_row:hover p {
+    display: none;
+ }
+
+
+
+.emailRow_message {
+    display: flex;
+    flex: 0.8;
+    align-items: center;
+    font-size: 13px;
+}
+
+.emailRow_message h4 {
+    width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: #202124;
+}
+/* .............................. */
+
+.emailRow_title {
+font-size: 15px;
+flex: 0.3;
+}
+
+.emailRow_description {
+    font-weight: 400;
+    color: grey;
+    margin-left: 1rem;
+}
+
+
+.emailRow_time {
+padding-right: 15px;
+font-size: 15px;
+font-weight: bold;
+}
+
+.emailItems {
+    width: 97%;
+}
+
+/* ............ Email Items ............... end */
+
+
+
+
+
+.leftDiv{
+    position: relative;
+    margin-right: 1.75rem;
+    width:  max-content;
+    /* background-color: red; */
+}
+
+
+.time {
+    font-size: 0.8rem;
+    color: #202124;
+    font-weight: 500;
+}
+
+.email_row:hover .time {
+   opacity: 0;
+} 
+
+.icons {
+    position: absolute;
+    width: 6rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    bottom: -60%;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: orange; */
+}
+
+.email_row:hover .icons {
+    opacity: 100;
+}
+
+.leftDiv .leftIcon {
+    padding: 0.25rem .25rem;
+    border-radius: 100px;
+    margin: 0 0.1rem;
+    scale: 0.9;
+    color: #424544;
+}
+
+ .clock {
+    /* margin-bottom: -5px !important; */
+    /* scale: 0.6; */
+}
+
+ .leftIcon:hover, .leftIcon span:hover {
+    background-color:#dce7ee;
+}
