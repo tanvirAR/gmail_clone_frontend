@@ -8,6 +8,7 @@ import { useGetAllMailsQuery } from "../../features/email/emailApi";
 import SingleEmail from "./SingleEmail";
 import { email } from "../../interface/singleMail.interface";
 import { useRef } from "react";
+import { inboxType } from "../../interface/EmailType";
 
 export default function RightContainer() {
   const { sidebarOn } = useSelector((state: storeStateInterface) => state.UI);
@@ -19,7 +20,7 @@ export default function RightContainer() {
     isLoading,
     isFetching,
     refetch: emailsRefetch,
-  } = useGetAllMailsQuery();
+  } = useGetAllMailsQuery(inboxType);
 
   let emailList;
 
@@ -29,7 +30,7 @@ export default function RightContainer() {
 
   if (data) {
     emailList = data.mails.map((email: email) => (
-      <SingleEmail property={email} key={email.id} buttonRef={buttonRef} />
+      <SingleEmail property={email} key={email.id} buttonRef={buttonRef} pageType={inboxType} />
     ));
   }
 
@@ -47,7 +48,7 @@ export default function RightContainer() {
       className={styles["emailList"]}
     >
       <div>
-        <Options refetch={emailsRefetch} buttonRef={buttonRef} />
+        <Options refetch={emailsRefetch} buttonRef={buttonRef} pageType={inboxType} />
 
         <EmailSection />
         <EmailList emailList={emailList} />

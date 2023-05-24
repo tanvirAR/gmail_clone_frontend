@@ -1,62 +1,92 @@
 import { useRouter } from "next/router";
 import styles from "./EmailOptions.module.css";
-import Head from "next/head";
 import { useEffect, useState } from "react";
-import {
-  useGetAdditionalSingleMailPropertyQuery,
-  useMarkTrashSingleInboxMailQuery,
-  useMarkMailAsSpamMutation,
-  useMarkReadSingleMailMutation,
-  useMarkUnReadSingleMailMutation,
-} from "../../features/email/emailApi";
+import { useGetAdditionalSingleMailPropertyQuery } from "../../features/additionalEmailData/additionalEmailDataApi";
+import { inboxType, spamType, trashType } from "../../interface/EmailType";
+import { useDeleteMailPermanentlyMutation, useMarkTrashSingleInboxMailMutation } from "../../features/trashMail/trashMailApi";
+import { useMarkReadSingleMailMutation } from "../../features/readMail/readMailApi";
+import { useMarkUnReadSingleMailMutation } from "../../features/readMail/readMailApi";
+import { useMarkMailAsSpamMutation, useMarkMailAsUnSpamMutation } from "../../features/spamMail/spamMailApi";
+import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
+import { accountNumber } from "../../constants/userAccountSerial";
 
 interface props {
   mailId: string | undefined;
+  type: emailType
 }
 
 export default function EmailOptions(props: props) {
   const router = useRouter();
-  const { mailId } = props;
+  const { mailId, type } = props;
   const [mailIdLoaded, setMailIdLoaded] = useState(false);
+
   useEffect(() => {
     if (mailId) {
       setMailIdLoaded(true);
     }
   }, [mailId]);
+
   const redirectToInboxPageHandler = () => {
-    router.push("/mail/u/1/inbox");
+    router.push(`/mail/u/${accountNumber}/${type}`);
   };
-  const [deletRequest, setDeleteRequest] = useState(false);
 
-  const { data: markTrashResponseData } = useMarkTrashSingleInboxMailQuery(mailId || "", {
-    skip: !deletRequest || !mailIdLoaded,
-  });
+  const [
+    markMailAsTrash,
+    {
+      data: markTrashResponse,
+      isLoading: markTrashIsLoading,
+      error: markTrashResponseError,
+    },
+  ] = useMarkTrashSingleInboxMailMutation();
+  const [
+    markMailAsRead,
+    {
+      data: markReadResponse,
+      isLoading: markReadIsLoading,
+      error: markReadResponseError,
+    },
+  ] = useMarkReadSingleMailMutation();
+  const [
+    markMailAsUnred,
+    {
+      data: markUnReadResponse,
+      isLoading: markUnReadhIsLoading,
+      error: markUnReadResponseError,
+    },
+  ] = useMarkUnReadSingleMailMutation();
 
-  // make skip to false to send request to the backend to mark this mail as deleted
+  const [
+    markMailAsSpam,
+    {
+      data: markSpamResponse,
+      isLoading: markSpamIsLoading,
+      error: markSpamResponseError,
+    },
+  ] = useMarkMailAsSpamMutation();
+
   const markDeleteMailHandler = () => {
-    setDeleteRequest(true);
+    if (mailId) {
+      markMailAsTrash(mailId);
+
+      redirectToInboxPageHandler();
+    }
   };
 
-  const [markMailAsSpam, { data: spamMarkResponseData }] =
-    useMarkMailAsSpamMutation();
-
-
-  // after deleting a mail , redirect to inbox page
-  if (markTrashResponseData || spamMarkResponseData) {
-    redirectToInboxPageHandler();
+  if (markTrashResponse) {
+    console.log(markTrashResponse);
   }
 
   // get additional email data which is specific for end user (this.user)
   const { data: additiionalEmailData } =
-    useGetAdditionalSingleMailPropertyQuery(mailId || "", {
-      skip: !mailIdLoaded,
-    });
+    useGetAdditionalSingleMailPropertyQuery(
+      { mailId: mailId ?? "", pageType: inboxType },
+      {
+        skip: !mailIdLoaded,
+      }
+    );
 
   const { mail } = additiionalEmailData || {};
   const { important, starred, read } = mail || {};
-
-  const [markReadSingleMail, {}] = useMarkReadSingleMailMutation();
-  const [markUnReadSingleMail, {}] = useMarkUnReadSingleMailMutation();
 
   const manualUpdataMailReadUnreadProp = (
     e: React.MouseEvent<HTMLDivElement>
@@ -64,18 +94,41 @@ export default function EmailOptions(props: props) {
     e.stopPropagation();
     if (mailId) {
       if (read) {
-        markUnReadSingleMail({ mailId: mailId || "" });
+        markMailAsUnred({ mailId });
       } else {
-        markReadSingleMail({ mailId: mailId });
+        markMailAsRead({ mailId });
       }
     }
   };
 
   const markMailAsSpamHandler = () => {
     if (mailId) {
-    markMailAsSpam({mailId: mailId})
+      markMailAsSpam({ mailId: mailId });
+    }
+  };
+
+  const [markMailUnspam, {data: markMailUnspamResponse, error: markMailUnspamError, isLoading: markMailUnspamIsLoading}] = useMarkMailAsUnSpamMutation();
+  const [deleteMailPermenantly, {data: deleMailResponse, error: deleteMailErrorResponse, isLoading: deleteMailIsLoading}] = useDeleteMailPermanentlyMutation()
+
+  const isDeleteForeverOptionVisible: boolean = type===spamType || type===trashType
+  const trashOptionVisible: boolean = type!==trashType || type!==spamType;
+  const isNotSpamOptionVisible: boolean =  type===spamType;
+  const markSpamOptionVisible: boolean = type!==spamType;
+
+  const deleteMailForeverHandler = () => {
+    if (mailId && !deleteMailIsLoading) {
+      deleteMailPermenantly(mailId);
+      redirectToInboxPageHandler();
     }
   }
+
+  const notSpamHandler = () => {
+    if (mailId && !markMailUnspamIsLoading) {
+      markMailUnspam({mailId})
+      redirectToInboxPageHandler();
+    }
+  }
+
 
   return (
     <div className={styles.container}>
@@ -85,12 +138,26 @@ export default function EmailOptions(props: props) {
             <span className="material-symbols-outlined">arrow_back</span>
           </div>
         </div>
-        <div className={styles.icon}>
-          <span onClick={markMailAsSpamHandler} className={"material-symbols-outlined"}>report</span>
-        </div>
-        <div onClick={markDeleteMailHandler} className={styles.icon}>
+       {isDeleteForeverOptionVisible && <div onClick={deleteMailForeverHandler} className={styles.icon2}>
+          <p>Delete forever</p>
+        </div>}
+       {isDeleteForeverOptionVisible && <div className={styles.line}></div>}
+       {isNotSpamOptionVisible &&  <div onClick={notSpamHandler} className={styles.icon2}>
+          <p>Not spam</p>
+        </div>}
+       {isNotSpamOptionVisible && <div className={styles.line}></div>}
+
+      {markSpamOptionVisible &&  <div className={styles.icon}>
+          <span
+            onClick={markMailAsSpamHandler}
+            className={"material-symbols-outlined"}
+          >
+            report
+          </span>
+        </div>}
+       {trashOptionVisible && <div onClick={markDeleteMailHandler} className={styles.icon}>
           <span className="material-symbols-outlined">delete</span>
-        </div>
+        </div>}
         <div className={styles.icon}>
           <span
             onClick={manualUpdataMailReadUnreadProp}

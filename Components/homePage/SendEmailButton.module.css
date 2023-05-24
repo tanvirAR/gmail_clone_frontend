@@ -70,11 +70,6 @@
   color: black;
   width: 150px;
   height: 40px;
-  display: flex;
-  justify-content: space-around;
-  padding: 0 8px;
-  align-items: center;
-  font-size: 14px;
   margin-bottom: 75px;
   margin-left: 50px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -89,9 +84,7 @@
   background: #f5f5f5;
 }
 
-.schedule_send_icon {
-filter: invert(43%) sepia(11%) saturate(5990%) hue-rotate(194deg) brightness(97%) contrast(89%);
-}
+
 
 .send_option_button {
   background: transparent;

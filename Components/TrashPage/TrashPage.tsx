@@ -1,42 +1,52 @@
-// import Options from "./Options";
+import classes from "./TrashPage.module.css";
+
 import { useSelector } from "react-redux";
-import TempSingleEmail from "../common/singlemail/SingleMail";
 import Options from "../homePage/Options";
-// import EmailList from "./EmailList"
 
-import classes from "./TrashPage.module.css"
 import storeStateInterface from "../../interface/Store.interface";
-import { useGetTrashMailsQuery } from "../../features/email/emailApi";
 import { email } from "../../interface/singleMail.interface";
-import SingleEmail from "./SingleMail";
+import SingleEmail from "../homePage/SingleEmail";
+import { useRef } from "react";
+import { trashType } from "../../interface/EmailType";
+import { useGetTrashMailsQuery } from "../../features/trashMail/trashMailApi";
+
 export default function TrashPage() {
+  const { UI } = useSelector((state: storeStateInterface) => state);
+  const { onByToggle } = UI.sidebarOn;
 
-  const {onByToggle} =  useSelector((state: storeStateInterface) => state.UI.sidebarOn)
+  const refetchButtonRef = useRef(null);
 
-  const {data, isLoading, isError} = useGetTrashMailsQuery();
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch: trashMailRefetch,
+  } = useGetTrashMailsQuery();
 
-   let emailList;
+  let emailList;
 
+  if (isError) {
+    emailList = <p>Something went wrong! Please try again.</p>;
+  }
 
-   if (isError) {
-     emailList = <p>Error occured! Please try again.</p>;
-   }
+  if (data) {
+    emailList = data.mails.map((email: email) => (
+      <SingleEmail
+        pageType={trashType}
+        buttonRef={refetchButtonRef}
+        property={email}
+        key={email.id}
+      />
+    ));
+  }
 
-   if (data) {
-     emailList = data.mails.map((email: email) => (
-       <SingleEmail property={email} key={email.id} />
-     ));
+  if (isLoading) {
+    emailList = <p>Loading...</p>;
+  }
 
-   }
-
-   if (isLoading) {
-     emailList = <p>Loading...</p>;
-   }
-
-   if (data && data.mails.length == 0) {
-     emailList = <p>No Email found!</p>;
-   }
-
+  if (data && data.mails.length == 0) {
+    emailList = <p>No Email found!</p>;
+  }
 
   return (
     <div
@@ -44,15 +54,13 @@ export default function TrashPage() {
       className={classes.box}
     >
       <div>
-        <Options />
+        <Options
+          refetch={trashMailRefetch}
+          buttonRef={refetchButtonRef}
+          pageType={trashType}
+        />
 
-        <div className={classes.mailList}>
-          {emailList}
-          <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail />
-        </div>
+        <div className={classes.mailList}>{emailList}</div>
       </div>
     </div>
   );

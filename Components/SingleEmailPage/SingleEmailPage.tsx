@@ -1,9 +1,4 @@
 import moment from "moment";
-import {
-  useGetAdditionalSingleMailPropertyQuery,
-  useGetSingleMailQuery,
-  useMarkMailAsStarredQuery,
-} from "../../features/email/emailApi";
 import UserIcon from "../common/UserIcon";
 import EmailOptions from "./EmailOptions";
 import styles from "./SingleEmailPage.module.css";
@@ -14,20 +9,34 @@ import { useSelector } from "react-redux";
 import storeStateInterface from "../../interface/Store.interface";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { useGetSingleMailQuery } from "../../features/singleEmail/singleEmailApi";
+import { useGetAdditionalSingleMailPropertyQuery } from "../../features/additionalEmailData/additionalEmailDataApi";
+import { inboxType, scheduledType } from "../../interface/EmailType";
+import { useMarkMailAsStarredMutation } from "../../features/starredEmail/starredEmailApi";
+import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
+import { useCancellSnoozeMailMutation } from "../../features/snoozedMail/snoozedMailApi";
+import {
+  getScheduledTimeMessage,
+  getSnoozeTimeMessage,
+} from "../../utils/timeFormat";
+import { useCancellScheduledMailMutation } from "../../features/scheduledMail/scheduledMailApi";
+import { accountNumber } from "../../constants/userAccountSerial";
 
 interface prop {
   emailId: string | undefined;
+  type: emailType;
 }
 
-const SingleEmailPage = (prop: prop) => {
+const SingleEmailPage = (props: prop) => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const mailId = prop.emailId;
+  const { emailId: mailId, type } = props;
   const [idLoaded, setIdLoaded] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [mailMessage, setMailMessage] = useState("");
 
+  // use to specify the message field height according to message length
   useEffect(() => {
     if (textareaRef.current) {
       const computedStyle = window.getComputedStyle(textareaRef.current);
@@ -50,34 +59,25 @@ const SingleEmailPage = (prop: prop) => {
     }
   }, [mailId]);
 
-  // use to control auto rtk query fetch  and send request to mark mail as starred on user interaction
-  const [markStarred, setMarkStarred] = useState(false);
-  // mark mail as starred or unstarred query 
-  const { refetch: starrredRefetch, isLoading: starredLoading } =
-    useMarkMailAsStarredQuery(mailId || '', {
-      skip: !markStarred || !idLoaded,
-    });
-
-
-      const markMailAsStarredHandler = () => {
-        // tell the rtk quey to send request by disabling skip option
-        if (!starredLoading) {
-          if (!markStarred) {
-            setMarkStarred(true);
-          } else {
-            // refetch use to sent request multiple times after user click 
-            starrredRefetch();
-          }
-        }
-      };
+  const [
+    markMailAsStarred,
+    {
+      data: markStarredResponse,
+      error: markStarredError,
+      isLoading: markStarredIsLoading,
+    },
+  ] = useMarkMailAsStarredMutation();
 
   const { data: additiionalEmailData } =
-    useGetAdditionalSingleMailPropertyQuery(mailId || "", {
-      skip: !idLoaded,
-    });
+    useGetAdditionalSingleMailPropertyQuery(
+      { mailId: mailId || "", pageType: inboxType },
+      {
+        skip: !idLoaded,
+      }
+    );
 
   const { mail: additionalData } = additiionalEmailData || {};
-  const { important, starred, read } = additionalData || {};
+  const { important, starred, read, snoozedTime } = additionalData || {};
 
   const { onByToggle } = useSelector(
     (state: storeStateInterface) => state.UI.sidebarOn
@@ -98,11 +98,57 @@ const SingleEmailPage = (prop: prop) => {
     dispatch(setAttachmentView({ isVisible: true, url: attachment }));
   };
 
+  const markMailAsStarredHandler = () => {
+    if (!markStarredIsLoading && mailId) {
+      markMailAsStarred(mailId);
+    }
+  };
+
   useEffect(() => {
     if (message) {
       setMailMessage(message);
     }
   }, [message]);
+
+  const redirectToEmailListPageHandler = () => {
+    router.push(`/mail/u/${accountNumber}/${type}`);
+  };
+
+  const [
+    cancellSnooze,
+    {
+      data: mailSnoozeCancellResponse,
+      error: mailSnoozeCancellError,
+      isLoading: mailSnoozeCancellIsLoading,
+    },
+  ] = useCancellSnoozeMailMutation();
+
+  const [
+    cancelScheduledSend,
+    {
+      data: cancelScheduledResponse,
+      error: cancelScheduledErrorResponse,
+      isLoading: cancelScheduledIsLoading,
+    },
+  ] = useCancellScheduledMailMutation();
+
+  const cancelSnoozeHandler = () => {
+    if (mailId && !mailSnoozeCancellIsLoading)
+      // sent rtk request
+      cancellSnooze({ mailId });
+  };
+
+  const cancelScheduledSendHandler = () => {
+    if (mailId && !cancelScheduledIsLoading)
+      // sent rtk request
+      cancelScheduledSend(mailId);
+  };
+
+  const snoozeTime = getSnoozeTimeMessage(snoozedTime || "");
+  const cancellSnoozeOptionVisible: boolean = snoozeTime !== "";
+  const scheduledCancelMessage = getScheduledTimeMessage(createdAt);
+  const cancelScheduledOptionVisible: boolean =
+    type === scheduledType && scheduledCancelMessage !== "";
 
   return (
     <>
@@ -110,8 +156,19 @@ const SingleEmailPage = (prop: prop) => {
         style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
         className={styles.container}
       >
-        <EmailOptions mailId={mailId} />
-
+        <EmailOptions type={type} mailId={mailId} />
+        {cancellSnoozeOptionVisible && (
+          <div className={styles.unsnoozeOption}>
+            <p>{snoozeTime}</p>
+            <p onClick={cancelSnoozeHandler}>Unsnooze</p>
+          </div>
+        )}
+        {cancelScheduledOptionVisible && (
+          <div className={styles.unsnoozeOption}>
+            <p>{scheduledCancelMessage}</p>
+            <p onClick={cancelScheduledSendHandler}>Cancel send</p>
+          </div>
+        )}
         <div className={styles.subjectDiv}>
           <b>
             <p>{subject}</p>
@@ -138,9 +195,14 @@ const SingleEmailPage = (prop: prop) => {
                 <p>{moment(createdAt).format("MMMM D YYYY, h:mm A")}</p>
               </b>
             </div>
-            <span onClick={markMailAsStarredHandler} className="material-symbols-outlined">star</span>
             <span
-              onClick={() => router.push("/mail/u/1/inbox")}
+              onClick={markMailAsStarredHandler}
+              className="material-symbols-outlined"
+            >
+              star
+            </span>
+            <span
+              onClick={redirectToEmailListPageHandler}
               className="material-symbols-outlined"
             >
               reply
@@ -168,7 +230,7 @@ const SingleEmailPage = (prop: prop) => {
               <div className={styles.shade}>
                 <div className={styles.fileName}>
                   <span className="material-symbols-outlined">image</span>
-                  <p>ABCDEFGHssssssssssssssss</p>
+                  <p>Attachment</p>
                 </div>
                 <div className={styles.filesize}>
                   <p>2.9MB</p>

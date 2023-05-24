@@ -1,33 +1,42 @@
-// import Options from "./Options";
-import { useSelector } from "react-redux";
-import TempSingleEmail from "../common/singlemail/SingleMail";
-import Options from "../homePage/Options";
-// import EmailList from "./EmailList"
-
 import classes from "./SpamPage.module.css";
+
+import { useSelector } from "react-redux";
+import Options from "../homePage/Options";
+
 import storeStateInterface from "../../interface/Store.interface";
-import { useGetSpamMailsQuery, useGetTrashMailsQuery } from "../../features/email/emailApi";
 import { email } from "../../interface/singleMail.interface";
 import SingleEmail from "../homePage/SingleEmail";
-
-
+import { useRef } from "react";
+import { spamType } from "../../interface/EmailType";
+import { useGetSpamMailsQuery } from "../../features/spamMail/spamMailApi";
 
 export default function SpamPage() {
-  const { onByToggle } = useSelector(
-    (state: storeStateInterface) => state.UI.sidebarOn
-  );
+  const { UI } = useSelector((state: storeStateInterface) => state);
+  const { onByToggle } = UI.sidebarOn;
 
-  const { data, isLoading, isError } = useGetSpamMailsQuery()
+  const refetchButtonRef = useRef(null);
+
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch: spamMailRefetch,
+  } = useGetSpamMailsQuery();
 
   let emailList;
 
   if (isError) {
-    emailList = <p>Error occured! Please try again.</p>;
+    emailList = <p>Something went wrong! Please try again.</p>;
   }
 
   if (data) {
     emailList = data.mails.map((email: email) => (
-      <SingleEmail property={email} key={email.id} />
+      <SingleEmail
+        pageType={spamType}
+        buttonRef={refetchButtonRef}
+        property={email}
+        key={email.id}
+      />
     ));
   }
 
@@ -45,15 +54,13 @@ export default function SpamPage() {
       className={classes.box}
     >
       <div>
-        {/* <Options  /> */}
+        <Options
+          refetch={spamMailRefetch}
+          buttonRef={refetchButtonRef}
+          pageType={spamType}
+        />
 
-        <div className={classes.mailList}>
-          {emailList}
-          {/* <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail /> */}
-        </div>
+        <div className={classes.mailList}>{emailList}</div>
       </div>
     </div>
   );

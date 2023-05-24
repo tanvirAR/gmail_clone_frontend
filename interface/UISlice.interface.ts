@@ -25,10 +25,14 @@ interface UIInitialState {
   attachmentUploadProgressBar: number;
   attachmentFirebaseReturnedUrl: string;
 
+  snoozedMailTimeSelectComponent: boolean;
+  mailIdForMarkingSnoozed: string;
+
+  scheduledSentTimeSelectComponent: boolean;
+
   attachmentView: {
     isVisible: boolean;
     url: string;
   };
-
 }
 export default UIInitialState;

@@ -23,8 +23,22 @@ export const trashEmailApi = apiSlice.injectEndpoints({
         },
       }),
     }),
+
+    deleteMailPermanently: builder.mutation({
+      query: (mailId: string) => ({
+        url: `/email/mail/delete/${mailId}`,
+        method: "DELETE",
+        Credential: "include",
+        headers: {
+          "content-type": "application/json",
+        },
+      }),
+    }),
   }),
 });
 
-export const { useGetTrashMailsQuery, useMarkTrashSingleInboxMailMutation } =
-  trashEmailApi;
+export const {
+  useGetTrashMailsQuery,
+  useMarkTrashSingleInboxMailMutation,
+  useDeleteMailPermanentlyMutation,
+} = trashEmailApi;

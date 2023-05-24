@@ -1,4 +1,4 @@
-import classes from "./ImportantPage.module.css"
+import classes from "./ImportantPage.module.css";
 
 import { useSelector } from "react-redux";
 import TempSingleEmail from "../common/singlemail/SingleMail";
@@ -7,37 +7,51 @@ import Options from "../homePage/Options";
 import storeStateInterface from "../../interface/Store.interface";
 import { email } from "../../interface/singleMail.interface";
 import SingleEmail from "../homePage/SingleEmail";
-import { useGetImportantMailsQuery } from "../../features/email/emailApi";
+import { useGetStarredMailsQuery } from "../../features/starredEmail/starredEmailApi";
+import { useRef } from "react";
+import { importantType } from "../../interface/EmailType";
+import { useGetImportantMailsQuery } from "../../features/importantEmail/importantEmailApi";
 
 export default function ImportantMailPage() {
-  const { onByToggle } = useSelector(
-    (state: storeStateInterface) => state.UI.sidebarOn
+  const { UI, additionalEmailData } = useSelector(
+    (state: storeStateInterface) => state
   );
+  const { onByToggle } = UI.sidebarOn;
 
-    const {data, isLoading, isError} = useGetImportantMailsQuery();
+  const refetchButtonRef = useRef(null);
 
-     let emailList;
-     // console.log(data?.mails);
-     // console.log(error);
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch: importantMailRefetch,
+  } = useGetImportantMailsQuery();
 
-     if (isError) {
-       emailList = <p>Error occured! Please try again.</p>;
-     }
+  let emailList;
 
-     if (data) {
-       emailList = data.mails.map((email: email) => (
-         <SingleEmail property={email} key={email.id} />
-       ));
 
-     }
+  if (isError) {
+    emailList = <p>Something went wrong! Please try again.</p>;
+  }
 
-     if (isLoading) {
-       emailList = <p>Loading...</p>;
-     }
+  if (data) {
+    emailList = data.mails.map((email: email) => (
+      <SingleEmail
+        pageType={importantType}
+        buttonRef={refetchButtonRef}
+        property={email}
+        key={email.id}
+      />
+    ));
+  }
 
-     if (data && data.mails.length == 0) {
-       emailList = <p>No Email found!</p>;
-     }
+  if (isLoading) {
+    emailList = <p>Loading...</p>;
+  }
+
+  if (data && data.mails.length == 0) {
+    emailList = <p>No Email found!</p>;
+  }
 
   return (
     <div
@@ -45,15 +59,13 @@ export default function ImportantMailPage() {
       className={classes.box}
     >
       <div>
-        <Options />
-
-        {/* <EmailList /> */}
+        <Options
+          refetch={importantMailRefetch}
+          buttonRef={refetchButtonRef}
+          pageType={importantType}
+        />
         <div className={classes.mailList}>
           {emailList}
-          <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail />
         </div>
       </div>
     </div>

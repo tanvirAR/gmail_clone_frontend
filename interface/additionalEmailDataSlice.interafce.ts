@@ -2,10 +2,17 @@
 
 export interface additionalEmailDataSlice {
     inbox: singleMailAdditionalData[]
+    starred: singleMailAdditionalData[];
+    important: singleMailAdditionalData[];
+    sent: singleMailAdditionalData[];
+    spam: singleMailAdditionalData[];
+    trash: singleMailAdditionalData[];
+    scheuduled: singleMailAdditionalData[],
+    snoozed: singleMailAdditionalData[],
 }
 
 // deleted: false;
-interface singleMailAdditionalData {
+export interface singleMailAdditionalData {
     deleted?: boolean;
     draft?: boolean;
     id: string;

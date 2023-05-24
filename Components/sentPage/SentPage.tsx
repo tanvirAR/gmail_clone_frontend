@@ -1,44 +1,54 @@
-import classes from "./SentPage.module.css"
+import classes from "./SentPage.module.css";
 
 import { useSelector } from "react-redux";
-import TempSingleEmail from "../common/singlemail/SingleMail";
 import Options from "../homePage/Options";
 
 import storeStateInterface from "../../interface/Store.interface";
 import { email } from "../../interface/singleMail.interface";
 import SingleEmail from "../homePage/SingleEmail";
-import { useGetSentMailsQuery } from "../../features/email/emailApi";
-
+import { useRef } from "react";
+import { sentType } from "../../interface/EmailType";
+import { useGetSentMailsQuery } from "../../features/sentMail/sentMailApi";
 
 export default function SentPage() {
+  const { UI } = useSelector(
+    (state: storeStateInterface) => state
+  );
+  const { onByToggle } = UI.sidebarOn;
 
-  const {onByToggle} =  useSelector((state: storeStateInterface) => state.UI.sidebarOn)
+  const refetchButtonRef = useRef(null);
 
-  const {data, isLoading, isError} = useGetSentMailsQuery();
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch: sentMailRefetch,
+  } = useGetSentMailsQuery();
 
-   let emailList;
-   // console.log(data?.mails);
-   // console.log(error);
+  let emailList;
 
-   if (isError) {
-     emailList = <p>Error occured! Please try again.</p>;
-   }
+  if (isError) {
+    emailList = <p>Something went wrong! Please try again.</p>;
+  }
 
-   if (data) {
-     emailList = data.mails.map((email: email) => (
-       <SingleEmail property={email} key={email.id} />
-     ));
+  if (data) {
+    emailList = data.mails.map((email: email) => (
+      <SingleEmail
+        pageType={sentType}
+        buttonRef={refetchButtonRef}
+        property={email}
+        key={email.id}
+      />
+    ));
+  }
 
-   }
+  if (isLoading) {
+    emailList = <p>Loading...</p>;
+  }
 
-   if (isLoading) {
-     emailList = <p>Loading...</p>;
-   }
-
-   if (data && data.mails.length == 0) {
-     emailList = <p>No Email found!</p>;
-   }
-
+  if (data && data.mails.length == 0) {
+    emailList = <p>No Email found!</p>;
+  }
 
   return (
     <div
@@ -46,18 +56,14 @@ export default function SentPage() {
       className={classes.box}
     >
       <div>
-        <Options />
+        <Options
+          refetch={sentMailRefetch}
+          buttonRef={refetchButtonRef}
+          pageType={sentType}
+        />
 
-        {/* <EmailList /> */}
-        <div className={classes.mailList}>
-          {emailList}
-          <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail />
-        </div>
+        <div className={classes.mailList}>{emailList}</div>
       </div>
     </div>
   );
 }
-

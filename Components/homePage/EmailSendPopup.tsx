@@ -63,18 +63,18 @@ function EmailSendPopup() {
           >
             minimize
           </span>
-          <Image
-            onClick={smallScreenToFullScreen}
-            className={classes.open_in_full}
-            src={open_in_full}
-            alt=""
-          />
-          <Image
-            onClick={closeSentMailBox}
-            className={classes.close_icon_2}
-            src={close_icon_2}
-            alt=""
-          />
+           <span
+              onClick={smallScreenToFullScreen}
+              className={`material-symbols-outlined ${classes.open_in_full}`}
+            >
+              close_fullscreen
+            </span>
+            <span
+              onClick={closeSentMailBox}
+              className={`material-symbols-outlined ${classes.close_icon_2}`}
+            >
+              close
+            </span>
         </div>
       </div>
 

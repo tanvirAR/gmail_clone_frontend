@@ -7,13 +7,14 @@ import { useSelector } from "react-redux";
 import storeStateInterface from "../../interface/Store.interface";
 import validateEmail from "../../utils/emailValidator";
 import { useDispatch } from "react-redux";
-import { clearEmailInputs, isSendingMailLoadingAction, isSendingMailLoadingVisible, sentEmailBoxLarge, sentEmailBoxSmall, setAttachment, setAttachmentUploadProgg, setFirebaseUrl, ToggleEmailSendError } from "../../features/UI/UISlice";
+import { clearEmailInputs, isSendingMailLoadingAction, isSendingMailLoadingVisible, sentEmailBoxLarge, sentEmailBoxSmall, setAttachment, setAttachmentUploadProgg, setFirebaseUrl, setScheduledMailSentTimeSelectComponent, ToggleEmailSendError } from "../../features/UI/UISlice";
 // utilities functions imports
 import { fileToBase64, b64toBlob } from "../../utils/fileToBase64";
 import { setToLocStrg, getFrmLocStrg } from "../../utils/set&getFileFromLocalStorage";
 import { getDownloadURL, ref, uploadBytesResumable, deleteObject } from "firebase/storage";
 import { storage } from "../../firebase/firebase";
 import { deleteFile } from "../../utils/deleteFileFromFirebase";
+import ScheduleSendButton from "./ScheduleSendButton";
 
  const SendEmailButton = () => {
   const [scheduleSend, setScheduleSend] = useState(false);
@@ -57,11 +58,45 @@ import { deleteFile } from "../../utils/deleteFileFromFirebase";
     // clear input field data from global state
     dispatch(clearEmailInputs());
     dispatch(setFirebaseUrl(""));
-    // set the lading state for sending a mail to true
+    // set the lading state for sending a mail to true (a custom toast)
     dispatch(isSendingMailLoadingAction(true));
-    // set the visibility of the component ie (sendMailAlert) to true
+    // set the visibility of the component ie (sendMailAlert) to true (a custom toast)
     dispatch(isSendingMailLoadingVisible(true));
   };
+
+
+  // same as send mail handler but only checks input field error and redirect to (ScheduledSentMailTimeSelectComponent)  
+  const sendScheduleMailHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+    // check if receiver email is valid
+    const isValid = validateEmail(to);
+
+    // if the both subject and message field empty, warn the user before sending the mail
+    if (subject == "" && message == "") {
+      const confirmation = confirm(
+        "Send this message without a subject or text in the body?"
+      );
+      if (confirmation == false) {
+        console.log("Not send");
+        return;
+      }
+    }
+    if (isValid == null) {
+      dispatch(ToggleEmailSendError(true));
+      return;
+    }
+      dispatch(setScheduledMailSentTimeSelectComponent(true))
+      dispatch(sentEmailBoxSmall(false));
+      dispatch(sentEmailBoxLarge(false));
+  };
+
+
+
+
+
+
+
+
 
   useEffect(() => {
     // check if request is sent and recived response or not to change the loading state in alertComponent
@@ -188,21 +223,16 @@ import { deleteFile } from "../../utils/deleteFileFromFirebase";
         <div className={classes.bottom_options}>
           <div onClick={sendMailHandler} className={classes.send_first_part}>
             {scheduleSend && (
-              <div className={classes.schedule_send}>
-                <Image
-                  className={classes.schedule_send_icon}
-                  src={schedule_send_icon}
-                  alt=""
-                />
-                <p>Schedule send</p>
+              <div onClick={sendScheduleMailHandler} className={classes.schedule_send}>
+               <ScheduleSendButton />
               </div>
             )}
             <p>Send</p>
           </div>
-          <div onClick={() => console.log(file)} className={classes.send_second_part}>
+          <div className={classes.send_second_part}>
             <button
               onClick={() => setScheduleSend((prevState) => !prevState)}
-              onBlur={() => setScheduleSend(false)}
+              // onBlur={() => setScheduleSend(false)}
               className={classes.send_option_button}
             >
               {scheduleSend && (
