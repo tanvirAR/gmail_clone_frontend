@@ -3,7 +3,7 @@
   top: 0;
   display: flex;
   justify-content: space-between;
-  background: white;
+  background: rgb(255, 255, 255);
   z-index: 500;
   padding: 8px;
   user-select: none;
@@ -17,6 +17,10 @@
   cursor: pointer;
   width: 3rem;
   border: 1px solid white;
+}
+
+.selectAll_div:first-child {
+  margin-left: 1rem;
 }
 
 .selectAll_div > * {
@@ -53,8 +57,13 @@
 
 .settings-left :nth-child(2),
 .settings-left :nth-child(3),
-.settings-left :nth-child(4) {
-  scale: 0.8;
+.settings-left :nth-child(4),
+.settings-left :last-child {
+  scale: 0.9;
+}
+
+.dropDown {
+  margin-left: 0.25rem;
 }
 
 .settings-left input {
@@ -66,10 +75,77 @@
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  width: 150px;
 }
 
 .settings-left button {
   border: none;
   background: none;
+}
+
+.deleteForever {
+  height: 70%;
+  padding: 0 7px;
+  margin-top: 2%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.deleteForever:hover {
+  background-color: rgba(228, 228, 228, 0.7);
+}
+
+.settings-left .refresh {
+  position: relative;
+}
+.settings-left .refresh:hover .refreshP {
+  display: block;
+}
+.settings-left .refresh .refreshP {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.76);
+  padding: 5px 5px;
+  border-radius: 5px;
+  scale: 0.8;
+  right: -40%;
+  color: #e0e0e0;
+  display: none;
+  margin-top: 5px;
+}
+
+.settings-left .moveToInbox {
+  position: relative;
+}
+
+.settings-left .moveToInboxP {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.76);
+  padding: 5px 5px;
+  border-radius: 5px;
+  right: -130%;
+  scale: 0.7;
+  width: 8rem;
+  margin-top: 5px;
+  color: #e0e0e0;
+  display: none;
+}
+
+.settings-left .moveToInbox:hover .moveToInboxP {
+  display: block;
+  display: flex;
+  justify-content: center;
+}
+
+.settings-left .moveToInboxP:hover, .settings-left .refresh .refreshP:hover {
+  display: none !important;
+}
+
+.deleteForever p {
+  font-size: smaller;
+  color: #121212;
+  font-weight: 600;
+}
+
+.moveTo {
+  position: relative;
 }

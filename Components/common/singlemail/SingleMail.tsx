@@ -1,8 +1,10 @@
+import { useState } from "react";
 import styles from "./SingleMail.module.css"
-
+import DateTime from 'react-datetime'
+import "react-datetime/css/react-datetime.css";
+import moment, {Moment} from "moment";
 
 export default function TempSingleEmail() {
- 
 
   return (
     <div className={styles["email_row"]}>
@@ -44,7 +46,12 @@ export default function TempSingleEmail() {
           </div>
         </div>
         <div className={styles.time}>8 feb 2023</div>
+        {/* <div className={styles.snoozeOptionDiv}>
+          <span className="material-symbols-outlined">event</span>
+          <p>Pick date & time</p>
+        </div> */}
       </div>
+      {/* <DateTime  value={`date`} onChange={(date) => setDate(date)} /> */}
     </div>
   );
 }

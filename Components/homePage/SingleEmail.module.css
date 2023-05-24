@@ -18,8 +18,8 @@
 }
 
 .read {
-  /* background-color: #f2f6fc; */
-  background-color:grey;
+  background-color: #f2f6fc;
+  /* background-color:grey; */
 }
 
 .selected {
@@ -86,6 +86,28 @@
   color: rgba(32, 33, 36, 0.7);
 }
 
+/* ----------------------  snoozed option toggled --------------- start */
+.snoozeToggled {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-right: 1px solid#DADCE0;
+  border-left: 2px solid#DADCE0;
+}
+
+.snoozeToggled .emailRow_options :nth-child(1), .snoozeToggled .emailRow_options :nth-child(2) {
+    color: rgba(32, 33, 36, 0.7);
+} 
+
+.snoozeToggled .time {
+  opacity: 0;
+}
+.snoozeToggled .icons {
+  opacity: 1;
+}
+
+/* ----------------------  snoozed option toggled --------------- end */
+
+
+
 .emailRow_options {
   display: flex;
   align-items: center;
@@ -102,9 +124,9 @@
   margin-right: 5px;
 }
 
-.email_row:hover p {
+/* .email_row:hover p {
   display: none;
-}
+} */
 
 .emailRow_message {
   display: flex;
@@ -200,4 +222,30 @@
 .leftIcon:hover,
 .leftIcon span:hover {
   background-color: #dce7ee;
+}
+
+
+
+
+.snoozeOptionDiv {
+    position: absolute;
+    width: 10rem;
+    height: 2rem;
+    background-color: rgb(229, 227, 227);
+    right: 10%;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgb(207, 207, 207);
+    top: 100%;
+    border-radius: 5%;
+    z-index: 101;
+box-shadow: 0 3px 7px 0 rgba(0, 0, 0, .13), 0 1px 2px 0 rgba(0, 0, 0, .11);
+}
+
+.snoozeOptionDiv:hover {
+  background-color: rgb(207, 205, 205);
+}
+
+.email_row:hover .snoozeOptionDiv p {
+    display: block;
 }

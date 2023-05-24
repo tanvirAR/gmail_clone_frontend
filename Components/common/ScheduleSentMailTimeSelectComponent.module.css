@@ -1,0 +1,68 @@
+
+.box {
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+.innerBox {
+    height: 45%;
+    width: 25%;
+    min-height: 400px;
+    min-width: 250px;
+    background: #F5F5F5;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.calender :first-child {
+    background-color: #F5F5F5;
+}
+
+.calender > * {
+    width: 100%;
+    height: 90%;
+}
+
+.innerBox .submit  {
+    font-weight: 600;
+    color: white;
+    align-self: center;
+    width: 6rem;
+    height: 2rem;
+    background-color:  #1865d8;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    font-size: medium;
+    cursor: default;
+    user-select: none;
+}   
+.validTime {
+    background-color: #418af8 !important;
+    cursor: pointer !important;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+
+@media (max-width: 1024px) {
+ .innerBox {
+  width: 70%;
+ }
+}

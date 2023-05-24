@@ -1,43 +1,50 @@
 import classes from "./StarredPage.module.css";
-
 import { useSelector } from "react-redux";
-import TempSingleEmail from "../common/singlemail/SingleMail";
 import Options from "../homePage/Options";
-
 import storeStateInterface from "../../interface/Store.interface";
 import { email } from "../../interface/singleMail.interface";
 import SingleEmail from "../homePage/SingleEmail";
-import { useGetStarredMailsQuery } from "../../features/email/emailApi";
+import { useGetStarredMailsQuery } from "../../features/starredEmail/starredEmailApi";
+import { useRef } from "react";
+import { starredType } from "../../interface/EmailType";
 
 export default function StarredPage() {
-  const { onByToggle } = useSelector(
-    (state: storeStateInterface) => state.UI.sidebarOn
-  );
+  const { UI } = useSelector((state: storeStateInterface) => state);
+  const { onByToggle } = UI.sidebarOn;
 
-    const {data, isLoading, isError} = useGetStarredMailsQuery();
+  const refetchButtonRef = useRef(null);
 
-     let emailList;
-     // console.log(data?.mails);
-     // console.log(error);
+  const {
+    data,
+    isLoading,
+    isError,
+    refetch: starredMailRefetch,
+  } = useGetStarredMailsQuery();
 
-     if (isError) {
-       emailList = <p>Error occured! Please try again.</p>;
-     }
+  let emailList;
 
-     if (data) {
-       emailList = data.mails.map((email: email) => (
-         <SingleEmail property={email} key={email.id} />
-       ));
+  if (isError) {
+    emailList = <p>Something went wrong! Please try again.</p>;
+  }
 
-     }
+  if (data) {
+    emailList = data.mails.map((email: email) => (
+      <SingleEmail
+        pageType={starredType}
+        buttonRef={refetchButtonRef}
+        property={email}
+        key={email.id}
+      />
+    ));
+  }
 
-     if (isLoading) {
-       emailList = <p>Loading...</p>;
-     }
+  if (isLoading) {
+    emailList = <p>Loading...</p>;
+  }
 
-     if (data && data.mails.length == 0) {
-       emailList = <p>No Email found!</p>;
-     }
+  if (data && data.mails.length == 0) {
+    emailList = <p>No Email found!</p>;
+  }
 
   return (
     <div
@@ -45,16 +52,13 @@ export default function StarredPage() {
       className={classes.box}
     >
       <div>
-        <Options />
+        <Options
+          refetch={starredMailRefetch}
+          buttonRef={refetchButtonRef}
+          pageType={starredType}
+        />
 
-        {/* <EmailList /> */}
-        <div className={classes.mailList}>
-          {emailList}
-          <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail />
-          <TempSingleEmail />
-        </div>
+        <div className={classes.mailList}>{emailList}</div>
       </div>
     </div>
   );

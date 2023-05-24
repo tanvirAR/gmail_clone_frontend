@@ -88,6 +88,20 @@ align-items: center;
   align-items: center;
 }
 
+
+.close_minimize_options :nth-child(2) {
+  color: black;
+  scale: 0.55; 
+  margin-top: 3px;
+  font-weight: 550;
+  
+}
+.close_minimize_options  :nth-child(3) {
+  color: black;
+  scale: 0.8; 
+  margin-top: 3px;
+}
+
 .second_column {
   display: flex;
   align-items: center;

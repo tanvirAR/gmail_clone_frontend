@@ -5,6 +5,7 @@ import { sentEmailBoxSmall, sidebarByHover } from "../../features/UI/UISlice";
 import storeStateInterface from "../../interface/Store.interface";
 import { useRouter } from "next/router";
 import pathMatch from "../../utils/pathMatch";
+import { resetSelectedMails } from "../../features/email/emailSlice";
 
 const Sidebar = () => {
   const [seeMore, setSeeMore] = useState(false);
@@ -22,6 +23,8 @@ const Sidebar = () => {
   const { sidebarOn } = useSelector((state: storeStateInterface) => state.UI);
 
   const redirectToPageHandler = (page: string) => {
+    // reset selected emails from slice before moving into any toher pages
+    dispatch(resetSelectedMails())
     router.push(`/mail/u/1/${page}`);
   };
 

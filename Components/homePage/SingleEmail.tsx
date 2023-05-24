@@ -2,15 +2,25 @@ import styles from "./SingleEmail.module.css";
 import { email } from "../../interface/singleMail.interface";
 import moment from "moment";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   removeMailFromSelectedList,
+  resetSelectedMails,
   setSelectedMails,
 } from "../../features/email/emailSlice";
 import { useSelector } from "react-redux";
 import storeStateInterface from "../../interface/Store.interface";
-import { setInboxEmailAdditionalData } from "../../features/additionalEmailData/additionalEmailDataSlice";
+import {
+  setImportantEmailAdditionalData,
+  setInboxEmailAdditionalData,
+  setScheduledEmailAdditionalData,
+  setSnoozedEmailAdditionalData,
+  setSentEmailAdditionalData,
+  setSpamEmailAdditionalData,
+  setStarredEmailAdditionalData,
+  setTrashEmailAdditionalData,
+} from "../../features/additionalEmailData/additionalEmailDataSlice";
 import { useMarkMailAsImportantMutation } from "../../features/importantEmail/importantEmailApi";
 import { useMarkMailAsStarredMutation } from "../../features/starredEmail/starredEmailApi";
 import { useGetAdditionalSingleMailPropertyQuery } from "../../features/additionalEmailData/additionalEmailDataApi";
@@ -19,30 +29,70 @@ import {
   useMarkUnReadSingleMailMutation,
 } from "../../features/readMail/readMailApi";
 import { useMarkTrashSingleInboxMailMutation } from "../../features/trashMail/trashMailApi";
-
+import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
+import {
+  starredType,
+  inboxType,
+  draftsType,
+  scheduledType,
+  sentType,
+  snoozedType,
+  spamType,
+  trashType,
+  importantType,
+} from "../../interface/EmailType";
+import checkIfAlredyPresentInSlice from "../../utils/checkSingleEmailAdditionalDataInSlice";
+import SnoozeOption from "./SnoozeOption";
+import {
+  setMailIdForSnoozed,
+  setSnoozedMailTimeComponent,
+} from "../../features/UI/UISlice";
+import { accountNumber } from "../../constants/userAccountSerial";
 
 interface props {
   property: email;
   buttonRef?: any;
+  pageType: emailType;
 }
-
 
 export default function SingleEmail(props: props) {
   const dispatch = useDispatch();
-  const { currentSelected, selectedMails } = useSelector(
-    (state: storeStateInterface) => state.email
+  const { email, additionalEmailData } = useSelector(
+    (state: storeStateInterface) => state
   );
-  const { buttonRef } = props;
+
+  const { currentSelected, selectedMails } = email;
+
+  const {
+    important: importantEmailAdditionalDataSlice,
+    inbox: inboxEmailAdditionalDataSlice,
+    starred: starredEmailAdditionalDataSlice,
+    sent: sentEmailAdditionalDataSlice,
+    spam: spamEmailAdditionalDataSlice,
+    trash: trashEmailAdditionalDataSlice,
+    scheuduled: scheduledEmailAdditionalDataSlice,
+    snoozed: snoozedEmailAdditionalDataSlice,
+  } = additionalEmailData;
+
+  const { buttonRef, pageType } = props;
   const { message, subject, senderName, createdAt, id } = props.property;
   const [idLoaded, setIdLoaded] = useState(false);
 
   const [checkBox, setCheckBox] = useState(false);
+  const [snoozeOptionShow, setSnoozeOptionShow] = useState(false);
+  const snoozeOptionButtonRef = useRef<HTMLSpanElement | null>(null);
 
-  // get mail addition property
-  const { data: additiionalEmailData, refetch: refetchAdditionalMailData } =
-    useGetAdditionalSingleMailPropertyQuery(id, {
+  // get mail additional property sending request
+  const {
+    data: additiionalEmailData,
+    refetch: refetchAdditionalMailData,
+    isFetching,
+  } = useGetAdditionalSingleMailPropertyQuery(
+    { mailId: id, pageType },
+    {
       skip: !idLoaded,
-    });
+    }
+  );
 
   const [markMailAsImportant, { isLoading: isMarkingMailAsImportantLoading }] =
     useMarkMailAsImportantMutation();
@@ -70,10 +120,88 @@ export default function SingleEmail(props: props) {
   const { important, starred, read } = mail || {};
 
   useEffect(() => {
-    if (mail) {
-      dispatch(setInboxEmailAdditionalData(mail));
+    if (mail && !isFetching) {
+      if (pageType === inboxType) {
+        // changing router can inject additional email data multple times in slice , so checking is done before dispatch
+        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+          inboxEmailAdditionalDataSlice,
+          mail
+        );
+        if (!isAlreadyAddedBefore) {
+          dispatch(setInboxEmailAdditionalData(mail));
+        }
+      } else if (pageType === starredType) {
+        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+          starredEmailAdditionalDataSlice,
+          mail
+        );
+        if (!isAlreadyAddedBefore) {
+          dispatch(setStarredEmailAdditionalData(mail));
+        }
+      } else if (pageType === importantType) {
+        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+          importantEmailAdditionalDataSlice,
+          mail
+        );
+        if (!isAlreadyAddedBefore) {
+          dispatch(setImportantEmailAdditionalData(mail));
+        }
+      } else if (pageType === sentType) {
+        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+          sentEmailAdditionalDataSlice,
+          mail
+        );
+        if (!isAlreadyAddedBefore) {
+          dispatch(setSentEmailAdditionalData(mail));
+        }
+      } else if (pageType === spamType) {
+        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+          spamEmailAdditionalDataSlice,
+          mail
+        );
+        if (!isAlreadyAddedBefore) {
+          dispatch(setSpamEmailAdditionalData(mail));
+        }
+      } else if (pageType === trashType) {
+        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+          trashEmailAdditionalDataSlice,
+          mail
+        );
+        if (!isAlreadyAddedBefore) {
+          dispatch(setTrashEmailAdditionalData(mail));
+        }
+      } else if (pageType === scheduledType) {
+        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+          scheduledEmailAdditionalDataSlice,
+          mail
+        );
+        if (!isAlreadyAddedBefore) {
+          dispatch(setScheduledEmailAdditionalData(mail));
+        }
+      } else if (pageType === snoozedType) {
+        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+          snoozedEmailAdditionalDataSlice,
+          mail
+        );
+        if (!isAlreadyAddedBefore) {
+          dispatch(setSnoozedEmailAdditionalData(mail));
+        }
+      }
     }
-  }, [mail, dispatch]);
+  }, [
+    mail,
+    dispatch,
+    pageType,
+    inboxEmailAdditionalDataSlice,
+    starredEmailAdditionalDataSlice,
+    sentEmailAdditionalDataSlice,
+    importantEmailAdditionalDataSlice,
+    spamEmailAdditionalDataSlice,
+    trashEmailAdditionalDataSlice,
+    scheduledEmailAdditionalDataSlice,
+    snoozedEmailAdditionalDataSlice,
+    isFetching,
+  ]);
 
   // route to single email page
   const openSingleMailHandler = () => {
@@ -81,8 +209,9 @@ export default function SingleEmail(props: props) {
     if (!read) {
       markReadSingleMail({ mailId: id });
     }
-
-    router.push(`/mail/u/0/inbox/${id}`);
+    // reset selected mails slice before changing pages
+    dispatch(resetSelectedMails());
+    router.push(`/mail/u/${accountNumber}/${pageType}/${id}`);
   };
 
   const manualUpdataMailReadUnreadProp = (
@@ -128,6 +257,7 @@ export default function SingleEmail(props: props) {
     };
   }, [buttonRef, refetchAdditionalMailData]);
 
+  // controll what types of mail  is selected from (SelectMailByCategoryComponent)
   useEffect(() => {
     setCheckBox(false);
     switch (currentSelected) {
@@ -172,6 +302,7 @@ export default function SingleEmail(props: props) {
         break;
 
       case "none":
+        setCheckBox(false);
         break;
     }
   }, [currentSelected, important, starred, read]);
@@ -187,13 +318,23 @@ export default function SingleEmail(props: props) {
     }
   }, [checkBox]);
 
+  const showSnoozeOptionHandler = () => {
+    setSnoozeOptionShow((prevState) => !prevState);
+  };
+
+  const snoozeRequestHandler = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    dispatch(setMailIdForSnoozed(id));
+    dispatch(setSnoozedMailTimeComponent(true));
+  };
+
   return (
     <div
       className={`${styles["email_row"]} ${
         read ? styles.read : styles.unread
       } ${!starred ? styles.starColorHover : ""} ${
         checkBox ? styles.selected : ""
-      }`}
+      } ${snoozeOptionShow ? styles.snoozeToggled : ""}`}
       onClick={openSingleMailHandler}
     >
       <div
@@ -202,7 +343,6 @@ export default function SingleEmail(props: props) {
           important ? styles.labelFill : ""
         } ${starred ? styles.starFill : ""}`}
       >
-        {/* <input type="checkbox" id={styles.myCheckBox} /> */}
         <span
           onClick={() => setCheckBox((prev) => !prev)}
           className="material-symbols-outlined"
@@ -232,7 +372,7 @@ export default function SingleEmail(props: props) {
         </h4>
       </div>
 
-      <div className={styles.leftDiv}>
+      <div onClick={(e) => e.stopPropagation()} className={styles.leftDiv}>
         <div onClick={(e) => e.stopPropagation()} className={styles.icons}>
           <div onClick={markDeleteMailHandler} className={styles.leftIcon}>
             <span className="material-symbols-outlined">delete</span>
@@ -245,11 +385,30 @@ export default function SingleEmail(props: props) {
               {read ? "mail" : "drafts"}
             </span>
           </div>
-          <div className={`${styles.leftIcon} ${styles.clock}`}>
-            <span className="material-symbols-outlined">schedule</span>
+          <div
+            onClick={showSnoozeOptionHandler}
+            className={`${styles.leftIcon} ${styles.clock}`}
+          >
+            <span
+              ref={snoozeOptionButtonRef}
+              className="material-symbols-outlined"
+            >
+              schedule
+            </span>
           </div>
         </div>
         <div className={styles.time}>{time.format("MMM D")}</div>
+        {snoozeOptionShow && (
+          <div
+            onClick={snoozeRequestHandler}
+            className={styles.snoozeOptionDiv}
+          >
+            <SnoozeOption
+              toggleButtonRef={snoozeOptionButtonRef}
+              setShowComponent={setSnoozeOptionShow}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

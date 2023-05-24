@@ -25,7 +25,20 @@ export const spamMailApi = apiSlice.injectEndpoints({
         },
       }),
     }),
+
+    markMailAsUnSpam: builder.mutation({
+      query: (mailId: readMailInterface) => ({
+        url: "/email/mark/unspam",
+        method: "POST",
+        body: JSON.stringify(mailId),
+        Credential: "include",
+        headers: {
+          "content-type": "application/json",
+        },
+      }),
+    }),
+
   }),
 });
 
-export const { useGetSpamMailsQuery, useMarkMailAsSpamMutation } = spamMailApi;
+export const { useGetSpamMailsQuery, useMarkMailAsSpamMutation, useMarkMailAsUnSpamMutation } = spamMailApi;

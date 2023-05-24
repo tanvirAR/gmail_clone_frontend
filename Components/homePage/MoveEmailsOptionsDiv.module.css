@@ -1,10 +1,10 @@
 .main {
-  height: 11rem;
-  width: 10rem;
+  height: 13rem;
+  width: 14rem;
   background-color: white;
   position: absolute;
   top: 110%;
-  left: 7%;
+  /* left: 30%; */
   z-index: 200;
   display: flex;
   flex-direction: column;
@@ -13,6 +13,7 @@
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   overflow: hidden;
+  font-family: 550;
 }
 
 .main div {
@@ -23,7 +24,7 @@
   height: 30px;
   width: 100%;
   color: #091742;
-  font-size: 14px;
+  font-size: 1.25rem;
 }
 
 .main .title {

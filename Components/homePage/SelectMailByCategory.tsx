@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import styles from "./SelectMailByCategory.module.css";
 import { useDispatch } from "react-redux";
-import { setCurrentMailCategorySelected } from "../../features/email/emailSlice";
+import { resetSelectedMails, setCurrentMailCategorySelected } from "../../features/email/emailSlice";
 
 interface props {
   setShowComponent: any;
@@ -39,6 +39,9 @@ export default function SelectMailByCategory(props: props) {
 
   const selectMailCategoryHandler = (type: string) => {
     dispatch(setCurrentMailCategorySelected(type));
+    if (type==="none"){
+      dispatch(resetSelectedMails())
+    }
     // after selecting, close tis component
     setShowComponent(false);
   };

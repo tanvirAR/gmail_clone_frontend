@@ -1,0 +1,1 @@
+export const accountNumber: number = 1;

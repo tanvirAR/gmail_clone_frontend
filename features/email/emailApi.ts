@@ -1,8 +1,10 @@
+import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
 import { readMailInterface } from "../../interface/readMail.interface";
 import sendMailReqBodyInterface from "../../interface/sendMailReqBody.interface";
-import { resetInboxMailAdditionalData } from "../additionalEmailData/additionalEmailDataSlice";
+import { resetImportantMailAdditionalData, resetInboxMailAdditionalData, resetStarredMailAdditionalData } from "../additionalEmailData/additionalEmailDataSlice";
 import { apiSlice } from "../api/apiSlice";
-import { resetInboxSelectedMails } from "./emailSlice";
+import { resetSelectedMails } from "./emailSlice";
+import { inboxType, starredType, importantType } from "../../interface/EmailType";
 
 export const emailApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,8 +20,8 @@ export const emailApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    getAllMails: builder.query<any, void>({
-      query: () => ({
+    getAllMails: builder.query({
+      query: (pageType: emailType) => ({
         url: "/email/getmails",
         method: "GET",
         credentials: "include",
@@ -29,8 +31,15 @@ export const emailApi = apiSlice.injectEndpoints({
       }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         // beforerefetch,  clear slice state data of selected mails in email slice and addtinal email data from additionalDataEmailSlice
-        dispatch(resetInboxMailAdditionalData());
-        dispatch(resetInboxSelectedMails());
+        dispatch(resetSelectedMails());
+        // const pageType = arg;
+        // if (pageType === inboxType) {
+        //   dispatch(resetInboxMailAdditionalData());
+        // } else if (pageType === starredType) {
+        //   dispatch(resetStarredMailAdditionalData());
+        // } else if (pageType === importantType) {
+        //   dispatch(resetImportantMailAdditionalData());
+        // }
       },
     }),
   }),

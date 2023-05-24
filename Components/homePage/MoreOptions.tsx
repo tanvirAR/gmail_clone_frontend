@@ -8,21 +8,49 @@ import {
   useMarkReadSingleMailMutation,
   useMarkUnReadSingleMailMutation,
 } from "../../features/readMail/readMailApi";
-
+import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
+import { starredType, inboxType, importantType, sentType, spamType, trashType, scheduledType, snoozedType } from "../../interface/EmailType";
+import { singleMailAdditionalData } from "../../interface/additionalEmailDataSlice.interafce";
 interface props {
   setShowComponent: any;
   toggleButtonRef: any;
+  pageType: emailType;
 }
 
 export default function MoreOptions(props: props) {
-  const { setShowComponent, toggleButtonRef } = props;
+  const { setShowComponent, toggleButtonRef, pageType } = props;
   const thisCompRef = useRef<HTMLDivElement | null>(null);
   const { email, additionalEmailData } = useSelector(
     (state: storeStateInterface) => state
   );
   const { selectedMails } = email;
-  const { inbox } = additionalEmailData;
+  const { inbox, important, starred, sent, trash, spam, scheuduled, snoozed } = additionalEmailData;
 
+  const [additionalMailData, setAdditionalMailData] = useState<singleMailAdditionalData[]>([])
+
+
+  useEffect(() => {
+    if (pageType && important && inbox && starred && sentType) {
+      if (pageType === inboxType) {
+        setAdditionalMailData(inbox);
+      } else if (pageType === importantType) {
+        setAdditionalMailData(important);
+      } else if (pageType === starredType) {
+        setAdditionalMailData(starred);
+      } else if (pageType === sentType) {
+        setAdditionalMailData(sent);
+      } else if (pageType === spamType) {
+        setAdditionalMailData(spam);
+      } else if (pageType === trashType) {
+        setAdditionalMailData(trash);
+      } else if (pageType === scheduledType) {
+        setAdditionalMailData(scheuduled);
+      } else if (pageType === snoozedType) {
+        setAdditionalMailData(snoozed);
+      }
+    }
+  }, [pageType, important, inbox, starred, sent, spam, trash, scheuduled, snoozed])
+  
   useEffect(() => {
     // Function to handle when clicks outside the popup to hide this component
     const handleClickOutside = (event: MouseEvent) => {
@@ -71,9 +99,10 @@ export default function MoreOptions(props: props) {
 
   useEffect(() => {
     if (selectedMails.length === 1) {
-      const themailselected = inbox.filter(
+      const themailselected = additionalMailData.filter(
         (mail) => mail.mailId == selectedMails[0]
       );
+      if (themailselected.length > 0){
       if (themailselected[0].starred) {
         setSingleStarred(true);
       }
@@ -84,7 +113,8 @@ export default function MoreOptions(props: props) {
         setSingleRead(true);
       }
     }
-  }, [inbox, selectedMails]);
+    }
+  }, [additionalMailData, selectedMails]);
 
   useEffect(() => {
     if (selectedMails.length > 1) {
@@ -96,7 +126,7 @@ export default function MoreOptions(props: props) {
       let isUnRead: boolean = false;
 
       for (let i = 0; i < selectedMails.length; i++) {
-        const singleMail = inbox.filter(
+        const singleMail = additionalMailData.filter(
           (mailData) => mailData.mailId === selectedMails[i]
         );
         if (singleMail.length > 0) {
@@ -112,6 +142,7 @@ export default function MoreOptions(props: props) {
             isUnImportant = true;
           }
           if (singleMail[0].read) {
+            // console.log(singleMail[0].mailId);
             isRead = true;
           } else {
             isUnRead = true;
@@ -139,7 +170,7 @@ export default function MoreOptions(props: props) {
         setMultipleUnRead(true);
       }
     }
-  }, [inbox, selectedMails]);
+  }, [additionalMailData, selectedMails]);
 
   const markSingleMailAsReadHandler = () => {
     const mailId = selectedMails[0];
@@ -167,10 +198,10 @@ export default function MoreOptions(props: props) {
 
   // makes ALL the mails read property true
   const markAllEmailAsReadHandler = () => {
-    for (let i = 0; i < inbox.length; i++) {
+    for (let i = 0; i < additionalMailData.length; i++) {
       // check if this specific email read property is already true or not before sending request
-      const isAlreadyReadTrue = inbox[i].read;
-      const { mailId } = inbox[i];
+      const isAlreadyReadTrue = additionalMailData[i].read;
+      const { mailId } = additionalMailData[i];
       if (!isAlreadyReadTrue) {
         markReadSingleMail({ mailId });
       }
@@ -182,7 +213,7 @@ export default function MoreOptions(props: props) {
   // makes all the SELECTED MAILS read property false
   const markAllSelectedEmailAsReadHandler = () => {
     for (let i = 0; i < selectedMails.length; i++) {
-      const selectedMailsWithAdditionalProperty = inbox.filter(
+      const selectedMailsWithAdditionalProperty = additionalMailData.filter(
         (singleMailData) => singleMailData.mailId === selectedMails[i]
       );
 
@@ -203,7 +234,7 @@ export default function MoreOptions(props: props) {
   // makes all the SELECTED MAILS read property false
   const markAllSelectedEmailAsUnReadHandler = () => {
     for (let i = 0; i < selectedMails.length; i++) {
-      const selectedMailsWithAdditionalProperty = inbox.filter(
+      const selectedMailsWithAdditionalProperty = additionalMailData.filter(
         (singleMailData) => singleMailData.mailId === selectedMails[i]
       );
 
@@ -224,7 +255,7 @@ export default function MoreOptions(props: props) {
   // makes all the SELECTED MAILS read property false
   const markAllSelectedEmailAsStarredOrUnstarredHandler = (isStarred: boolean) => {
     for (let i = 0; i < selectedMails.length; i++) {
-      const selectedMailsWithAdditionalProperty = inbox.filter(
+      const selectedMailsWithAdditionalProperty = additionalMailData.filter(
         (singleMailData) => singleMailData.mailId === selectedMails[i]
       );
 
@@ -243,7 +274,7 @@ export default function MoreOptions(props: props) {
   // makes all the SELECTED MAILS read property false
   const markAllSelectedEmailAsImportantOrUnImportantHandler = (isImportant: boolean) => {
     for (let i = 0; i < selectedMails.length; i++) {
-      const selectedMailsWithAdditionalProperty = inbox.filter(
+      const selectedMailsWithAdditionalProperty = additionalMailData.filter(
         (singleMailData) => singleMailData.mailId === selectedMails[i]
       );
 

@@ -22,7 +22,7 @@ const emailSlice = createSlice({
       state.selectedMails = state.selectedMails.filter(maildId => maildId !== action.payload)
     },
 
-    resetInboxSelectedMails(state) {
+    resetSelectedMails(state) {
       return initialState;
     },
   },
@@ -32,7 +32,7 @@ export const {
   setCurrentMailCategorySelected,
   setSelectedMails,
   removeMailFromSelectedList,
-  resetInboxSelectedMails,
+  resetSelectedMails,
 } = emailSlice.actions;
 
 export default emailSlice.reducer;

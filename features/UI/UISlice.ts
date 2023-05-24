@@ -11,7 +11,7 @@ const initialState: InitialState = {
     onByToggle: false,
     onByHover: false,
   },
-  // email selecting div in home page
+  // email selecting div in each page
   EmailCategorySelectContainer: false,
   // field value for sending a new mail
   sentAEmail: {
@@ -30,6 +30,11 @@ const initialState: InitialState = {
   attachment: null,
   attachmentFirebaseReturnedUrl: "",
   attachmentUploadProgressBar: 0,
+
+  snoozedMailTimeSelectComponent: false,
+  mailIdForMarkingSnoozed: '',
+  scheduledSentTimeSelectComponent: false,
+
 
   attachmentView: {
     isVisible: false,
@@ -108,6 +113,16 @@ const UISlice = createSlice({
     setAttachmentView: (state, action) => {
       state.attachmentView = action.payload;
     },
+
+    setSnoozedMailTimeComponent: (state, action) => {
+      state.snoozedMailTimeSelectComponent = action.payload;
+    },
+    setMailIdForSnoozed: (state, action) => {
+      state.mailIdForMarkingSnoozed = action.payload;
+    },
+    setScheduledMailSentTimeSelectComponent: (state, action) => {
+      state.scheduledSentTimeSelectComponent = action.payload;
+    },
   },
 });
 
@@ -131,6 +146,10 @@ export const {
   ToggleEmailSendError,
   isSendingMailLoadingAction,
   isSendingMailLoadingVisible,
+
+  setSnoozedMailTimeComponent,
+  setMailIdForSnoozed,
+  setScheduledMailSentTimeSelectComponent,
 
   setAttachment,
 } = UISlice.actions;
