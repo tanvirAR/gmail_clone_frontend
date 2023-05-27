@@ -1,168 +1,209 @@
 .emailSearchFilterDiv {
-width: 44.5%;
-min-width: 280px;
-height: 400px;
-background-color:  white;
-position: absolute;
-top: 100%;
-z-index: 600;
-left: 29.5%;
-display: flex;
-flex-direction: column;
-justify-content: space-evenly;
-box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  width: 44.5%;
+  min-width: 280px;
+  height: 400px;
+  background-color: white;
+  position: absolute;
+  top: 100%;
+  z-index: 600;
+  left: 29.5%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
-
 .emailSearchFilterDiv input {
-    border: none;
-    border-color: transparent;
-    outline: none;
-    border-bottom: 1px solid #eceff1;
-
+  border: none;
+  border-color: transparent;
+  outline: none;
+  border-bottom: 1px solid #eceff1;
 }
 
 .emailSearchFilterDiv input:focus {
-    border-bottom: 1px solid #3c73e9;
-
+  border-bottom: 1px solid #3c73e9;
 }
 
 .emailSearchFilterDiv div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.emailSearchFilterDiv div  p {
-   margin-left: 20px;
+.emailSearchFilterDiv div p {
+  margin-left: 20px;
 }
 
 .emailSearchFilterDiv div input {
-    margin-right: 20px;
+  margin-right: 20px;
 }
-
 
 .emailSearchFilterDiv div input {
-    width: 75%;
-    margin-top: 2%;
+  width: 75%;
+  margin-top: 2%;
 }
-
 
 .dayWithin {
-    height: 9%;
+  height: 9%;
+  display: flex;
+  position: relative;
+  /* justify-content: center; */
+}
+
+.dayWithin .types {
+  position: absolute;
+  border-bottom: none;
+  background-color: rgb(230, 230, 230);
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  width: 10rem;
+  top: 100%;
+  left: 20%;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.dayWithin .types .type {
+  width: 100%;
+}
+.dayWithin .types .type:hover {
+  background-color: #cfcfcf;
+  cursor: pointer;
+}
+
+.dayWithin .types .type p {
+  margin-left: 30%;
 }
 
 .day1 {
-    margin-top: 4%;
+  margin-top: 4%;
 }
 
-.dayWithin div {
-    width: 33%;
-    height: 78%;
-    margin-top: 5%;
-    border-bottom: 1px solid #eceff1;
+.dayWithin .select {
+  width: 33%;
+  height: 78%;
+  /* margin-top: 5%; */
+  border-bottom: 1px solid #eceff1;
+  margin-right: 44%;
+  white-space: nowrap;
 }
 
-
-
-
-
-.dayWithin .secondChild {
-    margin-right: 3%;
+.dayWithin .select:hover {
+  background-color: #cfcfcf;
+  cursor: pointer;
 }
 
-.dayWithin div:hover {
-    background-color: #cfcfcf;
-    cursor: pointer;
+.allMails {
+  background-color: red;
+  margin-right: 67%;
+  margin-top: 5%;
+  width: 500px;
+  margin-left: 14%;
 }
-
-
-.allMails  {
-   background-color: red;
-   margin-right: 67%;
-   margin-top: 5%;
-   width: 500px;
-   margin-left: 14%;
-}
-
 
 .emailSearchFilterDiv p:not:first-child {
-    font-size: 12px;
-    margin-top: 3%;
+  font-size: 12px;
+  margin-top: 3%;
 }
 
 .emailSearchFilterDiv p {
-    font-size: 13px;
-    width: 20%;
+  font-size: 13px;
+  width: 20%;
 }
 
-
 .attachmentFilter div input {
-    margin-left: -8%;
+  margin-left: -8%;
 }
 
 .attachmentFilter div p {
-    width: 200px;
-    font-size: 14px;
-    margin-left: -20%;
-
+  width: 200px;
+  font-size: 14px;
+  margin-left: -20%;
 }
 
 .bottom {
-    align-self: flex-end;
+  align-self: flex-end;
 }
 
 .bottom div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #cfcfcf;
-    height: 28px;
-    margin: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #cfcfcf;
+  height: 28px;
+  margin: 0 10px;
 }
 
 .bottomSearch {
-    background-color: #3c73e9 !important;
+  background-color: #3c73e9 !important;
+  margin-right: 2rem !important;
+  margin-bottom: 0.5rem !important;
+  cursor: pointer;
+}
+
+.bottomSearch:hover {
+  background-color: #5386f4 !important;
+
 }
 
 .bottom p {
-    width: 70px;
-    font-size: 14px;
-
-}
-
-.bottom .createFilter p {
-    width: 90px;
+  width: 70px;
+  font-size: 14px;
 }
 
 
-.search div {
-    border-bottom: 1px solid #eceff1;
-    cursor: pointer;
-    margin-right: 3%;
-    height: 70%;
-    width: 75%;
-    color: #6a6a6a;
-
+.search .selectS {
+  border-bottom: 1px solid #eceff1;
+  cursor: pointer;
+  margin-right: 9%;
+  height: 70%;
+  width: 70%;
+  color: #6a6a6a;
+  font-size: small;
+  padding-left: 10px;
 }
 
-.search div:hover {
-    background-color: #cfcfcf;
-
+.search .selectS:hover {
+  background-color: #cfcfcf;
 }
 
 .search {
-    margin-top: 3%;
-    height: 10%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin-top: 3%;
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .emailSearchFilterDiv p {
-    color:  #202124;
+  color: #202124;
 }
 
 .bottomSearch p {
-    color: white;
+  color: white;
+}
+
+.bottom .category {
+  height: max-content;
+  width: 10rem;
+  background-color: black;
+  position: absolute;
+  left: 25%;
+  top: 75%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom .category .singleCategory {
+  width: 100%;
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+}
+
+.bottom .category .singleCategory:hover {
+  background-color: rgb(235, 235, 235);
+  cursor: pointer;
 }

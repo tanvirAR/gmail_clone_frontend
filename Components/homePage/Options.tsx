@@ -312,13 +312,6 @@ export default function Options(props: props) {
           toggleButtonRef={moreOptionsShowButtonRef}
         />
       )}
-      {/* {moveEmailOptionDivShow && (
-        <MoveEmailOptionsDiv
-          pageType={pageType}
-          setShowComponent={setMoveEmailOptionDivShow}
-          toggleButtonRef={moveEmailOptionDivRef}
-        />
-      )} */}
     </div>
   );
 }
