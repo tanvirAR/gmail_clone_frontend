@@ -6,6 +6,7 @@ import storeStateInterface from "../../interface/Store.interface";
 import { useRouter } from "next/router";
 import pathMatch from "../../utils/pathMatch";
 import { resetSelectedMails } from "../../features/email/emailSlice";
+import { accountNumber } from "../../constants/userAccountSerial";
 
 const Sidebar = () => {
   const [seeMore, setSeeMore] = useState(false);
@@ -25,7 +26,7 @@ const Sidebar = () => {
   const redirectToPageHandler = (page: string) => {
     // reset selected emails from slice before moving into any toher pages
     dispatch(resetSelectedMails())
-    router.push(`/mail/u/1/${page}`);
+    router.push(`/mail/u/${accountNumber}/${page}`);
   };
 
   const bgConditionalStylesForSidebarSingleOption = (page: string) => {

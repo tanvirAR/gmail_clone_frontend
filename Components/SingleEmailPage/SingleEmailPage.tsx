@@ -190,7 +190,6 @@ const SingleEmailPage = (props: prop) => {
             className={`${styles.rightSegment} ${starred ? styles.fill : ""}`}
           >
             <div>
-              {/* <p>Mar 11, 2023, 10:27PM (5 days ago)</p> */}
               <b>
                 <p>{moment(createdAt).format("MMMM D YYYY, h:mm A")}</p>
               </b>

@@ -14,7 +14,7 @@ const Header = () => {
  // show. unshow search container
  const [searchContainer, setSearchContainer] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
+   const searchFilterDivToggleButtnRef = useRef<HTMLSpanElement | null>(null);
 
  const dispatch = useDispatch();
 
@@ -55,8 +55,8 @@ const Header = () => {
            type="text"
            placeholder="Search mail"
          />
-         <button onClick={filterOptionsToggleHandler}>
-           <span className={"material-icons"}>arrow_drop_down</span>
+         <button   onClick={filterOptionsToggleHandler}>
+           <span ref={searchFilterDivToggleButtnRef} className={"material-icons"}>arrow_drop_down</span>
          </button>
        </div>
        <div className={styles["header-right"]}>
@@ -66,7 +66,7 @@ const Header = () => {
 
          <span className={`material-icons ${styles.profileIcon}`}>account_circle</span>
        </div>
-       {searchContainer && <EmailSearchFilterDiv />}
+       {searchContainer && <EmailSearchFilterDiv setShowComponent={setSearchContainer} toggleButtonRef={searchFilterDivToggleButtnRef}  />}
      </header>
    </>
  );

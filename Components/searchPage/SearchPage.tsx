@@ -7,14 +7,29 @@ import Options from "../homePage/Options";
 import storeStateInterface from "../../interface/Store.interface";
 import { email } from "../../interface/singleMail.interface";
 import SingleEmail from "../homePage/SingleEmail";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { sentType } from "../../interface/EmailType";
 import { useGetSentMailsQuery } from "../../features/sentMail/sentMailApi";
+import { emailSearchQuery } from "../../interface/emailSearchQuery.interace";
+import { useSearchEmailQuery } from "../../features/search/searchMailApi";
 
-export default function SentPage() {
+interface props {
+  searchedQuery: string | undefined
+}
+
+export default function SearchPage(props: props) {
+  const { searchedQuery } = props;
+  const [queryLoaded, setQueryLoaded] = useState(false);
+
   const { UI } = useSelector((state: storeStateInterface) => state);
   const { onByToggle } = UI.sidebarOn;
 
+  useEffect(() => {
+    if (searchedQuery) {
+      setQueryLoaded(true)
+    }
+  }, [searchedQuery])
+  
   const refetchButtonRef = useRef(null);
 
   const {
@@ -22,7 +37,9 @@ export default function SentPage() {
     isLoading,
     isError,
     refetch: sentMailRefetch,
-  } = useGetSentMailsQuery();
+  } = useSearchEmailQuery(searchedQuery || '', {
+    skip: !queryLoaded
+  })
 
   let emailList;
 
@@ -31,6 +48,7 @@ export default function SentPage() {
   }
 
   if (data) {
+    console.log(data)
     emailList = data.mails.map((email: email) => (
       <SingleEmail
         pageType={sentType}
