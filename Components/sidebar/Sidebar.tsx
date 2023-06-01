@@ -6,7 +6,7 @@ import storeStateInterface from "../../interface/Store.interface";
 import { useRouter } from "next/router";
 import pathMatch from "../../utils/pathMatch";
 import { resetSelectedMails } from "../../features/email/emailSlice";
-import { accountNumber } from "../../constants/userAccountSerial";
+import { accountNumber } from "../../constants/constants";
 
 const Sidebar = () => {
   const [seeMore, setSeeMore] = useState(false);

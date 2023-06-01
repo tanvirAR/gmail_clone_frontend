@@ -4,7 +4,7 @@ import styles from "./SignupPage.module.css";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSignupMutation } from "../features/auth/authApi";
-import Error from "../Components/common/Error";
+import Error from "../Components/common/Error/Error";
 import { useRouter } from "next/router";
 
 export default function Home() {
@@ -174,6 +174,7 @@ export default function Home() {
           {response && <p style={{ color: "#3c73e9" }}>Signup Successfull!</p>}
           {!isLoading && (
             <input
+              className={styles.submit}
               disabled={isLoading}
               type="submit"
               name="sign-in"

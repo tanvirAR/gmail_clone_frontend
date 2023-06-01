@@ -17,6 +17,7 @@
     "eslint": "8.35.0",
     "eslint-config-next": "13.2.3",
     "firebase": "^9.17.2",
+    "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "next": "13.2.3",
     "rc-progress": "^3.4.1",
@@ -26,5 +27,8 @@
     "react-redux": "^8.0.5",
     "redux": "^4.2.1",
     "typescript": "4.9.5"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.195"
   }
 }

@@ -1,6 +1,6 @@
 import classes from "./StarredPage.module.css";
 import { useSelector } from "react-redux";
-import Options from "../homePage/Options";
+import Options from "../common/EmailOptions/Options";
 import storeStateInterface from "../../interface/Store.interface";
 import { email } from "../../interface/singleMail.interface";
 import SingleEmail from "../homePage/SingleEmail";
@@ -28,6 +28,7 @@ export default function StarredPage() {
   }
 
   if (data) {
+    console.log(data)
     emailList = data.mails.map((email: email) => (
       <SingleEmail
         pageType={starredType}

@@ -2,14 +2,14 @@ import classes from "./ScheduleSentMailTimeSelectComponent.module.css";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import storeInterface from "../../interface/Store.interface";
+import storeInterface from "../../../interface/Store.interface";
 
 import DateTime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import moment, { Moment } from "moment";
-import { useSendScheduledMailMutation } from "../../features/scheduledMail/scheduledMailApi";
-import { sendScheduledMailInterface } from "../../interface/sendMailReqBody.interface";
-import { clearEmailInputs, isSendingMailLoadingAction, isSendingMailLoadingVisible, setFirebaseUrl, setScheduledMailSentTimeSelectComponent } from "../../features/UI/UISlice";
+import { useSendScheduledMailMutation } from "../../../features/scheduledMail/scheduledMailApi";
+import { sendScheduledMailInterface } from "../../../interface/sendMailReqBody.interface";
+import { clearEmailInputs, isSendingMailLoadingAction, isSendingMailLoadingVisible, setFirebaseUrl, setScheduledMailSentTimeSelectComponent } from "../../../features/UI/UISlice";
 
 const SentScheduleSentTimeSelect = () => {
   const dispatch = useDispatch();

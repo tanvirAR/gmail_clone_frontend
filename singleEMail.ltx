@@ -13,7 +13,26 @@ import {
 } from "../../features/email/emailSlice";
 import { useSelector } from "react-redux";
 import storeStateInterface from "../../interface/Store.interface";
-
+import {
+  setImportantEmailAdditionalData,
+  setInboxEmailAdditionalData,
+  setScheduledEmailAdditionalData,
+  setSnoozedEmailAdditionalData,
+  setSentEmailAdditionalData,
+  setSpamEmailAdditionalData,
+  setStarredEmailAdditionalData,
+  setTrashEmailAdditionalData,
+  setSearchedEmailAdditionalData,
+  filterInboxMailsAdditionalData,
+  filterStarredMailsAdditionalData,
+  filterImportantMailsAdditionalData,
+  filterSentMailsAdditionalData,
+  filterSpamMailsAdditionalData,
+  filterTrashMailsAdditionalData,
+  filterScheduledMailsAdditionalData,
+  filterSnoozedMailsAdditionalData,
+  filterSearchedMailsAdditionalData,
+} from "../../features/additionalEmailData/additionalEmailDataSlice";
 import {
   useMarkMailAsImportantMutation,
   useMarkMailAsUnImportantMutation,
@@ -29,14 +48,26 @@ import {
 } from "../../features/readMail/readMailApi";
 import { useMarkTrashSingleInboxMailMutation } from "../../features/trashMail/trashMailApi";
 import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
-import { searchedEmailType } from "../../interface/EmailType";
+import {
+  starredType,
+  inboxType,
+  draftsType,
+  scheduledType,
+  sentType,
+  snoozedType,
+  spamType,
+  trashType,
+  importantType,
+  searchedEmailType,
+} from "../../interface/EmailType";
+import checkIfAlredyPresentInSlice from "../../utils/checkSingleEmailAdditionalDataInSlice";
 import SnoozeOption from "./SnoozeOption";
 import {
   setMailIdForSnoozed,
   setSnoozedMailTimeComponent,
 } from "../../features/UI/UISlice";
 import { accountNumber } from "../../constants/constants";
-import { singleMailAdditionalData } from "../../interface/additionalEmailDataSlice.interafce";
+import {singleMailAdditionalData} from "../../interface/additionalEmailDataSlice.interafce"
 import AdditionalEmailDataHandler from "./AdditionalEmailDataHandler";
 import CheckBoxHandler from "./CheckBoxHandler";
 
@@ -56,6 +87,19 @@ export default function SingleEmail(props: props) {
   );
 
   const { currentSelected, selectedMails } = email;
+
+
+  const {
+    important: importantEmailAdditionalDataSlice,
+    inbox: inboxEmailAdditionalDataSlice,
+    starred: starredEmailAdditionalDataSlice,
+    sent: sentEmailAdditionalDataSlice,
+    spam: spamEmailAdditionalDataSlice,
+    trash: trashEmailAdditionalDataSlice,
+    scheuduled: scheduledEmailAdditionalDataSlice,
+    snoozed: snoozedEmailAdditionalDataSlice,
+    searchedMail: searchedEmailAdditionalDataSlice,
+  } = additionalEmailData;
 
   const {
     buttonRef,
@@ -109,8 +153,140 @@ export default function SingleEmail(props: props) {
 
   const router = useRouter();
 
-  const { mail } = additiionalEmailData || {};
-  const { important, starred, read } = (mail as singleMailAdditionalData) || {};
+
+  const { mail } = additiionalEmailData  || {};
+  const { important, starred, read,  } = mail as singleMailAdditionalData  || {};
+
+  // useEffect(() => {
+  //   if (mail && !isFetching) {
+  //     // console.log(mail)
+  //     if (pageType === inboxType) {
+  //       // changing router can inject additional email data multple times in slice , so checking is done before dispatch
+  //       const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+  //         inboxEmailAdditionalDataSlice,
+  //         mail
+  //       );
+  //       if (isAlreadyAddedBefore === false) {
+  //         dispatch(setInboxEmailAdditionalData(mail));
+  //       } else if (isAlreadyAddedBefore === undefined) {
+  //         dispatch(filterInboxMailsAdditionalData(mail.mailId));
+  //         dispatch(setInboxEmailAdditionalData(mail));
+  //       }
+  //     } else if (pageType === starredType) {
+  //       const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+  //         starredEmailAdditionalDataSlice,
+  //         mail
+  //       );
+  //       if (isAlreadyAddedBefore === false) {
+  //         dispatch(setStarredEmailAdditionalData(mail));
+  //       } else if (isAlreadyAddedBefore === undefined) {
+  //         dispatch(filterStarredMailsAdditionalData(mail.mailId));
+  //         dispatch(setStarredEmailAdditionalData(mail));
+  //       }
+  //     } else if (pageType === importantType) {
+  //       const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+  //         importantEmailAdditionalDataSlice,
+  //         mail
+  //       );
+
+  //       if (isAlreadyAddedBefore === false) {
+  //         dispatch(setImportantEmailAdditionalData(mail));
+  //       } else if (isAlreadyAddedBefore === undefined) {
+  //         dispatch(filterImportantMailsAdditionalData(mail.mailId));
+  //         dispatch(setImportantEmailAdditionalData(mail));
+  //       }
+  //     } else if (pageType === sentType) {
+  //       const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+  //         sentEmailAdditionalDataSlice,
+  //         mail
+  //       );
+
+  //       if (isAlreadyAddedBefore === false) {
+  //         dispatch(setSentEmailAdditionalData(mail));
+  //       } else if (isAlreadyAddedBefore === undefined) {
+  //         dispatch(filterSentMailsAdditionalData(mail.mailId));
+  //         dispatch(setSentEmailAdditionalData(mail));
+  //       }
+  //     } else if (pageType === spamType) {
+  //       const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+  //         spamEmailAdditionalDataSlice,
+  //         mail
+  //       );
+
+  //       if (isAlreadyAddedBefore === false) {
+  //         dispatch(setSpamEmailAdditionalData(mail));
+  //       } else if (isAlreadyAddedBefore === undefined) {
+  //         dispatch(filterSpamMailsAdditionalData(mail.mailId));
+  //         dispatch(setSpamEmailAdditionalData(mail));
+  //       }
+  //     } else if (pageType === trashType) {
+  //       const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+  //         trashEmailAdditionalDataSlice,
+  //         mail
+  //       );
+
+  //       if (isAlreadyAddedBefore === false) {
+  //         dispatch(setTrashEmailAdditionalData(mail));
+  //       } else if (isAlreadyAddedBefore === undefined) {
+  //         dispatch(filterTrashMailsAdditionalData(mail.mailId));
+  //         dispatch(setTrashEmailAdditionalData(mail));
+  //       }
+  //     } else if (pageType === scheduledType) {
+  //       const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+  //         scheduledEmailAdditionalDataSlice,
+  //         mail
+  //       );
+
+  //       if (isAlreadyAddedBefore === false) {
+  //         dispatch(setScheduledEmailAdditionalData(mail));
+  //       } else if (isAlreadyAddedBefore === undefined) {
+  //         dispatch(filterScheduledMailsAdditionalData(mail.mailId));
+  //         dispatch(setScheduledEmailAdditionalData(mail));
+  //       }
+  //     } else if (pageType === snoozedType) {
+  //       const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+  //         snoozedEmailAdditionalDataSlice,
+  //         mail
+  //       );
+
+  //       if (isAlreadyAddedBefore === false) {
+  //         dispatch(setSnoozedEmailAdditionalData(mail));
+  //       } else if (isAlreadyAddedBefore === undefined) {
+  //         dispatch(filterSnoozedMailsAdditionalData(mail.mailId));
+  //         dispatch(setSnoozedEmailAdditionalData(mail));
+  //       }
+  //     } else if (pageType === searchedEmailType) {
+  //       const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
+  //         searchedEmailAdditionalDataSlice,
+  //         mail
+  //       );
+
+  //       if (isAlreadyAddedBefore === false) {
+  //         dispatch(setSearchedEmailAdditionalData(mail));
+  //       } else if (isAlreadyAddedBefore === undefined) {
+  //         dispatch(filterSearchedMailsAdditionalData(mail.mailId));
+  //         dispatch(setSearchedEmailAdditionalData(mail));
+  //       }
+  //     }
+  //   }
+  // }, [
+  //   additiionalEmailData,
+  //   mail,
+  //   dispatch,
+  //   pageType,
+  //   inboxEmailAdditionalDataSlice,
+  //   starredEmailAdditionalDataSlice,
+  //   sentEmailAdditionalDataSlice,
+  //   importantEmailAdditionalDataSlice,
+  //   spamEmailAdditionalDataSlice,
+  //   trashEmailAdditionalDataSlice,
+  //   scheduledEmailAdditionalDataSlice,
+  //   snoozedEmailAdditionalDataSlice,
+  //   searchedEmailAdditionalDataSlice,
+  //   isFetching,
+  // ]);
+
+
 
   // route to single email page
   const openSingleMailHandler = () => {
@@ -128,6 +304,7 @@ export default function SingleEmail(props: props) {
       router.push(`/mail/u/${accountNumber}/${pageType}/${id}`);
     }
   };
+
 
   const manualUpdataMailReadUnreadProp = (
     e: React.MouseEvent<HTMLDivElement>
@@ -182,6 +359,59 @@ export default function SingleEmail(props: props) {
     };
   }, [buttonRef, refetchAdditionalMailData]);
 
+
+  // // control what types of mail  is selected from (SelectMailByCategoryComponent)
+  // useEffect(() => {
+  //   setCheckBox(false);
+  //   switch (currentSelected) {
+  //     case "allMail":
+  //       setCheckBox(true);
+  //       break;
+
+  //     case "important":
+  //       if (important) {
+  //         setCheckBox(true);
+  //       }
+  //       break;
+
+  //     case "read":
+  //       if (read) {
+  //         setCheckBox(true);
+  //       }
+  //       break;
+
+  //     case "unRead":
+  //       if (!read) {
+  //         setCheckBox(true);
+  //       }
+  //       break;
+
+  //     case "starred":
+  //       if (starred) {
+  //         setCheckBox(true);
+  //       }
+  //       break;
+
+  //     case "unStarred":
+  //       if (!starred) {
+  //         setCheckBox(true);
+  //       }
+  //       break;
+
+  //     case "unImportant":
+  //       if (!important) {
+  //         setCheckBox(true);
+  //       }
+  //       break;
+
+  //     case "none":
+  //       setCheckBox(false);
+  //       break;
+  //   }
+  // }, [currentSelected, important, starred, read]);
+
+
+  
   // use to add mails that are selected by user in the emailSlice to execute CRUD operation with each mail.
   useEffect(() => {
     if (checkBox) {
@@ -210,8 +440,10 @@ export default function SingleEmail(props: props) {
   } ${!starred ? styles.starColorHover : ""} ${
     checkBox ? styles.selected : ""
   } ${snoozeOptionShow ? styles.snoozeToggled : ""}`;
+  
 
- const emailSenderName = senderEmail == auth?.user?.email ? "You" : senderName;
+  let emailSenderName = senderEmail == auth?.user?.email ? "You" : senderName;
+
 
   return (
     <div className={classesForMainDiv} onClick={openSingleMailHandler}>
@@ -221,13 +453,7 @@ export default function SingleEmail(props: props) {
         mail={mail}
         pageType={pageType}
       />
-      <CheckBoxHandler
-        currentSelected={currentSelected}
-        important={important}
-        read={read}
-        setCheckBox={setCheckBox}
-        starred={starred}
-      />
+      <CheckBoxHandler currentSelected={currentSelected} important={important} read={read} setCheckBox={setCheckBox} starred={starred}  />
       <div
         onClick={(e) => e.stopPropagation()}
         className={`${styles["emailRow_options"]} ${

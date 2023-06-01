@@ -7,7 +7,7 @@ import { additionalEmailDataSlice } from "./additionalEmailDataSlice.interafce";
 
 export default interface storeStateInterface {
   UI: UIInitialState;
-  user: AuthSliceInterface;
+  auth: AuthSliceInterface;
   email: emailSlice;
   additionalEmailData: additionalEmailDataSlice;
 }

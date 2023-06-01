@@ -8,12 +8,12 @@ export default function EmailSection() {
         <h4>Primary</h4>
       </div>
 
-      <div className={styles.section}>
+      <div className={`${styles.section} ${styles.disabled}`}>
         <span className="material-icons"> people </span>
         <h4>Social</h4>
       </div>
 
-      <div className={styles.section}>
+      <div className={`${styles.section} ${styles.disabled}`}>
         <span className="material-icons"> local_offer </span>
         <h4>Promotions</h4>
       </div>

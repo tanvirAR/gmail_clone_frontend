@@ -2,18 +2,18 @@ import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import classes from "./SendEmailButton.module.css";
 import schedule_send_icon from "../../assets/schedule_send_icon.svg";
-import { useSendMailMutation } from "../../features/email/emailApi";
+import { useSendMailMutation } from "../../../features/email/emailApi";
 import { useSelector } from "react-redux";
-import storeStateInterface from "../../interface/Store.interface";
-import validateEmail from "../../utils/emailValidator";
+import storeStateInterface from "../../../interface/Store.interface";
+import validateEmail from "../../../utils/emailValidator";
 import { useDispatch } from "react-redux";
-import { clearEmailInputs, isSendingMailLoadingAction, isSendingMailLoadingVisible, sentEmailBoxLarge, sentEmailBoxSmall, setAttachment, setAttachmentUploadProgg, setFirebaseUrl, setScheduledMailSentTimeSelectComponent, ToggleEmailSendError } from "../../features/UI/UISlice";
+import { clearEmailInputs, isSendingMailLoadingAction, isSendingMailLoadingVisible, sentEmailBoxLarge, sentEmailBoxSmall, setAttachment, setAttachmentUploadProgg, setFirebaseUrl, setScheduledMailSentTimeSelectComponent, ToggleEmailSendError } from "../../../features/UI/UISlice";
 // utilities functions imports
-import { fileToBase64, b64toBlob } from "../../utils/fileToBase64";
-import { setToLocStrg, getFrmLocStrg } from "../../utils/set&getFileFromLocalStorage";
+import { fileToBase64, b64toBlob } from "../../../utils/fileToBase64";
+import { setToLocStrg, getFrmLocStrg } from "../../../utils/set&getFileFromLocalStorage";
 import { getDownloadURL, ref, uploadBytesResumable, deleteObject } from "firebase/storage";
-import { storage } from "../../firebase/firebase";
-import { deleteFile } from "../../utils/deleteFileFromFirebase";
+import { storage } from "../../../firebase/firebase";
+import { deleteFile } from "../../../utils/deleteFileFromFirebase";
 import ScheduleSendButton from "./ScheduleSendButton";
 
  const SendEmailButton = () => {

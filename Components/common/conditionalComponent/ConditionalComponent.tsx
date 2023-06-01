@@ -1,30 +1,33 @@
 import { useSelector } from "react-redux";
-import EmailSendPopup from "../../homePage/EmailSendPopup";
-import EmailSendPopupFullScreen from "../../homePage/EmailSendPopupFullScreen";
-import AttachmentView from "../AttachmentView";
-import { EmailSendPopUpError } from "../EmailSendPopUpError";
-import SentScheduleSentTimeSelect from "../ScheduleSentMailTimeSelectComponent";
-import { SentMailAlert } from "../SentMailAlert";
-import SnoozedMailTimeSelect from "../SnoozedMailDateTimeSelect";
+import EmailSendPopup from "../EmailSendPopup/EmailSendPopup";
+import EmailSendPopupFullScreen from "../EmailSendPopup/EmailSendPopupFullScreen";
+import AttachmentView from "../EmailAttachment/AttachmentView";
+import { EmailSendPopUpError } from "../Error/EmailSendPopUpError";
+import SentScheduleSentTimeSelect from "../TimeSelect/ScheduleSentMailTimeSelectComponent";
+import SentMailAlert from "../Alert/SentMailAlert";
+import SnoozedMailTimeSelect from "../TimeSelect/SnoozedMailDateTimeSelect";
 import storeStateInterface from "../../../interface/Store.interface";
 
-
 const ConditionalComponent = () => {
-
-    const {scheduledSentTimeSelectComponent, snoozedMailTimeSelectComponent} = useSelector((state: storeStateInterface) => state.UI)
+  const {
+    scheduledSentTimeSelectComponent,
+    snoozedMailTimeSelectComponent,
+    sentEmailErrorPopUpToggled,
+    attachmentView,
+    isSendingMailLoading,
+  } = useSelector((state: storeStateInterface) => state.UI);
 
   return (
     <div>
-      <SentMailAlert />
+      {isSendingMailLoading.isComponentVisible && <SentMailAlert />}
       <EmailSendPopup />
       <EmailSendPopupFullScreen />
-      <AttachmentView />
-      <EmailSendPopUpError />
+      {attachmentView.isVisible && <AttachmentView />}
+      {sentEmailErrorPopUpToggled && <EmailSendPopUpError />}
       {snoozedMailTimeSelectComponent && <SnoozedMailTimeSelect />}
       {scheduledSentTimeSelectComponent && <SentScheduleSentTimeSelect />}
     </div>
   );
-}
-
+};
 
 export default ConditionalComponent;

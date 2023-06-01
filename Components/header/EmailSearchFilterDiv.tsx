@@ -7,17 +7,19 @@ import getCategoryName from "../../utils/searchEmailcategoryNameUI";
 import getDays from "../../utils/emailSearchDaySelectedUIName";
 import { emailSearchQuery } from "../../interface/emailSearchQuery.interace";
 import { useRouter } from "next/router";
-import { accountNumber } from "../../constants/userAccountSerial";
+import { accountNumber } from "../../constants/constants";
 
 interface props {
   toggleButtonRef: any;
   setShowComponent: any;
+
+  primarySearchedQuery: string;
 }
 
 const EmailSearchFilterDiv = (props: props) => {
   const router = useRouter();
 
-  const { setShowComponent, toggleButtonRef } = props;
+  const { setShowComponent, toggleButtonRef, primarySearchedQuery } = props;
   const thisCompRef = useRef<HTMLDivElement | null>(null);
 
   const [daySelectShow, setDaySelectShow] = useState(false);
@@ -56,8 +58,8 @@ const EmailSearchFilterDiv = (props: props) => {
   }, [setShowComponent, toggleButtonRef]);
 
 
-
-    const [day, setDay] = useState(1);
+ 
+    const [day, setDay] = useState(365); /* default value email will be searched within is 1 year */
     const [category, setCategory] = useState<searchMailType>(allMail); 
     const [attachmentChecked, setAttachmentChecked] = useState(false);
 
@@ -85,8 +87,14 @@ const EmailSearchFilterDiv = (props: props) => {
       query['to'] = toEmail
     }
 
-    if (hasTheWords.length > 0) {
-      query['hasWords'] = hasTheWords.split(" ")
+    if (hasTheWords.length > 0 || primarySearchedQuery.length > 0) {
+      if (hasTheWords.length > 0 && primarySearchedQuery.length > 0) {
+         query["hasWords"] = [...hasTheWords.split(" "), ...primarySearchedQuery.split(" ")]
+      } else if (hasTheWords.length > 0) {
+        query["hasWords"] = hasTheWords.split(" ");
+      }  else {
+        query["hasWords"] = primarySearchedQuery.split(" ");
+      }
     }
 
     if (doesNoHave.length > 0) {
@@ -115,28 +123,51 @@ const EmailSearchFilterDiv = (props: props) => {
     <div ref={thisCompRef} className={styles.emailSearchFilterDiv}>
       <div>
         <p>From</p>
-        <input value={fromEmail} onChange={(e) => setFromEmail(e.target.value)} type="text" />
+        <input
+          value={fromEmail}
+          onChange={(e) => setFromEmail(e.target.value)}
+          type="text"
+        />
       </div>
 
       <div>
         <p>To</p>
-        <input value={toEmail} onChange={(e) => setToEmail(e.target.value)} type="text" />
+        <input
+          value={toEmail}
+          onChange={(e) => setToEmail(e.target.value)}
+          type="text"
+        />
       </div>
 
       <div>
         <p>Subject</p>
-        <input value={subject} onChange={(e) => setSubject(e.target.value)} type="text" />
+        <input
+          spellCheck={false}
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          type="text"
+        />
       </div>
 
       <div>
         <p>Has the words</p>
-        <input value={hasTheWords} onChange={(e) => setHasTheWords(e.target.value)} type="text" />
+        <input
+          spellCheck={false}
+          value={hasTheWords}
+          onChange={(e) => setHasTheWords(e.target.value)}
+          type="text"
+        />
       </div>
 
       <div>
         {/* eslint-disable-next-line react/no-unescaped-entities */}
         <p>Doesn't have</p>
-        <input value={doesNoHave} onChange={(e) => setDoesNotHave(e.target.value)} type="text" />
+        <input
+          spellCheck={false}
+          value={doesNoHave}
+          onChange={(e) => setDoesNotHave(e.target.value)}
+          type="text"
+        />
       </div>
 
       <div className={styles.dayWithin}>
@@ -170,13 +201,16 @@ const EmailSearchFilterDiv = (props: props) => {
 
       <div className={styles.attachmentFilter}>
         <div>
-          <input checked={attachmentChecked} onChange={() => setAttachmentChecked((prev) => !prev)} type="checkbox" />
+          <input
+            checked={attachmentChecked}
+            onChange={() => setAttachmentChecked((prev) => !prev)}
+            type="checkbox"
+          />
           <p>Has attachment</p>
         </div>
       </div>
 
       <div className={styles.bottom}>
-   
         <div onClick={searchEmailHandler} className={styles.bottomSearch}>
           <p>Search</p>
         </div>

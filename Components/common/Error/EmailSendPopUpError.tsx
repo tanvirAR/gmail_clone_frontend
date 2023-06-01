@@ -1,31 +1,23 @@
 import { useDispatch } from "react-redux";
 
 import styles from "./EmailSendPopUpError.module.css";
-import { ToggleEmailSendError } from "../../features/UI/UISlice";
+import { ToggleEmailSendError } from "../../../features/UI/UISlice";
 import { useSelector } from "react-redux";
-import storeStateInterface from "../../interface/Store.interface";
+import storeStateInterface from "../../../interface/Store.interface";
 
 export const EmailSendPopUpError = () => {
   const dispath = useDispatch();
 
   // get the state which is the mail address of the reciever user is tryng to send, to show specific error
 
-  const {sentAEmail, sentEmailErrorPopUpToggled} = useSelector(
-    (state: storeStateInterface) => state.UI
-  );
+  const { sentAEmail } = useSelector((state: storeStateInterface) => state.UI);
 
-  const {to: receiverEmail} = sentAEmail;
+  const { to: receiverEmail } = sentAEmail;
 
   // close this error pop up handler function
   const closeErrorPopUp = () => {
     dispath(ToggleEmailSendError(false));
   };
-
-
-  // render this component conditionally with global state 
-  if (!sentEmailErrorPopUpToggled){
-    return null
-  }
 
   return (
     <div className={styles.sent_box}>
@@ -37,12 +29,12 @@ export const EmailSendPopUpError = () => {
           </div>
         </div>
         <div className={styles.mid}>
-          {/* if reciptent email field is null show second paragrapgh or if reciptent email is invalid show first para  */}
+          {/* if reciptent email field is null show second paragrapgh or if reciptent email is invalid show first segment  */}
           {receiverEmail !== "" ? (
             <p>
-              The address &quot;{receiverEmail}&quot; in the
-              &quot;To&quot; field was not recognized. Please make sure that all
-              addresses are properly formed.
+              The address &quot;{receiverEmail}&quot; in the &quot;To&quot;
+              field was not recognized. Please make sure that all addresses are
+              properly formed.
             </p>
           ) : (
             <p>Please specify at least one reciptent.</p>

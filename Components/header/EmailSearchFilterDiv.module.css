@@ -94,7 +94,6 @@
 }
 
 .allMails {
-  background-color: red;
   margin-right: 67%;
   margin-top: 5%;
   width: 500px;
@@ -139,6 +138,7 @@
   margin-right: 2rem !important;
   margin-bottom: 0.5rem !important;
   cursor: pointer;
+  border-radius: 2rem;
 }
 
 .bottomSearch:hover {

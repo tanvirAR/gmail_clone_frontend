@@ -3,7 +3,7 @@ import Image from "next/image";
 // import classes from "../../../../../styles/inboxPage/EmailSendPopup.module.css";
 import hideFullScreen from "../../assets/hide.svg";
 import close_icon_2 from "../../assets/close_icon.svg";
-import Email_Attachment from "./Email_Attachment";
+import Email_Attachment from "../EmailAttachment/Email_Attachment";
 import { useDispatch, useSelector } from "react-redux";
 import {
   sentEmailMinimizePopup,
@@ -14,10 +14,10 @@ import {
   sentEmailTo,
   sentAEmailMessage,
   setAttachment,
-} from "../../features/UI/UISlice";
+} from "../../../features/UI/UISlice";
 import React, { useState } from "react";
-import storeStateInterface from "../../interface/Store.interface";
-import  SendEmailButton  from "./SendEmailButton";
+import storeStateInterface from "../../../interface/Store.interface";
+import  SendEmailButton  from "../SendEmailButton/SendEmailButton";
 
 function EmailSendPopupFullScreen() {
   const { sentAEmail, sentBoxLargeScreen } = useSelector((state: storeStateInterface) => state.UI);

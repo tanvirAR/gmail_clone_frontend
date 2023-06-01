@@ -1,20 +1,17 @@
-import classes from "./SearchPage.module.css"
-
-
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import Options from "../homePage/Options";
 
+import classes from "./SearchPage.module.css";
+
+import Options from "../common/EmailOptions/Options";
 import storeStateInterface from "../../interface/Store.interface";
 import { email } from "../../interface/singleMail.interface";
 import SingleEmail from "../homePage/SingleEmail";
-import { useEffect, useRef, useState } from "react";
-import { sentType } from "../../interface/EmailType";
-import { useGetSentMailsQuery } from "../../features/sentMail/sentMailApi";
-import { emailSearchQuery } from "../../interface/emailSearchQuery.interace";
+import { searchedEmailType } from "../../interface/EmailType";
 import { useSearchEmailQuery } from "../../features/search/searchMailApi";
 
 interface props {
-  searchedQuery: string | undefined
+  searchedQuery: string | undefined;
 }
 
 export default function SearchPage(props: props) {
@@ -26,10 +23,10 @@ export default function SearchPage(props: props) {
 
   useEffect(() => {
     if (searchedQuery) {
-      setQueryLoaded(true)
+      setQueryLoaded(true);
     }
-  }, [searchedQuery])
-  
+  }, [searchedQuery]);
+
   const refetchButtonRef = useRef(null);
 
   const {
@@ -37,9 +34,9 @@ export default function SearchPage(props: props) {
     isLoading,
     isError,
     refetch: sentMailRefetch,
-  } = useSearchEmailQuery(searchedQuery || '', {
-    skip: !queryLoaded
-  })
+  } = useSearchEmailQuery(searchedQuery || "", {
+    skip: !queryLoaded,
+  });
 
   let emailList;
 
@@ -48,13 +45,14 @@ export default function SearchPage(props: props) {
   }
 
   if (data) {
-    console.log(data)
     emailList = data.mails.map((email: email) => (
       <SingleEmail
-        pageType={sentType}
+        pageType={searchedEmailType}
         buttonRef={refetchButtonRef}
         property={email}
         key={email.id}
+        // pass the query to each email to navigate whenn clicked on a single email from searched result
+        searchedMailQuery={searchedQuery}
       />
     ));
   }
@@ -72,15 +70,15 @@ export default function SearchPage(props: props) {
       style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
       className={classes.box}
     >
-      {/* <div>
+      <div>
         <Options
           refetch={sentMailRefetch}
           buttonRef={refetchButtonRef}
-          pageType={sentType}
+          pageType={searchedEmailType}
         />
 
         <div className={classes.mailList}>{emailList}</div>
-      </div> */}
+      </div>
     </div>
   );
 }

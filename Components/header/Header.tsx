@@ -7,9 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import EmailSearchFilterDiv from "./EmailSearchFilterDiv";
 import helpIcon from "../../assets/help.svg";
 import storeStateInterface from "../../interface/Store.interface";
+import { useRouter } from "next/router";
+import { accountNumber } from "../../constants/constants";
 
 
 const Header = () => {
+const router = useRouter()
+
+const [primarySearchQuerey, setPrimarySearchQuery] = useState('')
 
  // show. unshow search container
  const [searchContainer, setSearchContainer] = useState(false);
@@ -36,7 +41,7 @@ const Header = () => {
  return (
    <>
      <header className={styles.header}>
-       <div className={styles["header-left"]}>
+       <div onClick={() => router.push(`/mail/u/${accountNumber}/inbox`)} className={styles["header-left"]}>
          <span
            style={{
              backgroundColor: sidebarOn.onByToggle ? " #dce7ee" : "transparent",
@@ -51,6 +56,9 @@ const Header = () => {
        <div className={styles["header-middle"]}>
          <span className={"material-icons"}>search</span>
          <input
+         spellCheck={false}
+         value={primarySearchQuerey}
+         onChange={(e) => setPrimarySearchQuery(e.target.value)}
          ref={inputRef}
            type="text"
            placeholder="Search mail"
@@ -66,7 +74,7 @@ const Header = () => {
 
          <span className={`material-icons ${styles.profileIcon}`}>account_circle</span>
        </div>
-       {searchContainer && <EmailSearchFilterDiv setShowComponent={setSearchContainer} toggleButtonRef={searchFilterDivToggleButtnRef}  />}
+       {searchContainer && <EmailSearchFilterDiv setShowComponent={setSearchContainer} toggleButtonRef={searchFilterDivToggleButtnRef} primarySearchedQuery={primarySearchQuerey}  />}
      </header>
    </>
  );

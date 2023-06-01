@@ -1,7 +1,7 @@
 import classes from "./SpamPage.module.css";
 
 import { useSelector } from "react-redux";
-import Options from "../homePage/Options";
+import Options from "../common/EmailOptions/Options";
 
 import storeStateInterface from "../../interface/Store.interface";
 import { email } from "../../interface/singleMail.interface";

@@ -9,6 +9,7 @@ export interface additionalEmailDataSlice {
     trash: singleMailAdditionalData[];
     scheuduled: singleMailAdditionalData[],
     snoozed: singleMailAdditionalData[],
+    searchedMail: singleMailAdditionalData[],
 }
 
 // deleted: false;

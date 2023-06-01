@@ -2,13 +2,13 @@ import classes from "./SnoozedMailDateTimeSelect.module.css";
 import { useDispatch } from "react-redux";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import storeInterface from "../../interface/Store.interface";
+import storeInterface from "../../../interface/Store.interface";
 
 import DateTime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import moment, { Moment } from "moment";
-import { setSnoozedMailTimeComponent } from "../../features/UI/UISlice";
-import { useMarkMailAsSnoozedMutation } from "../../features/snoozedMail/snoozedMailApi";
+import { setSnoozedMailTimeComponent } from "../../../features/UI/UISlice";
+import { useMarkMailAsSnoozedMutation } from "../../../features/snoozedMail/snoozedMailApi";
 
 const SnoozedMailTimeSelect = () => {
   const dispatch = useDispatch();

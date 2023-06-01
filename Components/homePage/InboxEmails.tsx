@@ -1,6 +1,6 @@
-import Options from "./Options";
-import EmailSection from "./EmailSection";
-import styles from "./RightContainer.module.css";
+import Options from "../common/EmailOptions/Options";
+import EmailSection from "../common/EmailSection/EmailSection";
+import styles from "./InboxEmails.module.css";
 import EmailList from "./EmailList";
 import { useSelector } from "react-redux";
 import storeStateInterface from "../../interface/Store.interface";
@@ -12,13 +12,18 @@ import { inboxType } from "../../interface/EmailType";
 
 export default function RightContainer() {
   const { sidebarOn } = useSelector((state: storeStateInterface) => state.UI);
-  const buttonRef = useRef(null);
+
+  /* this ref is used to make a dynamic click event to refetch additionalEmailData, the refetch function for that is in SingleEmail Component  */
+  const buttonRefForRefetchingAdditionalSingleEmailData = useRef(null);
+
   const {
     data,
     error,
     isError,
     isLoading,
     isFetching,
+
+    /* refetch function is passed down to Options component to refetch all emails on a page when user click refetch */
     refetch: emailsRefetch,
   } = useGetAllMailsQuery(inboxType);
 
@@ -30,7 +35,12 @@ export default function RightContainer() {
 
   if (data) {
     emailList = data.mails.map((email: email) => (
-      <SingleEmail property={email} key={email.id} buttonRef={buttonRef} pageType={inboxType} />
+      <SingleEmail
+        property={email}
+        key={email.id}
+        buttonRef={buttonRefForRefetchingAdditionalSingleEmailData}
+        pageType={inboxType}
+      />
     ));
   }
 
@@ -48,11 +58,14 @@ export default function RightContainer() {
       className={styles["emailList"]}
     >
       <div>
-        <Options refetch={emailsRefetch} buttonRef={buttonRef} pageType={inboxType} />
+        <Options
+          refetch={emailsRefetch}
+          buttonRef={buttonRefForRefetchingAdditionalSingleEmailData}
+          pageType={inboxType}
+        />
 
         <EmailSection />
         <EmailList emailList={emailList} />
-        {/* {emailList} */}
       </div>
     </div>
   );

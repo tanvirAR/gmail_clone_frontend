@@ -7,4 +7,5 @@ export type emailType =
   | "trash"
   | "drafts"
   | "scheduled"
-  | "spam";
+  | "spam"
+  | "search";

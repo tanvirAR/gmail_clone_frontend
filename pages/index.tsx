@@ -4,9 +4,9 @@ import styles from "./SignIn.module.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useLoginMutation } from "../features/auth/authApi";
-import Error from "../Components/common/Error";
+import Error from "../Components/common/Error/Error";
 import validateEmail from "../utils/emailValidator";
-import { LoadingCircle } from "../Components/common/LoadingCircle";
+import { LoadingCircle } from "../Components/common/Loader/LoadingCircle";
 
 export default function Home() {
   const [username, setUsername] = useState("");
@@ -48,9 +48,6 @@ export default function Home() {
       login(loginData);
     }
   };
-
-console.log(error)
-console.log(data)
 
   //handling response error
   useEffect(() => {

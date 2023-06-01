@@ -1,16 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./MoreOptions.module.css";
 import { useSelector } from "react-redux";
-import storeStateInterface from "../../interface/Store.interface";
-import { useMarkMailAsImportantMutation } from "../../features/importantEmail/importantEmailApi";
-import { useMarkMailAsStarredMutation } from "../../features/starredEmail/starredEmailApi";
+import storeStateInterface from "../../../interface/Store.interface";
+import {
+  useMarkMailAsImportantMutation,
+  useMarkMailAsUnImportantMutation,
+} from "../../../features/importantEmail/importantEmailApi";
+import {
+  useMarkMailAsStarredMutation,
+  useMarkMailAsUnStarredMutation,
+} from "../../../features/starredEmail/starredEmailApi";
 import {
   useMarkReadSingleMailMutation,
   useMarkUnReadSingleMailMutation,
-} from "../../features/readMail/readMailApi";
-import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
-import { starredType, inboxType, importantType, sentType, spamType, trashType, scheduledType, snoozedType } from "../../interface/EmailType";
-import { singleMailAdditionalData } from "../../interface/additionalEmailDataSlice.interafce";
+} from "../../../features/readMail/readMailApi";
+import { emailType } from "../../../interface/EmailTypeForSpecificPage.interface";
+import {
+  starredType,
+  inboxType,
+  importantType,
+  sentType,
+  spamType,
+  trashType,
+  scheduledType,
+  snoozedType,
+  searchedEmailType,
+} from "../../../interface/EmailType";
+import { singleMailAdditionalData } from "../../../interface/additionalEmailDataSlice.interafce";
+import { useDispatch } from "react-redux";
+import { setCurrentMailCategorySelected } from "../../../features/email/emailSlice";
 interface props {
   setShowComponent: any;
   toggleButtonRef: any;
@@ -18,16 +36,28 @@ interface props {
 }
 
 export default function MoreOptions(props: props) {
+  const dispatch = useDispatch();
   const { setShowComponent, toggleButtonRef, pageType } = props;
   const thisCompRef = useRef<HTMLDivElement | null>(null);
   const { email, additionalEmailData } = useSelector(
     (state: storeStateInterface) => state
   );
-  const { selectedMails } = email;
-  const { inbox, important, starred, sent, trash, spam, scheuduled, snoozed } = additionalEmailData;
+  const { selectedMails, selectedMailsWithProps } = email;
+  const {
+    inbox,
+    important,
+    starred,
+    sent,
+    trash,
+    spam,
+    scheuduled,
+    snoozed,
+    searchedMail,
+  } = additionalEmailData;
 
-  const [additionalMailData, setAdditionalMailData] = useState<singleMailAdditionalData[]>([])
-
+  const [additionalMailData, setAdditionalMailData] = useState<
+    singleMailAdditionalData[]
+  >([]);
 
   useEffect(() => {
     if (pageType && important && inbox && starred && sentType) {
@@ -47,10 +77,23 @@ export default function MoreOptions(props: props) {
         setAdditionalMailData(scheuduled);
       } else if (pageType === snoozedType) {
         setAdditionalMailData(snoozed);
+      } else if (pageType === searchedEmailType) {
+        setAdditionalMailData(searchedMail);
       }
     }
-  }, [pageType, important, inbox, starred, sent, spam, trash, scheuduled, snoozed])
-  
+  }, [
+    pageType,
+    important,
+    inbox,
+    starred,
+    sent,
+    spam,
+    trash,
+    scheuduled,
+    snoozed,
+    searchedMail,
+  ]);
+
   useEffect(() => {
     // Function to handle when clicks outside the popup to hide this component
     const handleClickOutside = (event: MouseEvent) => {
@@ -91,9 +134,15 @@ export default function MoreOptions(props: props) {
 
   const [markMailAsImportant, { isLoading: isMarkingMailAsImportantLoading }] =
     useMarkMailAsImportantMutation();
+  const [
+    markMailAsUnImportant,
+    { isLoading: isMarkingMailAsUnImportantLoading },
+  ] = useMarkMailAsUnImportantMutation();
 
   const [markMailAsStarred, { isLoading: starredLoading }] =
     useMarkMailAsStarredMutation();
+  const [markMailAsUnStarred, { isLoading: unStarredLoading }] =
+    useMarkMailAsUnStarredMutation();
   const [markReadSingleMail, {}] = useMarkReadSingleMailMutation();
   const [markUnReadSingleMail, {}] = useMarkUnReadSingleMailMutation();
 
@@ -102,17 +151,17 @@ export default function MoreOptions(props: props) {
       const themailselected = additionalMailData.filter(
         (mail) => mail.mailId == selectedMails[0]
       );
-      if (themailselected.length > 0){
-      if (themailselected[0].starred) {
-        setSingleStarred(true);
+      if (themailselected.length > 0) {
+        if (themailselected[0].starred) {
+          setSingleStarred(true);
+        }
+        if (themailselected[0].important) {
+          setSingleImportant(true);
+        }
+        if (themailselected[0].read === true) {
+          setSingleRead(true);
+        }
       }
-      if (themailselected[0].important) {
-        setSingleImportant(true);
-      }
-      if (themailselected[0].read === true) {
-        setSingleRead(true);
-      }
-    }
     }
   }, [additionalMailData, selectedMails]);
 
@@ -137,8 +186,7 @@ export default function MoreOptions(props: props) {
           }
           if (singleMail[0].important) {
             isImportant = true;
-          }
-          {
+          } else {
             isUnImportant = true;
           }
           if (singleMail[0].read) {
@@ -175,24 +223,44 @@ export default function MoreOptions(props: props) {
   const markSingleMailAsReadHandler = () => {
     const mailId = selectedMails[0];
     markReadSingleMail({ mailId });
+    dispatch(setCurrentMailCategorySelected("none"));
     setShowComponent(false);
   };
 
   const markSingleMailAsUnReadHandler = () => {
     const mailId = selectedMails[0];
     markUnReadSingleMail({ mailId });
+    dispatch(setCurrentMailCategorySelected("none"));
     setShowComponent(false);
   };
 
-  const markSingleMailAsStarredOrUnStarredHandler = () => {
+  const markSingleMailAsStarredHandler = () => {
     const mailId = selectedMails[0];
-    markMailAsStarred(mailId);
+    const emailProperty = selectedMailsWithProps[0];
+    markMailAsStarred({ mailId, emailProperty });
+    dispatch(setCurrentMailCategorySelected("none"));
     setShowComponent(false);
   };
 
-  const markSingleMailAsImportantOrUnImportantHandler = () => {
+  const markSingleMailAsUnStarredHandler = () => {
     const mailId = selectedMails[0];
-    markMailAsImportant(mailId);
+    markMailAsUnStarred(mailId);
+    dispatch(setCurrentMailCategorySelected("none"));
+    setShowComponent(false);
+  };
+
+  const markSingleMailAsImportantHandler = () => {
+    const mailId = selectedMails[0];
+    const emailProperty = selectedMailsWithProps[0];
+    markMailAsImportant({ mailId, emailProperty });
+    dispatch(setCurrentMailCategorySelected("none"));
+    setShowComponent(false);
+  };
+
+  const markSingleMailAsUnImportantHandler = () => {
+    const mailId = selectedMails[0];
+    markMailAsUnImportant(mailId);
+    dispatch(setCurrentMailCategorySelected("none"));
     setShowComponent(false);
   };
 
@@ -253,7 +321,9 @@ export default function MoreOptions(props: props) {
   };
 
   // makes all the SELECTED MAILS read property false
-  const markAllSelectedEmailAsStarredOrUnstarredHandler = (isStarred: boolean) => {
+  const markAllSelectedEmailAsStarredOrUnstarredHandler = (
+    isStarred: boolean
+  ) => {
     for (let i = 0; i < selectedMails.length; i++) {
       const selectedMailsWithAdditionalProperty = additionalMailData.filter(
         (singleMailData) => singleMailData.mailId === selectedMails[i]
@@ -261,10 +331,24 @@ export default function MoreOptions(props: props) {
 
       for (let j = 0; j < selectedMailsWithAdditionalProperty.length; j++) {
         // check if this specific email read property is already true or not before sending request
-        const isMailStarredTrue = selectedMailsWithAdditionalProperty[j].starred;
+        const isMailStarredTrue =
+          selectedMailsWithAdditionalProperty[j].starred;
         if (isMailStarredTrue === isStarred) {
-          markMailAsStarred(selectedMailsWithAdditionalProperty[j].mailId);
+          const mailId = selectedMailsWithAdditionalProperty[j].mailId;
+          const emailPropertyData = selectedMailsWithProps.filter(
+            (email) => email.id == mailId
+          )[0];
+
+          if (selectedMailsWithAdditionalProperty[j].starred) {
+            markMailAsUnStarred(mailId);
+          } else {
+            markMailAsStarred({ mailId, emailProperty: emailPropertyData });
+          }
         }
+      }
+
+      if (i === selectedMails.length - 1) {
+        dispatch(setCurrentMailCategorySelected("none"));
       }
     }
     // close the component after sending request
@@ -272,7 +356,9 @@ export default function MoreOptions(props: props) {
   };
 
   // makes all the SELECTED MAILS read property false
-  const markAllSelectedEmailAsImportantOrUnImportantHandler = (isImportant: boolean) => {
+  const markAllSelectedEmailAsImportantOrUnImportantHandler = (
+    isImportant: boolean
+  ) => {
     for (let i = 0; i < selectedMails.length; i++) {
       const selectedMailsWithAdditionalProperty = additionalMailData.filter(
         (singleMailData) => singleMailData.mailId === selectedMails[i]
@@ -280,10 +366,24 @@ export default function MoreOptions(props: props) {
 
       for (let j = 0; j < selectedMailsWithAdditionalProperty.length; j++) {
         // check if this specific email read property is already true or not before sending request
-        const isImportantTrue = selectedMailsWithAdditionalProperty[j].important;
+        const isImportantTrue =
+          selectedMailsWithAdditionalProperty[j].important;
         if (isImportantTrue === isImportant) {
-          markMailAsImportant(selectedMailsWithAdditionalProperty[j].mailId);
+          const mailId = selectedMailsWithAdditionalProperty[j].mailId;
+          const emailPropertyData = selectedMailsWithProps.filter(
+            (email) => email.id == mailId
+          )[0];
+
+          if (selectedMailsWithAdditionalProperty[j].important) {
+            markMailAsUnImportant(mailId);
+          } else {
+            markMailAsImportant({ mailId, emailProperty: emailPropertyData });
+          }
         }
+      }
+
+      if (i === selectedMails.length - 1) {
+        dispatch(setCurrentMailCategorySelected("none"));
       }
     }
     // close the component after sending request
@@ -326,7 +426,7 @@ export default function MoreOptions(props: props) {
           )}
           {!singleImportant && (
             <div
-              onClick={markSingleMailAsImportantOrUnImportantHandler}
+              onClick={markSingleMailAsImportantHandler}
               className={styles.firstP}
             >
               <p>Mark as important</p>
@@ -334,7 +434,7 @@ export default function MoreOptions(props: props) {
           )}
           {singleImportant && (
             <div
-              onClick={markSingleMailAsImportantOrUnImportantHandler}
+              onClick={markSingleMailAsUnImportantHandler}
               className={styles.firstP}
             >
               <p>Mark as unimportant</p>
@@ -342,7 +442,7 @@ export default function MoreOptions(props: props) {
           )}
           {!singleStarred && (
             <div
-              onClick={markSingleMailAsStarredOrUnStarredHandler}
+              onClick={markSingleMailAsStarredHandler}
               className={styles.firstP}
             >
               <p>Add star</p>
@@ -350,7 +450,7 @@ export default function MoreOptions(props: props) {
           )}
           {singleStarred && (
             <div
-              onClick={markSingleMailAsStarredOrUnStarredHandler}
+              onClick={markSingleMailAsUnStarredHandler}
               className={styles.firstP}
             >
               <p>Remove star</p>

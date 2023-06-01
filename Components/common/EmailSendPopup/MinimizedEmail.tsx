@@ -1,15 +1,15 @@
 import Image from "next/image";
 import classes from "./MinimizedEmail.module.css";
-import open_in_full from "../../assets/open_in_full.svg";
-import close_icon_2 from "../../assets/close_icon.svg";
+import open_in_full from "../../../assets/open_in_full.svg";
+import close_icon_2 from "../../../assets/close_icon.svg";
 import { useDispatch } from "react-redux";
 import {
   sentEmailBoxLarge,
   sentEmailBoxSmall,
   sentEmailMinimizePopup,
-} from "../../features/UI/UISlice";
+} from "../../../features/UI/UISlice";
 import { useSelector } from "react-redux";
-import storeStateInterface from "../../interface/Store.interface";
+import storeStateInterface from "../../../interface/Store.interface";
 
 export default function MinimizedEmail() {
   const dispatch = useDispatch();

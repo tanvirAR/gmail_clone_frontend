@@ -2,7 +2,7 @@ import classes from "./ImportantPage.module.css";
 
 import { useSelector } from "react-redux";
 import TempSingleEmail from "../common/singlemail/SingleMail";
-import Options from "../homePage/Options";
+import Options from "../common/EmailOptions/Options";
 
 import storeStateInterface from "../../interface/Store.interface";
 import { email } from "../../interface/singleMail.interface";

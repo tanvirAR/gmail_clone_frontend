@@ -1,15 +1,15 @@
 import { useEffect, useRef } from "react";
 import styles from "./MoveEmailsOptionsDiv.module.css"
 import { useSelector } from "react-redux";
-import storeStateInterface from "../../interface/Store.interface";
-import { useMarkMailAsSocialMutation } from "../../features/socialMail/socialMailApi";
-import { useMarkMailAsPromotionMutation } from "../../features/promotionsMail/promotionsMailApi";
-import { useMarkMailAsSpamMutation } from "../../features/spamMail/spamMailApi";
-import { useMarkTrashSingleInboxMailMutation } from "../../features/trashMail/trashMailApi";
-import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
-import { inboxType, scheduledType, sentType, spamType, trashType } from "../../interface/EmailType";
-import { useCancellScheduledMailMutation } from "../../features/scheduledMail/scheduledMailApi";
-import { useMoveFromSentToInboxMutation, useMoveFromSpamToInboxMutation, useMoveFromTrashToInboxMutation } from "../../features/moveEmail/moveEmailApi";
+import storeStateInterface from "../../../interface/Store.interface";
+import { useMarkMailAsSocialMutation } from "../../../features/socialMail/socialMailApi";
+import { useMarkMailAsPromotionMutation } from "../../../features/promotionsMail/promotionsMailApi";
+import { useMarkMailAsSpamMutation } from "../../../features/spamMail/spamMailApi";
+import { useMarkTrashSingleInboxMailMutation } from "../../../features/trashMail/trashMailApi";
+import { emailType } from "../../../interface/EmailTypeForSpecificPage.interface";
+import { inboxType, scheduledType, sentType, spamType, trashType } from "../../../interface/EmailType";
+import { useCancellScheduledMailMutation } from "../../../features/scheduledMail/scheduledMailApi";
+import { useMoveFromSentToInboxMutation, useMoveFromSpamToInboxMutation, useMoveFromTrashToInboxMutation } from "../../../features/moveEmail/moveEmailApi";
 
 interface props {
   setShowComponent: any;

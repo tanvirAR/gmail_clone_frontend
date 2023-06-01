@@ -26,8 +26,21 @@ export const authApi = apiSlice.injectEndpoints({
         },
       }),
     }),
- 
+
+    checkLogin: builder.query<any, void>({
+      query: () => ({
+        url: "/",
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "content-type": "application/json",
+        },
+      }),
+    }),
   }),
 });
 
-export const { useSignupMutation, useLoginMutation } = authApi;
+export const { useSignupMutation, useLoginMutation, useCheckLoginQuery } = authApi;
+
+
+// <any, void>

@@ -2,12 +2,12 @@ import Image from "next/image";
 import close_icon from "../../assets/close_icon_attachment.svg";
 import classes from "./Email_Attachment.module.css";
 import { useSelector } from "react-redux";
-import storeStateInterface from "../../interface/Store.interface";
+import storeStateInterface from "../../../interface/Store.interface";
 import { useDispatch } from "react-redux";
-import { setAttachment } from "../../features/UI/UISlice";
+import { setAttachment } from "../../../features/UI/UISlice";
 import { useState } from "react";
 import { Line } from "rc-progress"; 
-import { deleteFile } from "../../utils/deleteFileFromFirebase";
+import { deleteFile } from "../../../utils/deleteFileFromFirebase";
 
 export default function Email_Attachment() {
   const {attachment, attachmentUploadProgressBar} = useSelector((store: storeStateInterface) => store.UI)

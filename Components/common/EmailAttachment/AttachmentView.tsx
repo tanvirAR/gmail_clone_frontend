@@ -1,10 +1,9 @@
 import Image from "next/image";
 import classes from "./AttachmentView.module.css";
 import { useDispatch } from "react-redux";
-import React, { useEffect, useRef, useState } from "react";
-import { setAttachmentView } from "../../features/UI/UISlice";
+import { setAttachmentView } from "../../../features/UI/UISlice";
 import { useSelector } from "react-redux";
-import storeInterface from "../../interface/Store.interface"
+import storeInterface from "../../../interface/Store.interface"
 
 const AttachmentView = () => {
   const dispatch = useDispatch();
@@ -12,7 +11,7 @@ const AttachmentView = () => {
   const { isVisible, url } = useSelector((state: storeInterface) => state.UI.attachmentView)
 
   const closeAttachmentViewHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log("parent")
+  
     dispatch(setAttachmentView({isVisible: false, url: ''}))
   }
 
@@ -20,10 +19,7 @@ const AttachmentView = () => {
     e.stopPropagation()
   }
 
-  if (!isVisible) {
-    return null
-  }
-
+ 
 
 
   return (

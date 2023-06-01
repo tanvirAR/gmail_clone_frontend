@@ -1,5 +1,8 @@
-import RightContainer from "../../../../../Components/homePage/RightContainer";
+import RightContainer from "../../../../../Components/homePage/InboxEmails";
 
-export default function Inbox() {
+function Inbox() {
   return <RightContainer />;
 }
+
+
+export default Inbox;

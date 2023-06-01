@@ -1,5 +1,5 @@
 import React from 'react'
-import errorIcon from "../../assets/error.svg";
+import errorIcon from "../../../assets/error.svg";
 import Image from "next/image";
 import styles from "./Error.module.css";
 

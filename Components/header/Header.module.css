@@ -10,7 +10,6 @@
  display: flex;
  align-items: center;
  justify-content: space-between;
- border-bottom: 1px solid whitesmoke;   
  user-select: none;
  background: #f6f8fc;
  position: relative;
@@ -29,7 +28,7 @@
     flex: 0.55;
     align-items: center;
     padding: 10px;
-    border-radius: 9px;
+    border-radius: 0.75rem;
     background-color: #eaf1fb;
     margin-bottom: 5px;
     margin-top: 5px;
@@ -95,7 +94,6 @@
 }
 
 .header-left button {
-    background-color: red;
     display: block;
     height: 100px;
 }

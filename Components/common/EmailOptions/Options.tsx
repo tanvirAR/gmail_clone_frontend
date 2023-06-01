@@ -2,27 +2,28 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./Options.module.css";
 import MoreOptions from "./MoreOptions";
-import SelectMailByCategory from "./SelectMailByCategory";
-import storeStateInterface from "../../interface/Store.interface";
-import { setCurrentMailCategorySelected } from "../../features/email/emailSlice";
+import SelectMailByCategory from "../SelectEmailByCategory/SelectMailByCategory";
+import storeStateInterface from "../../../interface/Store.interface";
+import { setCurrentMailCategorySelected } from "../../../features/email/emailSlice";
 import MoveEmailOptionsDiv from "./MoveEmailsOptionsDiv";
-import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
+import { emailType } from "../../../interface/EmailTypeForSpecificPage.interface";
 import {
   importantType,
+  inboxType,
   scheduledType,
   sentType,
   spamType,
   starredType,
   trashType,
-} from "../../interface/EmailType";
-import { useMarkMailAsUnSpamMutation } from "../../features/spamMail/spamMailApi";
-import { useDeleteMailPermanentlyMutation } from "../../features/trashMail/trashMailApi";
+} from "../../../interface/EmailType";
+import { useMarkMailAsUnSpamMutation } from "../../../features/spamMail/spamMailApi";
+import { useDeleteMailPermanentlyMutation } from "../../../features/trashMail/trashMailApi";
 import {
   useMoveFromSentToInboxMutation,
   useMoveFromSpamToInboxMutation,
   useMoveFromTrashToInboxMutation,
-} from "../../features/moveEmail/moveEmailApi";
-import { useCancellScheduledMailMutation } from "../../features/scheduledMail/scheduledMailApi";
+} from "../../../features/moveEmail/moveEmailApi";
+import { useCancellScheduledMailMutation } from "../../../features/scheduledMail/scheduledMailApi";
 
 interface props {
   refetch: any;
@@ -112,7 +113,8 @@ export default function Options(props: props) {
     selectedMails.length > 0 &&
     pageType !== scheduledType &&
     pageType !== starredType &&
-    pageType !== importantType;
+    pageType !== importantType &&
+    pageType !== inboxType
 
   const showDeleteForeverOption: boolean =
     selectedMails.length > 0 &&

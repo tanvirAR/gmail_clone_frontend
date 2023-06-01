@@ -18,8 +18,8 @@
 }
 
 .read {
-  background-color: #f2f6fc;
-  /* background-color:grey; */
+  /* background-color: #f2f6fc; */
+  background-color:rgb(180, 180, 180);
 }
 
 .selected {
