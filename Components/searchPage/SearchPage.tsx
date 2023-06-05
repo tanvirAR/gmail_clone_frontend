@@ -9,6 +9,7 @@ import { email } from "../../interface/singleMail.interface";
 import SingleEmail from "../homePage/SingleEmail";
 import { searchedEmailType } from "../../interface/EmailType";
 import { useSearchEmailQuery } from "../../features/search/searchMailApi";
+import Head from "next/head";
 
 interface props {
   searchedQuery: string | undefined;
@@ -18,7 +19,7 @@ export default function SearchPage(props: props) {
   const { searchedQuery } = props;
   const [queryLoaded, setQueryLoaded] = useState(false);
 
-  const { UI } = useSelector((state: storeStateInterface) => state);
+  const { UI, auth } = useSelector((state: storeStateInterface) => state);
   const { onByToggle } = UI.sidebarOn;
 
   useEffect(() => {
@@ -66,19 +67,24 @@ export default function SearchPage(props: props) {
   }
 
   return (
-    <div
-      style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
-      className={classes.box}
-    >
-      <div>
-        <Options
-          refetch={sentMailRefetch}
-          buttonRef={refetchButtonRef}
-          pageType={searchedEmailType}
-        />
+    <>
+      <Head>
+        <title>Search results - {auth?.user?.email}</title>
+      </Head>
+      <div
+        style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
+        className={classes.box}
+      >
+        <div>
+          <Options
+            refetch={sentMailRefetch}
+            buttonRef={refetchButtonRef}
+            pageType={searchedEmailType}
+          />
 
-        <div className={classes.mailList}>{emailList}</div>
+          <div className={classes.mailList}>{emailList}</div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

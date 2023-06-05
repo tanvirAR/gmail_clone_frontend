@@ -18,4 +18,5 @@ export const sidebarVisibleComponents = [
   "InboxSingleMail",
   "SearchPage",
   "SearchedSingleEmail",
+  "Drafts",
 ];

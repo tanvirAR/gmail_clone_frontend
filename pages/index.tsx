@@ -7,14 +7,21 @@ import { useLoginMutation } from "../features/auth/authApi";
 import Error from "../Components/common/Error/Error";
 import validateEmail from "../utils/emailValidator";
 import { LoadingCircle } from "../Components/common/Loader/LoadingCircle";
+import { accountNumber } from "../constants/constants";
+import { useDispatch } from "react-redux";
+import { setUser } from "../features/auth/authSlice";
 
 export default function Home() {
+  const dispatch = useDispatch();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   // error state
   const [commonError, setCommonError] = useState<string | boolean>(false);
-  const [emptyUsernameError, setEmptyUsernameError] = useState<string | boolean>(false);
+  const [emptyUsernameError, setEmptyUsernameError] = useState<
+    string | boolean
+  >(false);
   const [emptyPasswordError, setEmptyPasswordError] = useState<
     string | boolean
   >(false);
@@ -55,14 +62,17 @@ export default function Home() {
     if (isError && error) {
       setCommonError(error?.data?.error);
     }
-    if (!isError && isSuccess) {
+    if (!isError && isSuccess && data) {
+      dispatch(setUser(data));
       router.push("/mail/u/1/inbox");
     }
   }, [isError, error, data, isSuccess, router]);
 
   return (
     <div className={styles.box}>
-      <h2 onClick={() => router.push("/mail/u/1/inbox")}>Sign in</h2>
+      <h2 onClick={() => router.push(`/mail/u/${accountNumber}/inbox`)}>
+        Sign in
+      </h2>
       <br />
 
       <p className={styles.signUpDiv}>
@@ -95,7 +105,7 @@ export default function Home() {
         </div>
         <p className={styles.errorP}>{commonError}</p>
 
-        {!isLoading && (
+        {!isLoading && !isSuccess && (
           <input
             className={styles.submitButton}
             type="submit"
@@ -105,9 +115,11 @@ export default function Home() {
           />
         )}
 
-        { isLoading && <div className={styles.loadingDiv}>
-          <LoadingCircle />
-        </div>}
+        {(isLoading || isSuccess) && (
+          <div className={styles.loadingDiv}>
+            <LoadingCircle />
+          </div>
+        )}
       </form>
     </div>
   );

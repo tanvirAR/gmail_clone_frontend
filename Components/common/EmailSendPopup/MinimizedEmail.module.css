@@ -30,6 +30,12 @@
   display: flex;
   width: 28%;
   justify-content: space-between;
+  margin-right: 0.25rem;
+}
+
+.close_minimize_options span {
+  font-weight: 700;
+
 }
 
 .open_in_full {

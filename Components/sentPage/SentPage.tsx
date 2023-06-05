@@ -9,11 +9,10 @@ import SingleEmail from "../homePage/SingleEmail";
 import { useRef } from "react";
 import { sentType } from "../../interface/EmailType";
 import { useGetSentMailsQuery } from "../../features/sentMail/sentMailApi";
+import Head from "next/head";
 
 export default function SentPage() {
-  const { UI } = useSelector(
-    (state: storeStateInterface) => state
-  );
+  const { UI, auth } = useSelector((state: storeStateInterface) => state);
   const { onByToggle } = UI.sidebarOn;
 
   const refetchButtonRef = useRef(null);
@@ -26,12 +25,23 @@ export default function SentPage() {
   } = useGetSentMailsQuery();
 
   let emailList;
+  let numberOfMails;
 
   if (isError) {
     emailList = <p>Something went wrong! Please try again.</p>;
   }
 
+  if (data && data.mails.length == 0) {
+    emailList = <p>No Email found!</p>;
+     numberOfMails = 0;
+  }
+
+  if (isLoading) {
+    emailList = <p>Loading...</p>;
+  }
+
   if (data) {
+    numberOfMails = data.mails.length;
     emailList = data.mails.map((email: email) => (
       <SingleEmail
         pageType={sentType}
@@ -42,28 +52,35 @@ export default function SentPage() {
     ));
   }
 
-  if (isLoading) {
-    emailList = <p>Loading...</p>;
-  }
-
-  if (data && data.mails.length == 0) {
-    emailList = <p>No Email found!</p>;
-  }
-
+  const headerTitle =
+    numberOfMails === 0
+      ? " - "
+      : numberOfMails
+      ? `(${numberOfMails}) - `
+      : "(error) ";
+  
   return (
-    <div
-      style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
-      className={classes.box}
-    >
-      <div>
-        <Options
-          refetch={sentMailRefetch}
-          buttonRef={refetchButtonRef}
-          pageType={sentType}
-        />
+    <>
+      <Head>
+        <title>
+          Sent {headerTitle}
+          {auth?.user?.email}
+        </title>
+      </Head>
+      <div
+        style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
+        className={classes.box}
+      >
+        <div>
+          <Options
+            refetch={sentMailRefetch}
+            buttonRef={refetchButtonRef}
+            pageType={sentType}
+          />
 
-        <div className={classes.mailList}>{emailList}</div>
+          <div className={classes.mailList}>{emailList}</div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -9,9 +9,10 @@ import SingleEmail from "../homePage/SingleEmail";
 import { useRef } from "react";
 import { spamType } from "../../interface/EmailType";
 import { useGetSpamMailsQuery } from "../../features/spamMail/spamMailApi";
+import Head from "next/head";
 
 export default function SpamPage() {
-  const { UI } = useSelector((state: storeStateInterface) => state);
+  const { UI, auth } = useSelector((state: storeStateInterface) => state);
   const { onByToggle } = UI.sidebarOn;
 
   const refetchButtonRef = useRef(null);
@@ -24,12 +25,14 @@ export default function SpamPage() {
   } = useGetSpamMailsQuery();
 
   let emailList;
+  let numberOfMails;
 
   if (isError) {
     emailList = <p>Something went wrong! Please try again.</p>;
   }
 
   if (data) {
+    numberOfMails = data.mails.length;
     emailList = data.mails.map((email: email) => (
       <SingleEmail
         pageType={spamType}
@@ -46,22 +49,38 @@ export default function SpamPage() {
 
   if (data && data.mails.length == 0) {
     emailList = <p>No Email found!</p>;
+     numberOfMails = 0;
   }
 
-  return (
-    <div
-      style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
-      className={classes.box}
-    >
-      <div>
-        <Options
-          refetch={spamMailRefetch}
-          buttonRef={refetchButtonRef}
-          pageType={spamType}
-        />
+    const headerTitle =
+      numberOfMails === 0
+        ? " - "
+        : numberOfMails
+        ? `(${numberOfMails}) - `
+        : "(error) ";
 
-        <div className={classes.mailList}>{emailList}</div>
+  return (
+    <>
+      <Head>
+        <title>
+          Spam {headerTitle}
+          {auth?.user?.email}
+        </title>
+      </Head>
+      <div
+        style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
+        className={classes.box}
+      >
+        <div>
+          <Options
+            refetch={spamMailRefetch}
+            buttonRef={refetchButtonRef}
+            pageType={spamType}
+          />
+
+          <div className={classes.mailList}>{emailList}</div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

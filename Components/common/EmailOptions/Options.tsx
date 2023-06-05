@@ -4,7 +4,10 @@ import styles from "./Options.module.css";
 import MoreOptions from "./MoreOptions";
 import SelectMailByCategory from "../SelectEmailByCategory/SelectMailByCategory";
 import storeStateInterface from "../../../interface/Store.interface";
-import { setCurrentMailCategorySelected } from "../../../features/email/emailSlice";
+import {
+  resetSelectedMails,
+  setCurrentMailCategorySelected,
+} from "../../../features/email/emailSlice";
 import MoveEmailOptionsDiv from "./MoveEmailsOptionsDiv";
 import { emailType } from "../../../interface/EmailTypeForSpecificPage.interface";
 import {
@@ -42,7 +45,8 @@ export default function Options(props: props) {
   const moreOptionsShowButtonRef = useRef<HTMLSpanElement | null>(null);
 
   const { email } = useSelector((state: storeStateInterface) => state);
-  const { currentSelected, selectedMails } = email || {};
+  const { currentSelected, selectedMails, selectedMailsWithProps } =
+    email || {};
 
   const [moveEmailOptionDivShow, setMoveEmailOptionDivShow] = useState(false);
   const moveEmailOptionDivRef = useRef<HTMLSpanElement | null>(null);
@@ -114,7 +118,7 @@ export default function Options(props: props) {
     pageType !== scheduledType &&
     pageType !== starredType &&
     pageType !== importantType &&
-    pageType !== inboxType
+    pageType !== inboxType;
 
   const showDeleteForeverOption: boolean =
     selectedMails.length > 0 &&
@@ -146,8 +150,9 @@ export default function Options(props: props) {
     if (selectedMails.length > 0 && !deleteMailIsLoading) {
       // using a for loop to send rtk request for each selected mails ID
       for (let i = 0; i < selectedMails.length; i++) {
-        deleteMailPermenantly(selectedMails[i]);
+        deleteMailPermenantly({ mailId: selectedMails[i], pageType });
       }
+      dispatch(resetSelectedMails());
     }
   };
 
@@ -155,7 +160,13 @@ export default function Options(props: props) {
     for (let i = 0; i < selectedMails.length; i++) {
       // using a for loop to send rtk request for each selected mails ID
       for (let i = 0; i < selectedMails.length; i++) {
-        markMailUnspam({ mailId: selectedMails[i] });
+        const emailPrimaryProp = selectedMailsWithProps.filter(
+          (email) => email.id == selectedMails[i]
+        )[0];
+        markMailUnspam({
+          mailId: selectedMails[i],
+          emailProp: emailPrimaryProp,
+        });
       }
     }
   };
@@ -173,16 +184,11 @@ export default function Options(props: props) {
   const moveEmailToInboxHandler = () => {
     if (
       selectedMails.length > 0 &&
-      !cancelScheduledIsLoading &&
       !sentToInboxIsLoading &&
       !spamToInboxIsLoading &&
       !trashToInboxIsLoading
     ) {
-      if (pageType === scheduledType) {
-        for (let i = 0; i < selectedMails.length; i++) {
-          cancelScheduledSend(selectedMails[i]);
-        }
-      } else if (pageType === sentType) {
+      if (pageType === sentType) {
         for (let i = 0; i < selectedMails.length; i++) {
           moveFromSentToInbox({ mailId: selectedMails[i] });
         }
@@ -196,6 +202,16 @@ export default function Options(props: props) {
         }
       }
     }
+  };
+
+  const cancelScheduleSendMailHandler = () => {
+    for (let i = 0; i < selectedMails.length; i++) {
+      // using a for loop to send rtk request for each selected mails ID
+      for (let i = 0; i < selectedMails.length; i++) {
+        cancelScheduledSend(selectedMails[i]);
+      }
+    }
+    dispatch(resetSelectedMails());
   };
 
   return (
@@ -244,7 +260,10 @@ export default function Options(props: props) {
         )}
 
         {showCancelSendOption && (
-          <div className={styles.deleteForever}>
+          <div
+            onClick={cancelScheduleSendMailHandler}
+            className={styles.deleteForever}
+          >
             <p>Cancel send</p>
           </div>
         )}
@@ -297,10 +316,7 @@ export default function Options(props: props) {
           more_vert
         </span>
       </div>
-      <div className={styles["settings-right"]}>
-        <span className="material-icons">chevron_left</span>
-        <span className="material-icons">chevron_right</span>
-      </div>
+      {/* <div className={styles["settings-right"]}></div> */}
       {emailCategoryDivShow && (
         <SelectMailByCategory
           toggleButtonRef={emailCategoryDivShowButtonRef}

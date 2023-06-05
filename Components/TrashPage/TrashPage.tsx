@@ -9,9 +9,10 @@ import SingleEmail from "../homePage/SingleEmail";
 import { useRef } from "react";
 import { trashType } from "../../interface/EmailType";
 import { useGetTrashMailsQuery } from "../../features/trashMail/trashMailApi";
+import Head from "next/head";
 
 export default function TrashPage() {
-  const { UI } = useSelector((state: storeStateInterface) => state);
+  const { UI, auth } = useSelector((state: storeStateInterface) => state);
   const { onByToggle } = UI.sidebarOn;
 
   const refetchButtonRef = useRef(null);
@@ -24,12 +25,14 @@ export default function TrashPage() {
   } = useGetTrashMailsQuery();
 
   let emailList;
+  let numberOfMails;
 
   if (isError) {
     emailList = <p>Something went wrong! Please try again.</p>;
   }
 
   if (data) {
+    numberOfMails = data.mails.length;
     emailList = data.mails.map((email: email) => (
       <SingleEmail
         pageType={trashType}
@@ -46,22 +49,38 @@ export default function TrashPage() {
 
   if (data && data.mails.length == 0) {
     emailList = <p>No Email found!</p>;
+     numberOfMails = 0;
   }
 
-  return (
-    <div
-      style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
-      className={classes.box}
-    >
-      <div>
-        <Options
-          refetch={trashMailRefetch}
-          buttonRef={refetchButtonRef}
-          pageType={trashType}
-        />
+    const headerTitle =
+      numberOfMails === 0
+        ? " - "
+        : numberOfMails
+        ? `(${numberOfMails}) - `
+        : "(error) ";
 
-        <div className={classes.mailList}>{emailList}</div>
+  return (
+    <>
+      <Head>
+        <title>
+          Trash {headerTitle}
+          {auth?.user?.email}
+        </title>
+      </Head>
+      <div
+        style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
+        className={classes.box}
+      >
+        <div>
+          <Options
+            refetch={trashMailRefetch}
+            buttonRef={refetchButtonRef}
+            pageType={trashType}
+          />
+
+          <div className={classes.mailList}>{emailList}</div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

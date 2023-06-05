@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { currSelected } from "../../interface/EmailSliceInterface";
+import { email } from "../../interface/singleMail.interface";
 
 interface props {
   currentSelected: currSelected;
@@ -7,10 +8,22 @@ interface props {
   starred: boolean | undefined;
   read: boolean | undefined;
   setCheckBox: any;
+  selectedMails: string[];
+  emailId: string;
+  checkBoxChecked: boolean;
 }
 
 export default function CheckBoxHandler(props: props) {
-  const { currentSelected, important, read, starred, setCheckBox } = props;
+  const {
+    currentSelected,
+    important,
+    read,
+    starred,
+    setCheckBox,
+    selectedMails,
+    emailId,
+    checkBoxChecked,
+  } = props;
 
   // control what types of mail  is selected from (SelectMailByCategoryComponent)
   useEffect(() => {
@@ -61,6 +74,20 @@ export default function CheckBoxHandler(props: props) {
         break;
     }
   }, [currentSelected, important, starred, read]);
+
+  useEffect(() => {
+    const isCurrentMailSelected: boolean =
+      selectedMails.filter((id) => id == emailId).length > 0;
+    if (isCurrentMailSelected) {
+      if (!checkBoxChecked) {
+        setCheckBox(true);
+      }
+    } else {
+      if (checkBoxChecked) {
+        setCheckBox(false);
+      }
+    }
+  }, [selectedMails]);
 
   return null;
 }

@@ -1,31 +1,51 @@
 import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
-import Image from "next/image";
 import classes from "./SendEmailButton.module.css";
-import schedule_send_icon from "../../assets/schedule_send_icon.svg";
 import { useSendMailMutation } from "../../../features/email/emailApi";
 import { useSelector } from "react-redux";
 import storeStateInterface from "../../../interface/Store.interface";
 import validateEmail from "../../../utils/emailValidator";
 import { useDispatch } from "react-redux";
-import { clearEmailInputs, isSendingMailLoadingAction, isSendingMailLoadingVisible, sentEmailBoxLarge, sentEmailBoxSmall, setAttachment, setAttachmentUploadProgg, setFirebaseUrl, setScheduledMailSentTimeSelectComponent, ToggleEmailSendError } from "../../../features/UI/UISlice";
+import {
+  clearEmailInputs,
+  isSendingMailLoadingAction,
+  isSendingMailLoadingVisible,
+  sentEmailBoxLarge,
+  sentEmailBoxSmall,
+  setAttachment,
+  setAttachmentUploadProgg,
+  setFirebaseUrl,
+  setScheduledMailSentTimeSelectComponent,
+  ToggleEmailSendError,
+} from "../../../features/UI/UISlice";
 // utilities functions imports
 import { fileToBase64, b64toBlob } from "../../../utils/fileToBase64";
-import { setToLocStrg, getFrmLocStrg } from "../../../utils/set&getFileFromLocalStorage";
-import { getDownloadURL, ref, uploadBytesResumable, deleteObject } from "firebase/storage";
+import {
+  setToLocStrg,
+  getFrmLocStrg,
+} from "../../../utils/set&getFileFromLocalStorage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+  deleteObject,
+} from "firebase/storage";
 import { storage } from "../../../firebase/firebase";
 import { deleteFile } from "../../../utils/deleteFileFromFirebase";
 import ScheduleSendButton from "./ScheduleSendButton";
 
- const SendEmailButton = () => {
+const SendEmailButton = () => {
   const [scheduleSend, setScheduleSend] = useState(false);
   const dispatch = useDispatch();
 
   const [sendMail, { isError, isLoading, data, isSuccess }] =
     useSendMailMutation();
 
-  const { sentAEmail, attachment, isSendingMailLoading, attachmentFirebaseReturnedUrl } = useSelector(
-    (state: storeStateInterface) => state.UI
-  );
+  const {
+    sentAEmail,
+    attachment,
+    isSendingMailLoading,
+    attachmentFirebaseReturnedUrl,
+  } = useSelector((state: storeStateInterface) => state.UI);
   const { to, subject, message } = sentAEmail;
 
   const sendMailHandler = () => {
@@ -59,15 +79,14 @@ import ScheduleSendButton from "./ScheduleSendButton";
     dispatch(clearEmailInputs());
     dispatch(setFirebaseUrl(""));
     // set the lading state for sending a mail to true (a custom toast)
-    dispatch(isSendingMailLoadingAction(true));
+    // dispatch(isSendingMailLoadingAction("Sending"));
     // set the visibility of the component ie (sendMailAlert) to true (a custom toast)
     dispatch(isSendingMailLoadingVisible(true));
   };
 
-
-  // same as send mail handler but only checks input field error and redirect to (ScheduledSentMailTimeSelectComponent)  
+  // same as send mail handler but only checks input field error and redirect to (ScheduledSentMailTimeSelectComponent)
   const sendScheduleMailHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
+    e.stopPropagation();
     // check if receiver email is valid
     const isValid = validateEmail(to);
 
@@ -85,32 +104,33 @@ import ScheduleSendButton from "./ScheduleSendButton";
       dispatch(ToggleEmailSendError(true));
       return;
     }
-      dispatch(setScheduledMailSentTimeSelectComponent(true))
-      dispatch(sentEmailBoxSmall(false));
-      dispatch(sentEmailBoxLarge(false));
+    dispatch(setScheduledMailSentTimeSelectComponent(true));
+    dispatch(sentEmailBoxSmall(false));
+    dispatch(sentEmailBoxLarge(false));
   };
-
-
-
-
-
-
-
-
 
   useEffect(() => {
     // check if request is sent and recived response or not to change the loading state in alertComponent
     if (data || isError) {
-      dispatch(isSendingMailLoadingAction(false));
+      if (data) {
+        dispatch(isSendingMailLoadingAction("Sent!"));
+      } 
+      if (isError) {
+         dispatch(
+           isSendingMailLoadingAction("Failed to Send! Please try again.")
+         );
+        ;
+      }
       // hide this component after sending email & getting response
       dispatch(sentEmailBoxSmall(false));
       dispatch(sentEmailBoxLarge(false));
 
       // execute the avove function to chage visiility (off) of email alert after 3s of receiving response
-      setTimeout(function () {
+       setTimeout(function () {
         dispatch(isSendingMailLoadingVisible(false));
       }, 4000);
     }
+
   }, [isError, isSuccess, dispatch, data]);
 
   // ....................    attachment management  (start)     .............................
@@ -161,7 +181,7 @@ import ScheduleSendButton from "./ScheduleSendButton";
   // attachment change handler
   const attachmentSelectHandler = (e: ChangeEvent<HTMLInputElement>) => {
     let tempFileName;
-    if (file && attachment!==null) {
+    if (file && attachment !== null) {
       tempFileName = file.name;
     }
     if (e.target.files && e.target.files[0]) {
@@ -214,56 +234,53 @@ import ScheduleSendButton from "./ScheduleSendButton";
     );
   };
 
-
   // ......................  save file to fire storage (end) ................
 
-  return (
-    !isSendingMailLoading.isComponentVisible ? (
-      <div className={classes.container}>
-        <div className={classes.bottom_options}>
-          <div onClick={sendMailHandler} className={classes.send_first_part}>
-            {scheduleSend && (
-              <div onClick={sendScheduleMailHandler} className={classes.schedule_send}>
-               <ScheduleSendButton />
-              </div>
-            )}
-            <p>Send</p>
-          </div>
-          <div className={classes.send_second_part}>
-            <button
-              onClick={() => setScheduleSend((prevState) => !prevState)}
-              // onBlur={() => setScheduleSend(false)}
-              className={classes.send_option_button}
+  return !isSendingMailLoading.isComponentVisible ? (
+    <div className={classes.container}>
+      <div className={classes.bottom_options}>
+        <div onClick={sendMailHandler} className={classes.send_first_part}>
+          {scheduleSend && (
+            <div
+              onClick={sendScheduleMailHandler}
+              className={classes.schedule_send}
             >
-              {scheduleSend && (
-                <span className={"material-icons"}>arrow_drop_up</span>
-              )}
-              {!scheduleSend && (
-                <span className={"material-icons"}>arrow_drop_down</span>
-              )}
-            </button>
-          </div>
+              <ScheduleSendButton />
+            </div>
+          )}
+          <p>Send</p>
         </div>
-        <div
-          className={classes.attachmentButton}
-          onClick={() => document.getElementById("fileInput")?.click()}
-        >
-          <input
-            id="fileInput"
-            type="file"
-            accept=".jpg,.jpeg,.png"
-            onChange={attachmentSelectHandler}
-          />
-          <span
-            className={`material-symbols-outlined ${classes.attchmentIcon}`}
+        <div className={classes.send_second_part}>
+          <button
+            onClick={() => setScheduleSend((prevState) => !prevState)}
+            // onBlur={() => setScheduleSend(false)}
+            className={classes.send_option_button}
           >
-            attach_file
-          </span>
+            {scheduleSend && (
+              <span className={"material-icons"}>arrow_drop_up</span>
+            )}
+            {!scheduleSend && (
+              <span className={"material-icons"}>arrow_drop_down</span>
+            )}
+          </button>
         </div>
       </div>
-    ) : <></>
-  );
+      <div
+        className={classes.attachmentButton}
+        onClick={() => document.getElementById("fileInput")?.click()}
+      >
+        <input
+          id="fileInput"
+          type="file"
+          accept=".jpg,.jpeg,.png"
+          onChange={attachmentSelectHandler}
+        />
+        <span className={`material-symbols-outlined ${classes.attchmentIcon}`}>
+          attach_file
+        </span>
+      </div>
+    </div>
+  ) : null
 };
 
-
-export default SendEmailButton
+export default SendEmailButton;

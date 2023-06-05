@@ -9,9 +9,10 @@ import SingleEmail from "../homePage/SingleEmail";
 import { useRef } from "react";
 import { scheduledType, snoozedType } from "../../interface/EmailType";
 import { useGetAllSnoozedMailsQuery } from "../../features/snoozedMail/snoozedMailApi";
+import Head from "next/head";
 
 export default function SnoozedPageComponent() {
-  const { UI } = useSelector((state: storeStateInterface) => state);
+  const { UI, auth } = useSelector((state: storeStateInterface) => state);
   const { onByToggle } = UI.sidebarOn;
 
   const refetchButtonRef = useRef(null);
@@ -24,12 +25,14 @@ export default function SnoozedPageComponent() {
   } = useGetAllSnoozedMailsQuery();
 
   let emailList;
+  let numberOfMails;
 
   if (isError) {
     emailList = <p>Something went wrong! Please try again.</p>;
   }
 
   if (data) {
+    numberOfMails = data.mails.length;
     emailList = data.mails.map((email: email) => (
       <SingleEmail
         pageType={snoozedType}
@@ -46,22 +49,38 @@ export default function SnoozedPageComponent() {
 
   if (data && data.mails.length == 0) {
     emailList = <p>No Email found!</p>;
+     numberOfMails = 0;
   }
 
-  return (
-    <div
-      style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
-      className={classes.box}
-    >
-      <div>
-        <Options
-          refetch={snoozedMailRefetch}
-          buttonRef={refetchButtonRef}
-          pageType={scheduledType}
-        />
+const headerTitle =
+  numberOfMails === 0
+    ? " - "
+    : numberOfMails
+    ? `(${numberOfMails}) - `
+    : "(error) ";
 
-        <div className={classes.mailList}>{emailList}</div>
+  return (
+    <>
+      <Head>
+        <title>
+          Snoozed {headerTitle}
+          {auth?.user?.email}
+        </title>
+      </Head>
+      <div
+        style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
+        className={classes.box}
+      >
+        <div>
+          <Options
+            refetch={snoozedMailRefetch}
+            buttonRef={refetchButtonRef}
+            pageType={scheduledType}
+          />
+
+          <div className={classes.mailList}>{emailList}</div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

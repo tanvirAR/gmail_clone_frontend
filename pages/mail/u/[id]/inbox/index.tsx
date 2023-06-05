@@ -1,7 +1,7 @@
-import RightContainer from "../../../../../Components/homePage/InboxEmails";
+import InboxMails from "../../../../../Components/homePage/InboxEmails";
 
 function Inbox() {
-  return <RightContainer />;
+  return <InboxMails />;
 }
 
 

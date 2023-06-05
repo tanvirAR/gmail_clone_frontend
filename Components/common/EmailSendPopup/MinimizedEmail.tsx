@@ -1,7 +1,4 @@
-import Image from "next/image";
 import classes from "./MinimizedEmail.module.css";
-import open_in_full from "../../../assets/open_in_full.svg";
-import close_icon_2 from "../../../assets/close_icon.svg";
 import { useDispatch } from "react-redux";
 import {
   sentEmailBoxLarge,
@@ -29,9 +26,11 @@ export default function MinimizedEmail() {
   };
 
   // control conditional rendering with on global state
-  const {minimizeEmailPop} = useSelector((state: storeStateInterface) => state.UI);
-  if(!minimizeEmailPop){
-    return null
+  const { minimizeEmailPop } = useSelector(
+    (state: storeStateInterface) => state.UI
+  );
+  if (!minimizeEmailPop) {
+    return null;
   }
   return (
     <div className={classes.minimizeEmailContainer}>
@@ -45,18 +44,19 @@ export default function MinimizedEmail() {
         >
           minimize
         </span>
-        <Image
+
+        <span
           onClick={minimizeToFullScreen}
-          className={classes.open_in_full}
-          src={open_in_full}
-          alt=""
-        />
-        <Image
+          className="material-symbols-outlined"
+        >
+          open_in_full
+        </span>
+        <span
           onClick={closeMinimizedPopup}
-          className={classes.close_icon_2}
-          src={close_icon_2}
-          alt=""
-        />
+          className="material-symbols-outlined"
+        >
+          close
+        </span>
       </div>
     </div>
   );
