@@ -5,20 +5,24 @@ import { Provider } from "react-redux";
 import Header from "../Components/header/Header";
 import Sidebar from "../Components/sidebar/Sidebar";
 
-import MinimizedEmail from "../Components/homePage/MinimizedEmail";
+import MinimizedEmail from "../Components/common/EmailSendPopup/MinimizedEmail";
 import ConditionalComponent from "../Components/common/conditionalComponent/ConditionalComponent";
 
 import { sidebarVisibleComponents } from "./type";
+import { useState } from "react";
+import AuthCheck from "../auth/AuthCheck";
+import InitialLoadingComponent from "../Components/common/Loader/InitialLoadingComponent";
 
 export default function App({ Component, pageProps }: AppProps) {
   const showSidebar: boolean = sidebarVisibleComponents.includes(Component.name);
+  const [loading, setLoading] = useState(true);
+
 
   return (
     <Provider store={store}>
       {showSidebar ? (
         <>
-          <Header />
-          <div
+         {!loading && ( <><Header /><div
             style={{
               display: "flex",
               position: "relative",
@@ -29,12 +33,14 @@ export default function App({ Component, pageProps }: AppProps) {
             <Sidebar />
             <Component {...pageProps} />
             <MinimizedEmail />
-          </div>
-          <ConditionalComponent />
+          </div></>)}
+          <ConditionalComponent   />
         </>
       ) : (
-        <Component {...pageProps} />
+        !loading && <Component {...pageProps} />
       )}
+      {loading && <InitialLoadingComponent />}
+      <AuthCheck setLoading={setLoading} />
     </Provider>
   );
 }

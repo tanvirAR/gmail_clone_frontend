@@ -4,6 +4,7 @@ import { emailSlice as emailSliceInterface } from "../../interface/EmailSliceInt
 const initialState: emailSliceInterface = {
   currentSelected: "none",
   selectedMails: [],
+  selectedMailsWithProps: [],
 };
 
 const emailSlice = createSlice({
@@ -19,11 +20,22 @@ const emailSlice = createSlice({
     },
 
     removeMailFromSelectedList: (state, action) => {
-      state.selectedMails = state.selectedMails.filter(maildId => maildId !== action.payload)
+      state.selectedMails = state.selectedMails.filter(
+        (maildId) => maildId !== action.payload
+      );
     },
 
     resetSelectedMails(state) {
       return initialState;
+    },
+
+    setSelectedMailsWithProps: (state, action) => {
+      state.selectedMailsWithProps.push(action.payload);
+    },
+    removeMailFromSelectedMailsWithPropsList: (state, action) => {
+      state.selectedMailsWithProps = state.selectedMailsWithProps.filter(
+        (email) => email.id !== action.payload
+      );
     },
   },
 });
@@ -33,6 +45,8 @@ export const {
   setSelectedMails,
   removeMailFromSelectedList,
   resetSelectedMails,
+  removeMailFromSelectedMailsWithPropsList,
+  setSelectedMailsWithProps,
 } = emailSlice.actions;
 
 export default emailSlice.reducer;

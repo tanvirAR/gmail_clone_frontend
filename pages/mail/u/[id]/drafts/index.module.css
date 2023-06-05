@@ -1,0 +1,10 @@
+.main {
+  flex: 1;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  margin-top: 2.5rem;
+  font-weight: 600;
+}

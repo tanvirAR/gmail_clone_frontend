@@ -6,23 +6,22 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   removeMailFromSelectedList,
+  removeMailFromSelectedMailsWithPropsList,
   resetSelectedMails,
   setSelectedMails,
+  setSelectedMailsWithProps,
 } from "../../features/email/emailSlice";
 import { useSelector } from "react-redux";
 import storeStateInterface from "../../interface/Store.interface";
+
 import {
-  setImportantEmailAdditionalData,
-  setInboxEmailAdditionalData,
-  setScheduledEmailAdditionalData,
-  setSnoozedEmailAdditionalData,
-  setSentEmailAdditionalData,
-  setSpamEmailAdditionalData,
-  setStarredEmailAdditionalData,
-  setTrashEmailAdditionalData,
-} from "../../features/additionalEmailData/additionalEmailDataSlice";
-import { useMarkMailAsImportantMutation } from "../../features/importantEmail/importantEmailApi";
-import { useMarkMailAsStarredMutation } from "../../features/starredEmail/starredEmailApi";
+  useMarkMailAsImportantMutation,
+  useMarkMailAsUnImportantMutation,
+} from "../../features/importantEmail/importantEmailApi";
+import {
+  useMarkMailAsStarredMutation,
+  useMarkMailAsUnStarredMutation,
+} from "../../features/starredEmail/starredEmailApi";
 import { useGetAdditionalSingleMailPropertyQuery } from "../../features/additionalEmailData/additionalEmailDataApi";
 import {
   useMarkReadSingleMailMutation,
@@ -30,52 +29,43 @@ import {
 } from "../../features/readMail/readMailApi";
 import { useMarkTrashSingleInboxMailMutation } from "../../features/trashMail/trashMailApi";
 import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
-import {
-  starredType,
-  inboxType,
-  draftsType,
-  scheduledType,
-  sentType,
-  snoozedType,
-  spamType,
-  trashType,
-  importantType,
-} from "../../interface/EmailType";
-import checkIfAlredyPresentInSlice from "../../utils/checkSingleEmailAdditionalDataInSlice";
+import { searchedEmailType, sentType } from "../../interface/EmailType";
 import SnoozeOption from "./SnoozeOption";
 import {
   setMailIdForSnoozed,
   setSnoozedMailTimeComponent,
 } from "../../features/UI/UISlice";
-import { accountNumber } from "../../constants/userAccountSerial";
+import { accountNumber } from "../../constants/constants";
+import { singleMailAdditionalData } from "../../interface/additionalEmailDataSlice.interafce";
+import AdditionalEmailDataHandler from "./AdditionalEmailDataHandler";
+import CheckBoxHandler from "./CheckBoxHandler";
 
 interface props {
   property: email;
   buttonRef?: any;
   pageType: emailType;
+
+  // only needed and applicaple when page is on searched mail result
+  searchedMailQuery?: string;
 }
 
 export default function SingleEmail(props: props) {
   const dispatch = useDispatch();
-  const { email, additionalEmailData } = useSelector(
+  const { email, additionalEmailData, auth } = useSelector(
     (state: storeStateInterface) => state
   );
 
   const { currentSelected, selectedMails } = email;
 
   const {
-    important: importantEmailAdditionalDataSlice,
-    inbox: inboxEmailAdditionalDataSlice,
-    starred: starredEmailAdditionalDataSlice,
-    sent: sentEmailAdditionalDataSlice,
-    spam: spamEmailAdditionalDataSlice,
-    trash: trashEmailAdditionalDataSlice,
-    scheuduled: scheduledEmailAdditionalDataSlice,
-    snoozed: snoozedEmailAdditionalDataSlice,
-  } = additionalEmailData;
+    buttonRef,
+    pageType,
+    searchedMailQuery,
+    property: emailProperty,
+  } = props;
 
-  const { buttonRef, pageType } = props;
-  const { message, subject, senderName, createdAt, id } = props.property;
+  const { message, subject, senderName, createdAt, id, senderEmail } =
+    props.property;
   const [idLoaded, setIdLoaded] = useState(false);
 
   const [checkBox, setCheckBox] = useState(false);
@@ -87,18 +77,28 @@ export default function SingleEmail(props: props) {
     data: additiionalEmailData,
     refetch: refetchAdditionalMailData,
     isFetching,
-  } = useGetAdditionalSingleMailPropertyQuery(
-    { mailId: id, pageType },
-    {
-      skip: !idLoaded,
+  } = useGetAdditionalSingleMailPropertyQuery(id, {
+    skip: !idLoaded,
+  });
+  useEffect(() => {
+    if (id) {
+      setIdLoaded(true);
     }
-  );
+  }, [id]);
 
   const [markMailAsImportant, { isLoading: isMarkingMailAsImportantLoading }] =
     useMarkMailAsImportantMutation();
 
+  const [
+    markMailAsUnImportant,
+    { isLoading: isMarkingMailAsUnImportantLoading },
+  ] = useMarkMailAsUnImportantMutation();
+
   const [markMailAsStarred, { isLoading: starredLoading }] =
     useMarkMailAsStarredMutation();
+
+  const [markMailAsUnStarred, { isLoading: unStarredLoading }] =
+    useMarkMailAsUnStarredMutation();
 
   // email read & unread mutation request
   const [markReadSingleMail, {}] = useMarkReadSingleMailMutation();
@@ -106,102 +106,12 @@ export default function SingleEmail(props: props) {
 
   const [markTrashSingleInboxMail, {}] = useMarkTrashSingleInboxMailMutation();
 
-  useEffect(() => {
-    if (id) {
-      setIdLoaded(true);
-    }
-  }, [id]);
-
   const time = moment(createdAt);
 
   const router = useRouter();
 
   const { mail } = additiionalEmailData || {};
-  const { important, starred, read } = mail || {};
-
-  useEffect(() => {
-    if (mail && !isFetching) {
-      if (pageType === inboxType) {
-        // changing router can inject additional email data multple times in slice , so checking is done before dispatch
-        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
-          inboxEmailAdditionalDataSlice,
-          mail
-        );
-        if (!isAlreadyAddedBefore) {
-          dispatch(setInboxEmailAdditionalData(mail));
-        }
-      } else if (pageType === starredType) {
-        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
-          starredEmailAdditionalDataSlice,
-          mail
-        );
-        if (!isAlreadyAddedBefore) {
-          dispatch(setStarredEmailAdditionalData(mail));
-        }
-      } else if (pageType === importantType) {
-        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
-          importantEmailAdditionalDataSlice,
-          mail
-        );
-        if (!isAlreadyAddedBefore) {
-          dispatch(setImportantEmailAdditionalData(mail));
-        }
-      } else if (pageType === sentType) {
-        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
-          sentEmailAdditionalDataSlice,
-          mail
-        );
-        if (!isAlreadyAddedBefore) {
-          dispatch(setSentEmailAdditionalData(mail));
-        }
-      } else if (pageType === spamType) {
-        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
-          spamEmailAdditionalDataSlice,
-          mail
-        );
-        if (!isAlreadyAddedBefore) {
-          dispatch(setSpamEmailAdditionalData(mail));
-        }
-      } else if (pageType === trashType) {
-        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
-          trashEmailAdditionalDataSlice,
-          mail
-        );
-        if (!isAlreadyAddedBefore) {
-          dispatch(setTrashEmailAdditionalData(mail));
-        }
-      } else if (pageType === scheduledType) {
-        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
-          scheduledEmailAdditionalDataSlice,
-          mail
-        );
-        if (!isAlreadyAddedBefore) {
-          dispatch(setScheduledEmailAdditionalData(mail));
-        }
-      } else if (pageType === snoozedType) {
-        const isAlreadyAddedBefore = checkIfAlredyPresentInSlice(
-          snoozedEmailAdditionalDataSlice,
-          mail
-        );
-        if (!isAlreadyAddedBefore) {
-          dispatch(setSnoozedEmailAdditionalData(mail));
-        }
-      }
-    }
-  }, [
-    mail,
-    dispatch,
-    pageType,
-    inboxEmailAdditionalDataSlice,
-    starredEmailAdditionalDataSlice,
-    sentEmailAdditionalDataSlice,
-    importantEmailAdditionalDataSlice,
-    spamEmailAdditionalDataSlice,
-    trashEmailAdditionalDataSlice,
-    scheduledEmailAdditionalDataSlice,
-    snoozedEmailAdditionalDataSlice,
-    isFetching,
-  ]);
+  const { important, starred, read } = (mail as singleMailAdditionalData) || {};
 
   // route to single email page
   const openSingleMailHandler = () => {
@@ -211,7 +121,13 @@ export default function SingleEmail(props: props) {
     }
     // reset selected mails slice before changing pages
     dispatch(resetSelectedMails());
-    router.push(`/mail/u/${accountNumber}/${pageType}/${id}`);
+    if (pageType === searchedEmailType) {
+      router.push(
+        `/mail/u/${accountNumber}/${pageType}/${searchedMailQuery}/${id}`
+      );
+    } else {
+      router.push(`/mail/u/${accountNumber}/${pageType}/${id}`);
+    }
   };
 
   const manualUpdataMailReadUnreadProp = (
@@ -228,25 +144,35 @@ export default function SingleEmail(props: props) {
 
   const markDeleteMailHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    markTrashSingleInboxMail(id);
+    markTrashSingleInboxMail({mailId: id, mailProperty: emailProperty, pageType});
   };
 
   const markMailAsImportantHandler = () => {
     // tell the rtk quey to send request by disabling skip option
     if (!isMarkingMailAsImportantLoading) {
-      markMailAsImportant(id);
+      if (important) {
+        markMailAsUnImportant(id);
+      } else {
+        markMailAsImportant({ mailId: id, emailProperty: props.property });
+      }
     }
   };
 
   const markMailAsStarredHandler = () => {
     // tell the rtk quey to send request by disabling skip option
     if (!starredLoading) {
-      markMailAsStarred(id);
+      if (starred) {
+        markMailAsUnStarred(id);
+      } else {
+        markMailAsStarred({ mailId: id, emailProperty: props.property });
+      }
     }
   };
 
-  //  additional data refetch handler. the button component is in another child of parent component
-  //   which is brought down here by useRef
+  /*  additional data refetch handler. the button component is in another child of parent component
+     which is brought down here by useRef. When user click refetch button on Options Component, all emails will be refetched as well as 
+     this specific additionalEmailData will also be refetched by dynamically executing a click event. The click event is executed in Options Container
+     and lister is used here to refetch additional email data  which has dynamic api to the server   */
   useEffect(() => {
     const currentRef = buttonRef.current;
 
@@ -257,62 +183,14 @@ export default function SingleEmail(props: props) {
     };
   }, [buttonRef, refetchAdditionalMailData]);
 
-  // controll what types of mail  is selected from (SelectMailByCategoryComponent)
-  useEffect(() => {
-    setCheckBox(false);
-    switch (currentSelected) {
-      case "allMail":
-        setCheckBox(true);
-        break;
-
-      case "important":
-        if (important) {
-          setCheckBox(true);
-        }
-        break;
-
-      case "read":
-        if (read) {
-          setCheckBox(true);
-        }
-        break;
-
-      case "unRead":
-        if (!read) {
-          setCheckBox(true);
-        }
-        break;
-
-      case "starred":
-        if (starred) {
-          setCheckBox(true);
-        }
-        break;
-
-      case "unStarred":
-        if (!starred) {
-          setCheckBox(true);
-        }
-        break;
-
-      case "unImportant":
-        if (!important) {
-          setCheckBox(true);
-        }
-        break;
-
-      case "none":
-        setCheckBox(false);
-        break;
-    }
-  }, [currentSelected, important, starred, read]);
-
   // use to add mails that are selected by user in the emailSlice to execute CRUD operation with each mail.
   useEffect(() => {
     if (checkBox) {
       dispatch(setSelectedMails(id));
+      dispatch(setSelectedMailsWithProps(emailProperty));
     } else if (selectedMails.includes(id) && !checkBox) {
       dispatch(removeMailFromSelectedList(id));
+      dispatch(removeMailFromSelectedMailsWithPropsList(id));
     } else {
       return;
     }
@@ -328,15 +206,32 @@ export default function SingleEmail(props: props) {
     dispatch(setSnoozedMailTimeComponent(true));
   };
 
+  const classesForMainDiv = `${styles["email_row"]} ${
+    read ? styles.read : styles.unread
+  } ${!starred ? styles.starColorHover : ""} ${
+    checkBox ? styles.selected : ""
+  } ${snoozeOptionShow ? styles.snoozeToggled : ""}`;
+
+ const emailSenderName = pageType===sentType ? "You" : ( senderEmail == auth?.user?.email ? "You" : senderName);
+
   return (
-    <div
-      className={`${styles["email_row"]} ${
-        read ? styles.read : styles.unread
-      } ${!starred ? styles.starColorHover : ""} ${
-        checkBox ? styles.selected : ""
-      } ${snoozeOptionShow ? styles.snoozeToggled : ""}`}
-      onClick={openSingleMailHandler}
-    >
+    <div className={classesForMainDiv} onClick={openSingleMailHandler}>
+      <AdditionalEmailDataHandler
+        additionalEmailData={additionalEmailData}
+        isFetching={isFetching}
+        mail={mail}
+        pageType={pageType}
+      />
+      <CheckBoxHandler
+        currentSelected={currentSelected}
+        important={important}
+        read={read}
+        setCheckBox={setCheckBox}
+        starred={starred}
+        selectedMails={selectedMails}
+        checkBoxChecked={checkBox}
+        emailId={id}
+      />
       <div
         onClick={(e) => e.stopPropagation()}
         className={`${styles["emailRow_options"]} ${
@@ -362,16 +257,13 @@ export default function SingleEmail(props: props) {
           label_important
         </span>
       </div>
-
-      <h3 className={styles["emailRow_title"]}>{senderName}</h3>
-
+      <h3 className={styles["emailRow_title"]}>{emailSenderName}</h3>
       <div className={styles["emailRow_message"]}>
         <h4>
           {subject}
           <span className={styles["emailRow_description"]}>{message}</span>
         </h4>
       </div>
-
       <div onClick={(e) => e.stopPropagation()} className={styles.leftDiv}>
         <div onClick={(e) => e.stopPropagation()} className={styles.icons}>
           <div onClick={markDeleteMailHandler} className={styles.leftIcon}>

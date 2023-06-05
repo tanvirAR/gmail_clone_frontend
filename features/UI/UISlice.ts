@@ -22,7 +22,7 @@ const initialState: InitialState = {
   sentEmailErrorPopUpToggled: false,
   // loading a custom toast after sending a email
   isSendingMailLoading: {
-    isLoading: false,
+    message: 'Sending...',
     isComponentVisible: false,
   },
 
@@ -92,7 +92,7 @@ const UISlice = createSlice({
 
     // send mail alert visibility handling
     isSendingMailLoadingAction: (state, action) => {
-      state.isSendingMailLoading.isLoading = action.payload;
+      state.isSendingMailLoading.message = action.payload;
     },
     isSendingMailLoadingVisible: (state, action) => {
       state.isSendingMailLoading.isComponentVisible = action.payload;

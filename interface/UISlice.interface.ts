@@ -14,7 +14,7 @@ interface UIInitialState {
   };
   sentEmailErrorPopUpToggled: boolean;
   isSendingMailLoading: {
-    isLoading: boolean;
+    message: sendingMailMessage;
     isComponentVisible: boolean;
   };
   attachment: {
@@ -36,3 +36,6 @@ interface UIInitialState {
   };
 }
 export default UIInitialState;
+
+
+export type sendingMailMessage = "Sending..." | "Sent!" | "Failed to Send! Please try again."

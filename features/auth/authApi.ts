@@ -26,8 +26,32 @@ export const authApi = apiSlice.injectEndpoints({
         },
       }),
     }),
- 
+
+    logout: builder.mutation<any, void>({
+      query: () => ({
+        url: "/",
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "content-type": "application/json",
+        },
+      }),
+    }),
+
+    checkLogin: builder.query<any, void>({
+      query: () => ({
+        url: "/",
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "content-type": "application/json",
+        },
+      }),
+    }),
   }),
 });
 
-export const { useSignupMutation, useLoginMutation } = authApi;
+export const { useSignupMutation, useLoginMutation, useCheckLoginQuery, useLogoutMutation } = authApi;
+
+
+// <any, void>

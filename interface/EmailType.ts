@@ -9,4 +9,7 @@ export const spamType: emailType = "spam";
 export const scheduledType: emailType = "scheduled";
 export const trashType: emailType = "trash";
 export const importantType: emailType = "important"
+export const searchedEmailType: emailType = "search"
+
+
 

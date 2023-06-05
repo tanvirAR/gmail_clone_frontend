@@ -1,14 +1,16 @@
 import moment from "moment";
-import UserIcon from "../common/UserIcon";
-import EmailOptions from "./EmailOptions";
-import styles from "./SingleEmailPage.module.css";
-import Image from "next/image";
 import { useDispatch } from "react-redux";
-import { setAttachmentView } from "../../features/UI/UISlice";
-import { useSelector } from "react-redux";
-import storeStateInterface from "../../interface/Store.interface";
 import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import Image from "next/image";
 import { useRouter } from "next/router";
+
+import styles from "./SingleEmailPage.module.css";
+
+import UserIcon from "../common/icon/UserIcon";
+import EmailOptions from "./EmailOptions";
+import { setAttachmentView } from "../../features/UI/UISlice";
+import storeStateInterface from "../../interface/Store.interface";
 import { useGetSingleMailQuery } from "../../features/singleEmail/singleEmailApi";
 import { useGetAdditionalSingleMailPropertyQuery } from "../../features/additionalEmailData/additionalEmailDataApi";
 import { inboxType, scheduledType } from "../../interface/EmailType";
@@ -20,7 +22,7 @@ import {
   getSnoozeTimeMessage,
 } from "../../utils/timeFormat";
 import { useCancellScheduledMailMutation } from "../../features/scheduledMail/scheduledMailApi";
-import { accountNumber } from "../../constants/userAccountSerial";
+import { accountNumber } from "../../constants/constants";
 
 interface prop {
   emailId: string | undefined;
@@ -90,6 +92,14 @@ const SingleEmailPage = (props: prop) => {
     }
   );
 
+  useEffect(() => {
+    if(isError) {
+      redirectToEmailListPageHandler()
+    }
+  }, [isError])
+
+ 
+
   const { mail } = data || {};
   const { senderName, senderEmail, subject, createdAt, message, attachment } =
     mail || {};
@@ -151,7 +161,7 @@ const SingleEmailPage = (props: prop) => {
     type === scheduledType && scheduledCancelMessage !== "";
 
   return (
-    <>
+   !isLoading && !isError && (<>
       <div
         style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
         className={styles.container}
@@ -246,7 +256,7 @@ const SingleEmailPage = (props: prop) => {
           )}
         </div>
       </div>
-    </>
+    </>)
   );
 };
 

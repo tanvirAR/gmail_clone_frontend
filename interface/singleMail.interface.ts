@@ -3,7 +3,7 @@ export  interface email {
     createdAt: string;
     sender: string;
     senderId: string;
-    senderMail: string;
+    senderEmail: string;
     receiver: string;
     receiverId: string;
     subject: string;

@@ -1,0 +1,58 @@
+.minimizeEmailContainer {
+  width: 200px;
+  height: 85px;
+  background: #e1e2e3;
+  align-self: flex-end;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 1.5rem;
+  position: absolute;
+  right: 3%;
+}
+
+.minimizeEmailContainer * {
+  margin-top: -15%;
+  font-size: 14px;
+  color: #0c1e49;
+  /* padding: 0; */
+}
+
+.minimizeEmailContainer p {
+  margin-left: 7%;
+}
+
+.close_minimize_options {
+  display: flex;
+  width: 28%;
+  justify-content: space-between;
+  margin-right: 0.25rem;
+}
+
+.close_minimize_options span {
+  font-weight: 700;
+
+}
+
+.open_in_full {
+  width: 12px;
+  height: 12px;
+  filter: invert(31%) sepia(12%) saturate(63%) hue-rotate(131deg)
+    brightness(90%) contrast(86%);
+}
+
+.close_icon_2 {
+  width: 15px;
+  height: 15px;
+  margin-right: 5%;
+  filter: invert(31%) sepia(12%) saturate(63%) hue-rotate(131deg)
+    brightness(90%) contrast(86%);
+}
+
+.minimizeEmailContainer .minimize {
+  color: #4f5151;
+}

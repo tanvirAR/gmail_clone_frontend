@@ -1,0 +1,28 @@
+.settingsBox {
+    position: absolute;
+    top: 110%;
+    z-index: 501;
+    width: 7rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 1rem;
+    font-size: 14px;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(243, 241, 241);
+    box-shadow: 0 3px 10px rgb(0,0,0,0.2);
+    color: rgb(104, 104, 104);
+    font-weight: 600;
+    border-radius: 1rem;
+}
+
+.settingsBox:hover {
+    background-color: white;
+    color: black;
+}
+
+.settingsBox div {
+    scale: 0.8;
+}

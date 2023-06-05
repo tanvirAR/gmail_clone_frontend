@@ -1,9 +1,12 @@
+import { email } from "./singleMail.interface";
+
 export interface emailSlice {
   currentSelected: currSelected;
   selectedMails: string[];
+  selectedMailsWithProps: email[];
 }
 
-type currSelected =
+export type currSelected =
   | "allMail"
   | "none"
   | "read"

@@ -1,4 +1,5 @@
 import { readMailInterface } from "../../interface/readMail.interface";
+import { additionalEmailDataApi } from "../additionalEmailData/additionalEmailDataApi";
 import { apiSlice } from "../api/apiSlice";
 
 export const readEmailApi = apiSlice.injectEndpoints({
@@ -13,6 +14,25 @@ export const readEmailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        // optimistic cache update
+        const patchResult = dispatch(
+          additionalEmailDataApi.util.updateQueryData(
+            "getAdditionalSingleMailProperty",
+            arg.mailId,
+            (draft) => {
+              draft.mail.read = true;
+            }
+          )
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          // if fails, reverse cache state
+          patchResult.undo();
+        }
+      },
     }),
 
     markUnReadSingleMail: builder.mutation({
@@ -25,6 +45,25 @@ export const readEmailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        // optimistic cache update
+        const patchResult = dispatch(
+          additionalEmailDataApi.util.updateQueryData(
+            "getAdditionalSingleMailProperty",
+            arg.mailId,
+            (draft) => {
+              draft.mail.read = false;
+            }
+          )
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          // if fails, reverse cache state
+          patchResult.undo();
+        }
+      },
     }),
   }),
 });

@@ -1,0 +1,27 @@
+.emailSentAlert {
+  position: absolute;
+  bottom: 10%;
+  left: 7%;
+  background-color: #202124;
+  height: 2.5rem;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 10000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgb(30, 118, 153);
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+}
+
+.emailSentAlert p {
+  margin-left: 1rem;
+  padding-right: 1rem;
+}
+
+.error {
+  color: rgb(225, 46, 126);
+}
