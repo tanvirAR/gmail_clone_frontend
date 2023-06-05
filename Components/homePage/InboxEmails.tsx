@@ -9,9 +9,11 @@ import SingleEmail from "./SingleEmail";
 import { email } from "../../interface/singleMail.interface";
 import { useRef } from "react";
 import { inboxType } from "../../interface/EmailType";
+import Head from "next/head";
 
 export default function RightContainer() {
-  const { sidebarOn } = useSelector((state: storeStateInterface) => state.UI);
+  const { UI, auth } = useSelector((state: storeStateInterface) => state);
+  const { sidebarOn } = UI;
 
   /* this ref is used to make a dynamic click event to refetch additionalEmailData, the refetch function for that is in SingleEmail Component  */
   const buttonRefForRefetchingAdditionalSingleEmailData = useRef(null);
@@ -25,15 +27,17 @@ export default function RightContainer() {
 
     /* refetch function is passed down to Options component to refetch all emails on a page when user click refetch */
     refetch: emailsRefetch,
-  } = useGetAllMailsQuery(inboxType);
+  } = useGetAllMailsQuery();
 
   let emailList;
+  let numberOfMails;
 
   if (isError) {
-    emailList = <p>Error occured! Please try again.</p>;
+    emailList = <p>Something went wrong! Please try again.</p>;
   }
 
   if (data) {
+    numberOfMails = data.mails.length;
     emailList = data.mails.map((email: email) => (
       <SingleEmail
         property={email}
@@ -50,23 +54,39 @@ export default function RightContainer() {
 
   if (data && data.mails.length == 0) {
     emailList = <p>No Email found!</p>;
+     numberOfMails = 0;
   }
 
-  return (
-    <div
-      style={!sidebarOn.onByToggle ? { marginLeft: "4.5rem" } : {}}
-      className={styles["emailList"]}
-    >
-      <div>
-        <Options
-          refetch={emailsRefetch}
-          buttonRef={buttonRefForRefetchingAdditionalSingleEmailData}
-          pageType={inboxType}
-        />
+  const headerTitle =
+    numberOfMails === 0
+      ? " - "
+      : numberOfMails
+      ? `(${numberOfMails}) - `
+      : "(error) ";
 
-        <EmailSection />
-        <EmailList emailList={emailList} />
+  return (
+    <>
+      <Head>
+        <title>
+          Inbox {headerTitle}
+          {auth?.user?.email}
+        </title>
+      </Head>
+      <div
+        style={!sidebarOn.onByToggle ? { marginLeft: "4.5rem" } : {}}
+        className={styles["emailList"]}
+      >
+        <div>
+          <Options
+            refetch={emailsRefetch}
+            buttonRef={buttonRefForRefetchingAdditionalSingleEmailData}
+            pageType={inboxType}
+          />
+
+          <EmailSection />
+          <EmailList emailList={emailList} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

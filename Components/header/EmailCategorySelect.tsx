@@ -111,7 +111,7 @@ export default function EmailCategorySelect(props: props) {
   ));
 
   return (
-    <div ref={thisCompRef} className={styles.category}>
+    <div ref={thisCompRef}  className={styles.category}>
       {contents}
     </div>
   );

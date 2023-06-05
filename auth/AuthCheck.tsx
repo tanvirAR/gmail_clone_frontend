@@ -9,6 +9,8 @@ interface props {
   setLoading: any;
 }
 
+const timeoutDuration:number = 2000;
+
 export default function AuthCheck(props: props) {
   const { setLoading } = props;
   const router = useRouter()
@@ -21,12 +23,15 @@ export default function AuthCheck(props: props) {
 
     if (data && !isError) {
       dispatch(setUser(data.user));
-      timeOut = setTimeout(() => setLoading(false), 2000);
+      if (router.asPath=="/") {
+      router.push(`/mail/u/${accountNumber}/inbox`)
+      }
+      timeOut = setTimeout(() => setLoading(false), timeoutDuration);
     }
 
     if (isError) {
         router.push("/")
-        timeOut = setTimeout(() => setLoading(false), 2000);
+        timeOut = setTimeout(() => setLoading(false), timeoutDuration);
     }
    
     return () => clearTimeout(timeOut)

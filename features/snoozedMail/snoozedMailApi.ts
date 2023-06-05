@@ -1,6 +1,7 @@
+import { keepUnusedDataInSeconds } from "../../constants/constants";
 import { apiSlice } from "../api/apiSlice";
 
-export const emailApi = apiSlice.injectEndpoints({
+export const snoozedEmailApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     markMailAsSnoozed: builder.mutation({
       query: (data: { mailId: string; time: string }) => ({
@@ -35,6 +36,7 @@ export const emailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+      keepUnusedDataFor: keepUnusedDataInSeconds,
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         // beforerefetch,  clear slice state data of selected mails in email slice and addtinal email data from additionalDataEmailSlice
         // dispatch(resetSelectedMails());
@@ -44,4 +46,4 @@ export const emailApi = apiSlice.injectEndpoints({
 });
 
 export const { useGetAllSnoozedMailsQuery, useCancellSnoozeMailMutation, useMarkMailAsSnoozedMutation } =
-  emailApi;
+  snoozedEmailApi;

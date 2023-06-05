@@ -1,10 +1,12 @@
 import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
-import { readMailInterface } from "../../interface/readMail.interface";
 import sendMailReqBodyInterface from "../../interface/sendMailReqBody.interface";
-import { resetImportantMailAdditionalData, resetInboxMailAdditionalData, resetStarredMailAdditionalData } from "../additionalEmailData/additionalEmailDataSlice";
+
 import { apiSlice } from "../api/apiSlice";
 import { resetSelectedMails } from "./emailSlice";
-import { inboxType, starredType, importantType } from "../../interface/EmailType";
+
+import { sentMailApi } from "../sentMail/sentMailApi";
+import { keepUnusedDataInSeconds } from "../../constants/constants";
+import { io } from "socket.io-client";
 
 export const emailApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -18,10 +20,29 @@ export const emailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const response = await queryFulfilled;
+
+          /* if email send sucessfully, insert the mail into sent mail page chache query. */
+          dispatch(
+            sentMailApi.util.updateQueryData(
+              "getSentMails",
+              undefined,
+              (draft) => {
+                draft.mails.unshift(response.data.mail);
+              }
+            )
+          );
+        } catch (err) {
+          // error handling is done inside compoennts
+        }
+      },
     }),
 
-    getAllMails: builder.query({
-      query: (pageType: emailType) => ({
+    getAllMails: builder.query<any, void>({
+      query: () => ({
         url: "/email/getmails",
         method: "GET",
         credentials: "include",
@@ -29,17 +50,43 @@ export const emailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+      keepUnusedDataFor: keepUnusedDataInSeconds,
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-        // beforerefetch,  clear slice state data of selected mails in email slice and addtinal email data from additionalDataEmailSlice
+        // beforerefetch,  clear slice state data of selected mails in email slice
         dispatch(resetSelectedMails());
-        // const pageType = arg;
-        // if (pageType === inboxType) {
-        //   dispatch(resetInboxMailAdditionalData());
-        // } else if (pageType === starredType) {
-        //   dispatch(resetStarredMailAdditionalData());
-        // } else if (pageType === importantType) {
-        //   dispatch(resetImportantMailAdditionalData());
-        // }
+      },
+
+      async onCacheEntryAdded(
+        arg,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        /* @Socket Implementation */
+        const socket = io("http://localhost:9000", {
+          reconnectionDelay: 1000,
+          reconnection: true,
+          reconnectionAttempts: 10,
+          transports: ["websocket"],
+          agent: false,
+          upgrade: false,
+          rejectUnauthorized: false,
+        });
+
+        try {
+          await cacheDataLoaded;
+
+          socket.on("newEmail", (data) => {
+            if (data) {
+              updateCachedData((draft) => {
+                if (draft.userId == data.data.receiverId) {
+                  draft.mails.unshift(data?.data);
+                }
+              });
+            }
+          });
+        } catch (err) {}
+
+        await cacheEntryRemoved;
+        socket.close();
       },
     }),
   }),

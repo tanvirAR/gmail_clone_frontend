@@ -1,3 +1,4 @@
+import { keepUnusedDataInSeconds } from "../../constants/constants";
 import { apiSlice } from "../api/apiSlice";
 
 export const sentMailApi = apiSlice.injectEndpoints({
@@ -11,8 +12,9 @@ export const sentMailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+      keepUnusedDataFor: keepUnusedDataInSeconds,
     }),
-
+  
 
   }),
 });

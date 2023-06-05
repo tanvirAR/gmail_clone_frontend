@@ -116,8 +116,7 @@ export default function MoreOptions(props: props) {
     };
   }, [setShowComponent, toggleButtonRef]);
 
-  // this component (options)  is used to render different option to UI based on the type of email selected by user to mutates them
-
+  /* this component (options)  is used to render different option to UI based on the type of email selected by user to change emails property */
   const isDefaultContent = selectedMails.length === 0;
   const isSingleMailSelected = selectedMails.length === 1;
 

@@ -29,7 +29,7 @@ import {
 } from "../../features/readMail/readMailApi";
 import { useMarkTrashSingleInboxMailMutation } from "../../features/trashMail/trashMailApi";
 import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
-import { searchedEmailType } from "../../interface/EmailType";
+import { searchedEmailType, sentType } from "../../interface/EmailType";
 import SnoozeOption from "./SnoozeOption";
 import {
   setMailIdForSnoozed,
@@ -63,6 +63,7 @@ export default function SingleEmail(props: props) {
     searchedMailQuery,
     property: emailProperty,
   } = props;
+
   const { message, subject, senderName, createdAt, id, senderEmail } =
     props.property;
   const [idLoaded, setIdLoaded] = useState(false);
@@ -143,7 +144,7 @@ export default function SingleEmail(props: props) {
 
   const markDeleteMailHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    markTrashSingleInboxMail(id);
+    markTrashSingleInboxMail({mailId: id, mailProperty: emailProperty, pageType});
   };
 
   const markMailAsImportantHandler = () => {
@@ -171,7 +172,7 @@ export default function SingleEmail(props: props) {
   /*  additional data refetch handler. the button component is in another child of parent component
      which is brought down here by useRef. When user click refetch button on Options Component, all emails will be refetched as well as 
      this specific additionalEmailData will also be refetched by dynamically executing a click event. The click event is executed in Options Container
-     and lister is used here so refetch additional email data  which has dynamic api to the server   */
+     and lister is used here to refetch additional email data  which has dynamic api to the server   */
   useEffect(() => {
     const currentRef = buttonRef.current;
 
@@ -211,7 +212,7 @@ export default function SingleEmail(props: props) {
     checkBox ? styles.selected : ""
   } ${snoozeOptionShow ? styles.snoozeToggled : ""}`;
 
- const emailSenderName = senderEmail == auth?.user?.email ? "You" : senderName;
+ const emailSenderName = pageType===sentType ? "You" : ( senderEmail == auth?.user?.email ? "You" : senderName);
 
   return (
     <div className={classesForMainDiv} onClick={openSingleMailHandler}>
@@ -227,6 +228,9 @@ export default function SingleEmail(props: props) {
         read={read}
         setCheckBox={setCheckBox}
         starred={starred}
+        selectedMails={selectedMails}
+        checkBoxChecked={checkBox}
+        emailId={id}
       />
       <div
         onClick={(e) => e.stopPropagation()}

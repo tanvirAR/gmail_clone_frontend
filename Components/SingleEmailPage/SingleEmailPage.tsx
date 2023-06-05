@@ -92,6 +92,14 @@ const SingleEmailPage = (props: prop) => {
     }
   );
 
+  useEffect(() => {
+    if(isError) {
+      redirectToEmailListPageHandler()
+    }
+  }, [isError])
+
+ 
+
   const { mail } = data || {};
   const { senderName, senderEmail, subject, createdAt, message, attachment } =
     mail || {};
@@ -153,7 +161,7 @@ const SingleEmailPage = (props: prop) => {
     type === scheduledType && scheduledCancelMessage !== "";
 
   return (
-    <>
+   !isLoading && !isError && (<>
       <div
         style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
         className={styles.container}
@@ -248,7 +256,7 @@ const SingleEmailPage = (props: prop) => {
           )}
         </div>
       </div>
-    </>
+    </>)
   );
 };
 

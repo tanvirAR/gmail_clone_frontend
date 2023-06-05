@@ -1,3 +1,4 @@
+import { keepUnusedDataInSeconds } from "../../constants/constants";
 import { email } from "../../interface/singleMail.interface";
 import { additionalEmailDataApi } from "../additionalEmailData/additionalEmailDataApi";
 import { apiSlice } from "../api/apiSlice";
@@ -13,6 +14,7 @@ export const importantEmailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+      keepUnusedDataFor: keepUnusedDataInSeconds,
     }),
 
     markMailAsImportant: builder.mutation({
