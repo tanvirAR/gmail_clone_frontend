@@ -1,4 +1,5 @@
 import { keepUnusedDataInSeconds } from "../../constants/constants";
+import { email } from "../../interface/singleMail.interface";
 import { apiSlice } from "../api/apiSlice";
 
 export const snoozedEmailApi = apiSlice.injectEndpoints({
@@ -13,18 +14,40 @@ export const snoozedEmailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+      invalidatesTags: ["snoozedMails"],
     }),
 
-   cancellSnoozeMail: builder.mutation({
+    cancellSnoozeMail: builder.mutation({
       query: (data: { mailId: string }) => ({
         url: "/email/snooze/cancell",
-        method: "POST",
+        method: "PATCH",
         body: JSON.stringify(data),
         Credential: "include",
         headers: {
           "content-type": "application/json",
         },
       }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        /**  optimistically remove the specic snoozedMails @cahedata in @getAllSnoozedMails cahche  */
+        const patchResult = dispatch(
+          snoozedEmailApi.util.updateQueryData(
+            "getAllSnoozedMails",
+            undefined,
+            (draft) => {
+              const updatedDraft = draft.mails.filter(
+                (singleEmail: email) => singleEmail.id !== arg.mailId
+              );
+              return { mails: updatedDraft };
+            }
+          )
+        );
+
+        try {
+          await queryFulfilled;
+        } catch (err) {
+          patchResult.undo();
+        }
+      },
     }),
 
     getAllSnoozedMails: builder.query<any, void>({
@@ -36,14 +59,14 @@ export const snoozedEmailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+      providesTags: ["snoozedMails"],
       keepUnusedDataFor: keepUnusedDataInSeconds,
-      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
-        // beforerefetch,  clear slice state data of selected mails in email slice and addtinal email data from additionalDataEmailSlice
-        // dispatch(resetSelectedMails());
-      },
     }),
   }),
 });
 
-export const { useGetAllSnoozedMailsQuery, useCancellSnoozeMailMutation, useMarkMailAsSnoozedMutation } =
-  snoozedEmailApi;
+export const {
+  useGetAllSnoozedMailsQuery,
+  useCancellSnoozeMailMutation,
+  useMarkMailAsSnoozedMutation,
+} = snoozedEmailApi;

@@ -75,7 +75,7 @@ const headerTitle =
           <Options
             refetch={snoozedMailRefetch}
             buttonRef={refetchButtonRef}
-            pageType={scheduledType}
+            pageType={snoozedType}
           />
 
           <div className={classes.mailList}>{emailList}</div>

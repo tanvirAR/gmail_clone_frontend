@@ -3,7 +3,7 @@
   align-items: center;
   height: 2.5rem;
   cursor: pointer;
-  z-index: 5;
+  /* z-index: 5; */
   justify-content: space-between;
   width: 100%;
   box-shadow: inset 0 -1px 0 0 rgb(100 121 143 / 12%);
@@ -14,12 +14,11 @@
 }
 
 .email_row > * {
-    margin-left: 1%;
+  margin-left: 1%;
 }
 
 .read {
   background-color: #f2f6fc;
-  /* background-color:rgb(180, 180, 180); */
 }
 
 .selected {
@@ -32,7 +31,6 @@
 
 .email_row .emailRow_options #myCheckBox {
   cursor: pointer;
-  /* border: none; */
 }
 
 .email_row h3 {
@@ -46,13 +44,12 @@
 .email_row:hover {
   /* box-shadow: inset 0px -2px 0px 0 rgba(145, 144, 144, 0.3); */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  border-right: 1px solid#DADCE0;
-  border-left: 2px solid#DADCE0;
+  border-right: 1px solid#f5f6f8;
+  border-left: 2px solid#f5f6f8;
 }
 .emailRow_options :nth-child(1) {
   scale: 0.7;
   color: #c1bfbf;
-  /* font-weight: 550; */
   font-variation-settings: "wght" 450;
 }
 
@@ -88,14 +85,15 @@
 
 /* ----------------------  snoozed option toggled --------------- start */
 .snoozeToggled {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   border-right: 1px solid#DADCE0;
   border-left: 2px solid#DADCE0;
 }
 
-.snoozeToggled .emailRow_options :nth-child(1), .snoozeToggled .emailRow_options :nth-child(2) {
-    color: rgba(32, 33, 36, 0.7);
-} 
+.snoozeToggled .emailRow_options :nth-child(1),
+.snoozeToggled .emailRow_options :nth-child(2) {
+  color: rgba(32, 33, 36, 0.7);
+}
 
 .snoozeToggled .time {
   opacity: 0;
@@ -105,8 +103,6 @@
 }
 
 /* ----------------------  snoozed option toggled --------------- end */
-
-
 
 .emailRow_options {
   display: flex;
@@ -123,10 +119,6 @@
 .emailRow_options span {
   margin-right: 5px;
 }
-
-/* .email_row:hover p {
-  display: none;
-} */
 
 .emailRow_message {
   display: flex;
@@ -224,22 +216,18 @@
   background-color: #dce7ee;
 }
 
-
-
-
 .snoozeOptionDiv {
-    position: absolute;
-    width: 10rem;
-    height: 2rem;
-    background-color: rgb(229, 227, 227);
-    right: 10%;
-    display: flex;
-    align-items: center;
-    border: 1px solid rgb(207, 207, 207);
-    top: 100%;
-    border-radius: 5%;
-    z-index: 101;
-box-shadow: 0 3px 7px 0 rgba(0, 0, 0, .13), 0 1px 2px 0 rgba(0, 0, 0, .11);
+  position: absolute;
+  width: 10rem;
+  height: 2rem;
+  background-color: rgb(229, 227, 227);
+  right: 10%;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgb(207, 207, 207);
+  top: 100%;
+  border-radius: 5%;
+  /* box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.13), 0 1px 2px 0 rgba(0, 0, 0, 0.11); */
 }
 
 .snoozeOptionDiv:hover {
@@ -247,5 +235,5 @@ box-shadow: 0 3px 7px 0 rgba(0, 0, 0, .13), 0 1px 2px 0 rgba(0, 0, 0, .11);
 }
 
 .email_row:hover .snoozeOptionDiv p {
-    display: block;
+  display: block;
 }
