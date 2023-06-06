@@ -15,15 +15,17 @@ import {
 } from "../../features/spamMail/spamMailApi";
 import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
 import { accountNumber } from "../../constants/constants";
+import { email } from "../../interface/singleMail.interface";
 
 interface props {
   mailId: string | undefined;
   type: emailType;
+  mailProperty: email;
 }
 
 export default function EmailOptions(props: props) {
   const router = useRouter();
-  const { mailId, type } = props;
+  const { mailId, type, mailProperty } = props;
   const [mailIdLoaded, setMailIdLoaded] = useState(false);
 
   useEffect(() => {
@@ -72,7 +74,7 @@ export default function EmailOptions(props: props) {
 
   const markDeleteMailHandler = () => {
     if (mailId) {
-      markMailAsTrash(mailId);
+      markMailAsTrash({mailId, pageType: type, mailProperty: mailProperty});
 
       redirectToInboxPageHandler();
     }
@@ -82,7 +84,7 @@ export default function EmailOptions(props: props) {
     console.log(markTrashResponse);
   }
 
-  // get additional email data which is specific for end user (this.user)
+  /* get additional email data which is specific for end user (this.user)  */
   const { data: additiionalEmailData } =
     useGetAdditionalSingleMailPropertyQuery(mailId || "", {
       skip: !mailIdLoaded,
@@ -106,7 +108,7 @@ export default function EmailOptions(props: props) {
 
   const markMailAsSpamHandler = () => {
     if (mailId) {
-      markMailAsSpam({ mailId: mailId });
+      markMailAsSpam({ mailId: mailId, mailProperty, pageType: type });
     }
   };
 
@@ -135,14 +137,14 @@ export default function EmailOptions(props: props) {
 
   const deleteMailForeverHandler = () => {
     if (mailId && !deleteMailIsLoading) {
-      deleteMailPermenantly(mailId);
+      deleteMailPermenantly({mailId, pageType: type});
       redirectToInboxPageHandler();
     }
   };
 
   const notSpamHandler = () => {
     if (mailId && !markMailUnspamIsLoading) {
-      markMailUnspam({ mailId });
+      markMailUnspam({ mailId, emailProp: mailProperty });
       redirectToInboxPageHandler();
     }
   };
@@ -196,15 +198,6 @@ export default function EmailOptions(props: props) {
         </div>
       </div>
 
-      <div className={styles.rightSegment}>
-        <p>1 of 308</p>
-        <div className={styles.icon}>
-          <span className="material-symbols-outlined">arrow_back_ios</span>
-        </div>
-        <div className={styles.icon}>
-          <span className="material-symbols-outlined">arrow_forward_ios</span>
-        </div>
-      </div>
     </div>
   );
 }

@@ -2,24 +2,25 @@ import { useEffect, useRef } from "react";
 import styles from "./MoveEmailsOptionsDiv.module.css";
 import { useSelector } from "react-redux";
 import storeStateInterface from "../../../interface/Store.interface";
-import { useMarkMailAsSocialMutation } from "../../../features/socialMail/socialMailApi";
-import { useMarkMailAsPromotionMutation } from "../../../features/promotionsMail/promotionsMailApi";
 import { useMarkMailAsSpamMutation } from "../../../features/spamMail/spamMailApi";
 import { useMarkTrashSingleInboxMailMutation } from "../../../features/trashMail/trashMailApi";
 import { emailType } from "../../../interface/EmailTypeForSpecificPage.interface";
 import {
+  importantType,
   inboxType,
-  scheduledType,
   sentType,
   spamType,
+  starredType,
   trashType,
 } from "../../../interface/EmailType";
-import { useCancellScheduledMailMutation } from "../../../features/scheduledMail/scheduledMailApi";
 import {
   useMoveFromSentToInboxMutation,
   useMoveFromSpamToInboxMutation,
   useMoveFromTrashToInboxMutation,
 } from "../../../features/moveEmail/moveEmailApi";
+import { useDispatch } from "react-redux";
+import { resetSelectedMails } from "../../../features/email/emailSlice";
+
 
 interface props {
   setShowComponent: any;
@@ -27,7 +28,10 @@ interface props {
   pageType: emailType;
 }
 
+
 export default function MoveEmailOptionsDiv(props: props) {
+const dispatch = useDispatch();
+
   const { setShowComponent, toggleButtonRef, pageType } = props;
   const thisCompRef = useRef<HTMLDivElement | null>(null);
 
@@ -53,33 +57,13 @@ export default function MoveEmailOptionsDiv(props: props) {
     };
   }, [setShowComponent, toggleButtonRef]);
 
-  const [markMailAsSocial, {}] = useMarkMailAsSocialMutation();
-  const [markMailAsPromotion, {}] = useMarkMailAsPromotionMutation();
   const [markMailAsTrash, {}] = useMarkTrashSingleInboxMailMutation();
   const [markMailAsSpam, {}] = useMarkMailAsSpamMutation();
 
-  const { email, additionalEmailData } = useSelector(
+  const { email } = useSelector(
     (state: storeStateInterface) => state
   );
   const { selectedMails, selectedMailsWithProps } = email;
-
-  const moveToSocialHandler = () => {
-    // for (let i = 0; i < selectedMails.length; i++){
-    //   const mailId = selectedMails[i];
-    //   markMailAsSocial({mailId})
-    // }
-    // // close this component after sending request
-    //  setShowComponent(false);
-  };
-
-  const moveToPromotionHandler = () => {
-    // for (let i = 0; i < selectedMails.length; i++) {
-    //   const mailId = selectedMails[i];
-    //   markMailAsPromotion({ mailId });
-    // }
-    // // close this component after sending request
-    // setShowComponent(false);
-  };
 
   const moveToSpamHandler = () => {
     for (let i = 0; i < selectedMails.length; i++) {
@@ -91,6 +75,7 @@ export default function MoveEmailOptionsDiv(props: props) {
     }
     // close this component after sending request
     setShowComponent(false);
+    dispatch(resetSelectedMails())
   };
 
   const moveToTrashHandler = () => {
@@ -104,6 +89,7 @@ export default function MoveEmailOptionsDiv(props: props) {
     }
     // close this component after sending request
     setShowComponent(false);
+     dispatch(resetSelectedMails());
   };
 
   const [moveFromSentToInbox, { isLoading: sentToInboxIsLoading }] =
@@ -122,16 +108,37 @@ export default function MoveEmailOptionsDiv(props: props) {
     ) {
       if (pageType === sentType) {
         for (let i = 0; i < selectedMails.length; i++) {
-          moveFromSentToInbox({ mailId: selectedMails[i] });
+             const mailId = selectedMails[i];
+             const mailPrimaryProperty = selectedMailsWithProps.filter(
+               (mail) => mail.id == mailId
+             )[0];
+          moveFromSentToInbox({ mailId, mailProperty: mailPrimaryProperty });
         }
+        // close the component after request
+         setShowComponent(false);
+          dispatch(resetSelectedMails());
       } else if (pageType === spamType) {
         for (let i = 0; i < selectedMails.length; i++) {
-          moveFromSpamToInbox({ mailId: selectedMails[i] });
+          const mailId = selectedMails[i];
+          const mailPrimaryProperty = selectedMailsWithProps.filter(
+            (mail) => mail.id == mailId
+          )[0];
+          moveFromSpamToInbox({ mailId, mailProperty: mailPrimaryProperty });
         }
+        // close the component after request
+        setShowComponent(false);
+         dispatch(resetSelectedMails());
       } else if (pageType === trashType) {
         for (let i = 0; i < selectedMails.length; i++) {
-          moveFromTrashToInbox({ mailId: selectedMails[i] });
+          const mailId = selectedMails[i];
+          const mailPrimaryProperty = selectedMailsWithProps.filter(
+            (mail) => mail.id == mailId
+          )[0];
+          moveFromTrashToInbox({ mailId, mailProperty: mailPrimaryProperty });
         }
+        // close the component after request
+        setShowComponent(false);
+         dispatch(resetSelectedMails());
       }
     }
   };
@@ -139,7 +146,10 @@ export default function MoveEmailOptionsDiv(props: props) {
   // if user is in trash page, hide the "move to trash" option
   const isTrashOptionVisible: boolean = pageType !== trashType;
   const isInboxOptionVisible: boolean =
-    pageType !== inboxType && pageType !== spamType;
+    pageType !== inboxType &&
+    pageType !== spamType &&
+    pageType !== importantType &&
+    pageType !== starredType;
   const isSpamOptionVisible: boolean = pageType !== spamType;
   // const isTrashOptionVisible: boolean =
   return (
@@ -155,16 +165,6 @@ export default function MoveEmailOptionsDiv(props: props) {
           <p>Inbox</p>
         </div>
       )}
-
-      {/* <div onClick={moveToSocialHandler}>
-        <p>Social</p>
-      </div>
-
-      <div onClick={moveToPromotionHandler}>
-        <p>Promotions</p>
-      </div> */}
-
-      {/* <div className={styles.line2}></div> */}
 
       {isSpamOptionVisible && (
         <div onClick={moveToSpamHandler}>

@@ -15,6 +15,7 @@ import {
   inboxType,
   scheduledType,
   sentType,
+  snoozedType,
   spamType,
   starredType,
   trashType,
@@ -27,6 +28,7 @@ import {
   useMoveFromTrashToInboxMutation,
 } from "../../../features/moveEmail/moveEmailApi";
 import { useCancellScheduledMailMutation } from "../../../features/scheduledMail/scheduledMailApi";
+import { useCancellSnoozeMailMutation } from "../../../features/snoozedMail/snoozedMailApi";
 
 interface props {
   refetch: any;
@@ -66,6 +68,7 @@ export default function Options(props: props) {
   const refetchInboxMailsHandler = () => {
     emailsRefetch();
     buttonRef.current.click();
+    dispatch(resetSelectedMails());
   };
 
   // changing state to show/unshow selecting email category div
@@ -108,10 +111,7 @@ export default function Options(props: props) {
     selectedMails.length > 0;
 
   const moveEmailButtonShow: boolean =
-    selectedMails.length > 0 &&
-    pageType !== scheduledType &&
-    pageType !== starredType &&
-    pageType !== importantType;
+    selectedMails.length > 0 && pageType !== scheduledType;
 
   const moveToInboxOptionVisible: boolean =
     selectedMails.length > 0 &&
@@ -127,6 +127,9 @@ export default function Options(props: props) {
     selectedMails.length > 0 && pageType === spamType;
   const showCancelSendOption: boolean =
     selectedMails.length > 0 && pageType === scheduledType;
+
+  const showCancelSnoozeOption: boolean =
+    selectedMails.length > 0 && pageType === snoozedType;
 
   const [
     markMailUnspam,
@@ -157,22 +160,30 @@ export default function Options(props: props) {
   };
 
   const notSpamHandler = () => {
+    // using a for loop to send rtk request for each selected mails ID
     for (let i = 0; i < selectedMails.length; i++) {
-      // using a for loop to send rtk request for each selected mails ID
-      for (let i = 0; i < selectedMails.length; i++) {
-        const emailPrimaryProp = selectedMailsWithProps.filter(
-          (email) => email.id == selectedMails[i]
-        )[0];
-        markMailUnspam({
-          mailId: selectedMails[i],
-          emailProp: emailPrimaryProp,
-        });
-      }
+      const emailPrimaryProp = selectedMailsWithProps.filter(
+        (email) => email.id == selectedMails[i]
+      )[0];
+      markMailUnspam({
+        mailId: selectedMails[i],
+        emailProp: emailPrimaryProp,
+      });
     }
+    dispatch(resetSelectedMails());
   };
 
   const [cancelScheduledSend, { isLoading: cancelScheduledIsLoading }] =
     useCancellScheduledMailMutation();
+
+  const [
+    cancelSnoozeMail,
+    {
+      data: cancellSnoozeResponse,
+      isLoading: calcellSnoozeIsLoading,
+      isError: cancellSnoozeError,
+    },
+  ] = useCancellSnoozeMailMutation();
 
   const [moveFromSentToInbox, { isLoading: sentToInboxIsLoading }] =
     useMoveFromSentToInboxMutation();
@@ -190,16 +201,31 @@ export default function Options(props: props) {
     ) {
       if (pageType === sentType) {
         for (let i = 0; i < selectedMails.length; i++) {
-          moveFromSentToInbox({ mailId: selectedMails[i] });
+          const mailId = selectedMails[i];
+          const mailPrimaryProperty = selectedMailsWithProps.filter(
+            (mail) => mail.id == mailId
+          )[0];
+          moveFromSentToInbox({ mailId, mailProperty: mailPrimaryProperty });
         }
+        dispatch(resetSelectedMails());
       } else if (pageType === spamType) {
         for (let i = 0; i < selectedMails.length; i++) {
-          moveFromSpamToInbox({ mailId: selectedMails[i] });
+          const mailId = selectedMails[i];
+          const mailPrimaryProperty = selectedMailsWithProps.filter(
+            (mail) => mail.id == mailId
+          )[0];
+          moveFromSpamToInbox({ mailId, mailProperty: mailPrimaryProperty });
         }
+        dispatch(resetSelectedMails());
       } else if (pageType === trashType) {
         for (let i = 0; i < selectedMails.length; i++) {
-          moveFromTrashToInbox({ mailId: selectedMails[i] });
+          const mailId = selectedMails[i];
+          const mailPrimaryProperty = selectedMailsWithProps.filter(
+            (mail) => mail.id == mailId
+          )[0];
+          moveFromTrashToInbox({ mailId, mailProperty: mailPrimaryProperty });
         }
+        dispatch(resetSelectedMails());
       }
     }
   };
@@ -209,6 +235,16 @@ export default function Options(props: props) {
       // using a for loop to send rtk request for each selected mails ID
       for (let i = 0; i < selectedMails.length; i++) {
         cancelScheduledSend(selectedMails[i]);
+      }
+    }
+    dispatch(resetSelectedMails());
+  };
+
+  const cancellSnoozedMail = () => {
+    for (let i = 0; i < selectedMails.length; i++) {
+      // using a for loop to send rtk request for each selected mails ID
+      for (let i = 0; i < selectedMails.length; i++) {
+        cancelSnoozeMail({ mailId: selectedMails[i] });
       }
     }
     dispatch(resetSelectedMails());
@@ -265,6 +301,12 @@ export default function Options(props: props) {
             className={styles.deleteForever}
           >
             <p>Cancel send</p>
+          </div>
+        )}
+
+        {showCancelSnoozeOption && (
+          <div onClick={cancellSnoozedMail} className={styles.deleteForever}>
+            <p>Cancel snooze</p>
           </div>
         )}
 

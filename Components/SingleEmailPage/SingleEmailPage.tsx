@@ -23,6 +23,7 @@ import {
 } from "../../utils/timeFormat";
 import { useCancellScheduledMailMutation } from "../../features/scheduledMail/scheduledMailApi";
 import { accountNumber } from "../../constants/constants";
+import { useMarkMailAsUnStarredMutation } from "../../features/starredEmail/starredEmailApi";
 
 interface prop {
   emailId: string | undefined;
@@ -45,6 +46,7 @@ const SingleEmailPage = (props: prop) => {
       const padding =
         parseFloat(computedStyle.paddingTop) +
         parseFloat(computedStyle.paddingBottom);
+        
       const border =
         parseFloat(computedStyle.borderTopWidth) +
         parseFloat(computedStyle.borderBottomWidth);
@@ -70,16 +72,15 @@ const SingleEmailPage = (props: prop) => {
     },
   ] = useMarkMailAsStarredMutation();
 
+  const [markMailAsUnStarred, {isLoading: markUnStarredIsLoading, data: markUnStarredResponse, isError: markUnStarredError}] = useMarkMailAsUnStarredMutation()
+
   const { data: additiionalEmailData } =
-    useGetAdditionalSingleMailPropertyQuery(
-      { mailId: mailId || "", pageType: inboxType },
-      {
-        skip: !idLoaded,
-      }
-    );
+    useGetAdditionalSingleMailPropertyQuery(mailId || "", {
+      skip: !idLoaded,
+    });
 
   const { mail: additionalData } = additiionalEmailData || {};
-  const { important, starred, read, snoozedTime } = additionalData || {};
+  const { starred, read, snoozedTime } = additionalData || {};
 
   const { onByToggle } = useSelector(
     (state: storeStateInterface) => state.UI.sidebarOn
@@ -93,12 +94,10 @@ const SingleEmailPage = (props: prop) => {
   );
 
   useEffect(() => {
-    if(isError) {
-      redirectToEmailListPageHandler()
+    if (isError) {
+      redirectToEmailListPageHandler();
     }
-  }, [isError])
-
- 
+  }, [isError]);
 
   const { mail } = data || {};
   const { senderName, senderEmail, subject, createdAt, message, attachment } =
@@ -110,8 +109,12 @@ const SingleEmailPage = (props: prop) => {
 
   const markMailAsStarredHandler = () => {
     if (!markStarredIsLoading && mailId) {
-      markMailAsStarred(mailId);
+      if (starred) {
+        markMailAsUnStarred(mailId);
+      } else {
+      markMailAsStarred({ mailId, emailProperty: mail });
     }
+  }
   };
 
   useEffect(() => {
@@ -161,102 +164,105 @@ const SingleEmailPage = (props: prop) => {
     type === scheduledType && scheduledCancelMessage !== "";
 
   return (
-   !isLoading && !isError && (<>
-      <div
-        style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
-        className={styles.container}
-      >
-        <EmailOptions type={type} mailId={mailId} />
-        {cancellSnoozeOptionVisible && (
-          <div className={styles.unsnoozeOption}>
-            <p>{snoozeTime}</p>
-            <p onClick={cancelSnoozeHandler}>Unsnooze</p>
-          </div>
-        )}
-        {cancelScheduledOptionVisible && (
-          <div className={styles.unsnoozeOption}>
-            <p>{scheduledCancelMessage}</p>
-            <p onClick={cancelScheduledSendHandler}>Cancel send</p>
-          </div>
-        )}
-        <div className={styles.subjectDiv}>
-          <b>
-            <p>{subject}</p>
-          </b>
-        </div>
-
-        <div className={styles.info}>
-          <div className={styles.leftSegment}>
-            <div className={styles.user}>
-              <UserIcon />
-            </div>
-            <div className={styles.descript}>
-              <p>{senderName}</p>
-              <p>&lt;{senderEmail}&gt;</p>
-            </div>
-          </div>
-
-          <div
-            className={`${styles.rightSegment} ${starred ? styles.fill : ""}`}
-          >
-            <div>
-              <b>
-                <p>{moment(createdAt).format("MMMM D YYYY, h:mm A")}</p>
-              </b>
-            </div>
-            <span
-              onClick={markMailAsStarredHandler}
-              className="material-symbols-outlined"
-            >
-              star
-            </span>
-            <span
-              onClick={redirectToEmailListPageHandler}
-              className="material-symbols-outlined"
-            >
-              reply
-            </span>
-          </div>
-        </div>
-
-        <div className={styles.messageField}>
-          <textarea readOnly value={message} ref={textareaRef} />
-          <div className={styles.lineBreak}></div>
-
-          {attachment && (
-            <div
-              onClick={viewAttachmentFullScreenHandler}
-              className={styles.attachmentImg}
-            >
-              <Image
-                alt=""
-                fill
-                style={{ objectFit: "cover" }}
-                priority
-                sizes="(min-width: 50px) 50vw, 500px"
-                src={attachment}
-              />
-              <div className={styles.shade}>
-                <div className={styles.fileName}>
-                  <span className="material-symbols-outlined">image</span>
-                  <p>Attachment</p>
-                </div>
-                <div className={styles.filesize}>
-                  <p>2.9MB</p>
-                </div>
-                <div className={styles.options}>
-                  <span
-                    className={`material-symbols-outlined ${styles.downloadIcon}`}
-                  >
-                    shift
-                  </span>
-                </div>
-              </div>
+    !isLoading &&
+    !isError && (
+      <>
+        <div
+          style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
+          className={styles.container}
+        >
+          <EmailOptions type={type} mailId={mailId} mailProperty={mail} />
+          {cancellSnoozeOptionVisible && (
+            <div className={styles.unsnoozeOption}>
+              <p>{snoozeTime}</p>
+              <p onClick={cancelSnoozeHandler}>Unsnooze</p>
             </div>
           )}
+          {cancelScheduledOptionVisible && (
+            <div className={styles.unsnoozeOption}>
+              <p>{scheduledCancelMessage}</p>
+              <p onClick={cancelScheduledSendHandler}>Cancel send</p>
+            </div>
+          )}
+          <div className={styles.subjectDiv}>
+            <b>
+              <p>{subject}</p>
+            </b>
+          </div>
+
+          <div className={styles.info}>
+            <div className={styles.leftSegment}>
+              <div className={styles.user}>
+                <UserIcon />
+              </div>
+              <div className={styles.descript}>
+                <p>{senderName}</p>
+                <p>&lt;{senderEmail}&gt;</p>
+              </div>
+            </div>
+
+            <div
+              className={`${styles.rightSegment} ${starred ? styles.fill : ""}`}
+            >
+              <div>
+                <b>
+                  <p>{moment(createdAt).format("MMMM D YYYY, h:mm A")}</p>
+                </b>
+              </div>
+              <span
+                onClick={markMailAsStarredHandler}
+                className="material-symbols-outlined"
+              >
+                star
+              </span>
+              <span
+                onClick={redirectToEmailListPageHandler}
+                className="material-symbols-outlined"
+              >
+                reply
+              </span>
+            </div>
+          </div>
+
+          <div className={styles.messageField}>
+            <textarea readOnly value={message} ref={textareaRef} />
+            <div className={styles.lineBreak}></div>
+
+            {attachment && (
+              <div
+                onClick={viewAttachmentFullScreenHandler}
+                className={styles.attachmentImg}
+              >
+                <Image
+                  alt=""
+                  fill
+                  style={{ objectFit: "cover" }}
+                  priority
+                  sizes="(min-width: 50px) 50vw, 500px"
+                  src={attachment}
+                />
+                <div className={styles.shade}>
+                  <div className={styles.fileName}>
+                    <span className="material-symbols-outlined">image</span>
+                    <p>Attachment</p>
+                  </div>
+                  <div className={styles.filesize}>
+                    <p>2.9MB</p>
+                  </div>
+                  <div className={styles.options}>
+                    <span
+                      className={`material-symbols-outlined ${styles.downloadIcon}`}
+                    >
+                      shift
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </>)
+      </>
+    )
   );
 };
 

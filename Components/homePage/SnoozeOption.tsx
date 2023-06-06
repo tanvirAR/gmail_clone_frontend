@@ -20,7 +20,6 @@ const SnoozeOption = (props: props) => {
            thisCompRef.current &&
            !thisCompRef.current.contains(event.target as Node)
          ) {
-          console.log(event.target)
            // this div will close upon clicking outside but user can also clik on button which is also outside, so ref of that button is used here
            if (toggleButtonRef.current === event.target) {
              setShowComponent(true);
