@@ -32,8 +32,8 @@ class MyDocument extends Document {
             integrity="sha512-mUWPbwx6PZatai4i3+gevCw6LeuQxcMgnJs/DZij22MZ4JMpqKaEvMq0N9TTArSWEb5sdQ9xH68HMUc30eNPEA=="
             crossOrigin="anonymous"
             referrerPolicy="no-referrer"
-            async */}
-          ></script>
+            async 
+          ></script> */}
         </Head>
         <body>
           <Main />
