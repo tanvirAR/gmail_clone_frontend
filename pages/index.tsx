@@ -70,7 +70,7 @@ export default function Home() {
 
   return (
     <div className={styles.box}>
-      <h2 onClick={() => router.push(`/mail/u/${accountNumber}/inbox`)}>
+      <h2>
         Sign in
       </h2>
       <br />
