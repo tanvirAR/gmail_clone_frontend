@@ -49,8 +49,8 @@ export default function Logout(props: props) {
 
   return (
     <div onClick={logoutHandler} ref={thisCompRef} className={styles.settingsBox}>
-      <p>Logout</p>
-     {isLoading && <LoadingCircle />}
+{/*       <p>Logout</p>
+     {isLoading && <LoadingCircle />} */}
     </div>
   );
 }
