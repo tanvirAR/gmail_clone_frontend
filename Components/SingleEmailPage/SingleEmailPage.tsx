@@ -175,8 +175,8 @@ const SingleEmailPage = (props: prop) => {
     type === scheduledType && scheduledCancelMessage !== "";
 
   return (
-    !isLoading &&
-    !isError && (
+    (!isLoading &&
+    !isError) ?  (
       <>
         <div
           style={!onByToggle ? { marginLeft: "4.5rem" } : {}}
@@ -273,7 +273,7 @@ const SingleEmailPage = (props: prop) => {
           </div>
         </div>
       </>
-    )
+    ) : null
   );
 };
 
