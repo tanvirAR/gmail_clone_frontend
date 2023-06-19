@@ -61,7 +61,7 @@ export const emailApi = apiSlice.injectEndpoints({
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         /* @Socket Implementation */
-        const socket = io(env.NEXT_PUBLIC_API_URL || "", {
+        const socket = io(process.env.NEXT_PUBLIC_API_URL || "", {
           reconnectionDelay: 1000,
           reconnection: true,
           reconnectionAttempts: 10,
