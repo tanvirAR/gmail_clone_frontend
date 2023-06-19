@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { accountNumber } from "../../constants/constants";
 import Logout from "./Logout";
 import { emailSearchQuery } from "../../interface/emailSearchQuery.interace";
+import Link from "next/link";
 const Header = () => {
   const router = useRouter();
   const [primarySearchQuerey, setPrimarySearchQuery] = useState("");
@@ -69,10 +70,7 @@ const Header = () => {
   return (
     <>
       <header className={styles.header}>
-        <div
-          onClick={() => router.push(`/mail/u/${accountNumber}/inbox`)}
-          className={styles["header-left"]}
-        >
+        <div className={styles["header-left"]}>
           <span
             style={{
               backgroundColor: sidebarOn.onByToggle
@@ -84,7 +82,13 @@ const Header = () => {
           >
             menu
           </span>
-          <Image priority className={styles.logo} src={gmail_logo} alt="logo" />
+          <Image
+            onClick={() => router.push(`/mail/u/${accountNumber}/inbox`)}
+            priority
+            className={styles.logo}
+            src={gmail_logo}
+            alt="logo"
+          />
         </div>
         <div className={styles["header-middle"]}>
           <span className={"material-icons"}>search</span>
@@ -111,7 +115,9 @@ const Header = () => {
             <span className="material-symbols-outlined">help</span>
             <div className={styles.creator}>
               <p>Created By:</p>
-              <p>Tanvir AR</p>
+              <Link href={process.env.NEXT_PUBLIC_PORTFOLIO_LINK || ""} target="_blank">
+                <p>Tanvir AR</p>
+              </Link>
               <p>tanvir.ar.47@gmail.com</p>
             </div>
           </div>

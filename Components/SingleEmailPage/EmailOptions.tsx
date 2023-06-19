@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import styles from "./EmailOptions.module.css";
 import { useEffect, useState } from "react";
 import { useGetAdditionalSingleMailPropertyQuery } from "../../features/additionalEmailData/additionalEmailDataApi";
-import { inboxType, spamType, trashType } from "../../interface/EmailType";
+import { inboxType, searchedEmailType, spamType, trashType } from "../../interface/EmailType";
 import {
   useDeleteMailPermanentlyMutation,
   useMarkTrashSingleInboxMailMutation,
@@ -35,7 +35,11 @@ export default function EmailOptions(props: props) {
   }, [mailId]);
 
   const redirectToInboxPageHandler = () => {
-    router.push(`/mail/u/${accountNumber}/${type}`);
+    if (type === searchedEmailType) {
+      router.back();
+    } else {
+      router.push(`/mail/u/${accountNumber}/${type}`);
+    }
   };
 
   const [
@@ -74,7 +78,7 @@ export default function EmailOptions(props: props) {
 
   const markDeleteMailHandler = () => {
     if (mailId) {
-      markMailAsTrash({mailId, pageType: type, mailProperty: mailProperty});
+      markMailAsTrash({ mailId, pageType: type, mailProperty: mailProperty });
 
       redirectToInboxPageHandler();
     }
@@ -137,7 +141,7 @@ export default function EmailOptions(props: props) {
 
   const deleteMailForeverHandler = () => {
     if (mailId && !deleteMailIsLoading) {
-      deleteMailPermenantly({mailId, pageType: type});
+      deleteMailPermenantly({ mailId, pageType: type });
       redirectToInboxPageHandler();
     }
   };
@@ -197,7 +201,6 @@ export default function EmailOptions(props: props) {
           <span className="material-symbols-outlined">schedule</span>
         </div>
       </div>
-
     </div>
   );
 }

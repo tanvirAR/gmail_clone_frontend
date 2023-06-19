@@ -43,6 +43,13 @@
   transition: background-color 0.3s ease;
 }
 
+@media (max-width: 550px) {
+  .header-middle {
+    flex: 0.8;
+  }
+}
+
+
 .header-middle .openFilter {
   border: none;
   background: none;

@@ -1,5 +1,5 @@
-import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
 import sendMailReqBodyInterface from "../../interface/sendMailReqBody.interface";
+import { env } from "process";
 
 import { apiSlice } from "../api/apiSlice";
 import { resetSelectedMails } from "./emailSlice";
@@ -61,7 +61,7 @@ export const emailApi = apiSlice.injectEndpoints({
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         /* @Socket Implementation */
-        const socket = io("http://localhost:9000", {
+        const socket = io(env.NEXT_PUBLIC_API_URL || "", {
           reconnectionDelay: 1000,
           reconnection: true,
           reconnectionAttempts: 10,

@@ -17,28 +17,24 @@ import {
   setScheduledMailSentTimeSelectComponent,
   ToggleEmailSendError,
 } from "../../../features/UI/UISlice";
-// utilities functions imports
-import { fileToBase64, b64toBlob } from "../../../utils/fileToBase64";
-import {
-  setToLocStrg,
-  getFrmLocStrg,
-} from "../../../utils/set&getFileFromLocalStorage";
+
 import {
   getDownloadURL,
   ref,
   uploadBytesResumable,
-  deleteObject,
 } from "firebase/storage";
 import { storage } from "../../../firebase/firebase";
 import { deleteFile } from "../../../utils/deleteFileFromFirebase";
 import ScheduleSendButton from "./ScheduleSendButton";
 
-const SendEmailButton = () => {
+interface props {
+  file: any;
+  setFile: any;
+}
+
+const SendEmailButton = (props: props) => {
   const [scheduleSend, setScheduleSend] = useState(false);
   const dispatch = useDispatch();
-
-  const [sendMail, { isError, isLoading, data, isSuccess }] =
-    useSendMailMutation();
 
   const {
     sentAEmail,
@@ -46,7 +42,11 @@ const SendEmailButton = () => {
     isSendingMailLoading,
     attachmentFirebaseReturnedUrl,
   } = useSelector((state: storeStateInterface) => state.UI);
+
   const { to, subject, message } = sentAEmail;
+
+  const [sendMail, { isError, isLoading, data, isSuccess }] =
+    useSendMailMutation();
 
   const sendMailHandler = () => {
     // check if receiver email is valid
@@ -70,19 +70,108 @@ const SendEmailButton = () => {
       email: to,
       subject,
       message,
-      attachment: attachmentFirebaseReturnedUrl ?? undefined,
+      attachment: attachmentFirebaseReturnedUrl && file ? attachmentFirebaseReturnedUrl : undefined,
     };
 
     // finally send the mail
     sendMail(data);
+    
     // clear input field data from global state
     dispatch(clearEmailInputs());
     dispatch(setFirebaseUrl(""));
-    // set the lading state for sending a mail to true (a custom toast)
-    // dispatch(isSendingMailLoadingAction("Sending"));
+    dispatch(setAttachment(undefined))
+
+
     // set the visibility of the component ie (sendMailAlert) to true (a custom toast)
     dispatch(isSendingMailLoadingVisible(true));
   };
+
+  const { file, setFile } = props;
+
+  // attachment change handler
+  const attachmentSelectHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    let tempFileName;
+    if (file && attachment !== null) {
+      tempFileName = file.name;
+    }
+    const selectedFile = e.target.files
+    if (selectedFile && selectedFile[0]) {
+      try {
+        const image = selectedFile[0];
+        // save the attachment file in the local state
+        setFile(image);
+
+        dispatch(
+          setAttachment({
+            name: image.name,
+            type: image.type,
+            size: image.size,
+          })
+        );
+
+        uploadFiles(image);
+
+        if (tempFileName) {
+          deleteFile(tempFileName);
+        }
+      } catch (error) {
+        alert("Failed to attach file. Please try again!");
+      }
+    }
+  };
+
+  const uploadFiles = (file: File) => {
+    const storageRef = ref(storage, `gmailClone/files/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const prog = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        dispatch(setAttachmentUploadProgg(prog));
+      },
+      (err) => console.log(`Error Occured Uploading: ${err}`),
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((url) =>
+          dispatch(setFirebaseUrl(url))
+        );
+      }
+    );
+  };
+
+
+
+
+
+
+  useEffect(() => {
+    // check if request is sent and recived response or not to change the loading state in alertComponent
+    if (data || isError) {
+      if (data) {
+        dispatch(isSendingMailLoadingAction("Sent!"));
+      }
+      if (isError) {
+        dispatch(
+          isSendingMailLoadingAction("Failed to Send! Please try again.")
+        );
+      }
+      // hide this component after sending email & getting response
+      dispatch(sentEmailBoxSmall(false));
+      dispatch(sentEmailBoxLarge(false));
+
+      // execute the avove function to chage visiblity (off) of email alert after 3s of receiving response
+      setTimeout(function () {
+        dispatch(isSendingMailLoadingVisible(false));
+      }, 4000);
+    }
+  }, [isError, isSuccess, dispatch, data]);
+
+
+
+
+
 
   // same as send mail handler but only checks input field error and redirect to (ScheduledSentMailTimeSelectComponent)
   const sendScheduleMailHandler = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -108,133 +197,6 @@ const SendEmailButton = () => {
     dispatch(sentEmailBoxSmall(false));
     dispatch(sentEmailBoxLarge(false));
   };
-
-  useEffect(() => {
-    // check if request is sent and recived response or not to change the loading state in alertComponent
-    if (data || isError) {
-      if (data) {
-        dispatch(isSendingMailLoadingAction("Sent!"));
-      } 
-      if (isError) {
-         dispatch(
-           isSendingMailLoadingAction("Failed to Send! Please try again.")
-         );
-        ;
-      }
-      // hide this component after sending email & getting response
-      dispatch(sentEmailBoxSmall(false));
-      dispatch(sentEmailBoxLarge(false));
-
-      // execute the avove function to chage visiility (off) of email alert after 3s of receiving response
-       setTimeout(function () {
-        dispatch(isSendingMailLoadingVisible(false));
-      }, 4000);
-    }
-
-  }, [isError, isSuccess, dispatch, data]);
-
-  // ....................    attachment management  (start)     .............................
-  // attachment file to handle file change
-  const [file, setFile] = useState<null | File>(null);
-
-  // (Handler) convert selected file as attachment to base64 & store in local Storage
-  async function handleAttFileToB64(attFile: File) {
-    const base64String = await fileToBase64(attFile);
-    // set base64 data to local Storage
-    await setToLocStrg(base64String);
-  }
-
-  // (Handler) get base64 data from Local Storage and convert back into a File object
-  async function cycleHander() {
-    const retreiveLocStrgData = await getFrmLocStrg();
-    if (retreiveLocStrgData) {
-      const fileName = attachment?.name || "ABC";
-      const fileType = attachment?.type || "image/jpg";
-      handleBase64Input(retreiveLocStrgData, fileName, fileType);
-      console.log("Process is now runnig...");
-    }
-  }
-
-  useEffect(() => {
-    if (attachment?.name && attachment?.type && file == null) {
-      cycleHander();
-    }
-  }, [attachment]);
-
-  // convert base64 data to a FIle storage
-  const handleBase64Input = async (
-    rawBase64: string,
-    name: string,
-    type: string
-  ) => {
-    try {
-      const fileBlob = await b64toBlob(rawBase64);
-      const convertedFile = new File([fileBlob], name, {
-        type: type,
-      });
-      setFile(convertedFile);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // attachment change handler
-  const attachmentSelectHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    let tempFileName;
-    if (file && attachment !== null) {
-      tempFileName = file.name;
-    }
-    if (e.target.files && e.target.files[0]) {
-      try {
-        const image = e.target.files[0];
-        // save the attachment file in the global state
-        setFile(image);
-        // store file in local storage as base64 data
-        handleAttFileToB64(image);
-        dispatch(
-          setAttachment({
-            name: image.name,
-            type: image.type,
-            size: image.size,
-          })
-        );
-
-        uploadFiles(image);
-
-        if (tempFileName) {
-          deleteFile(tempFileName);
-        }
-      } catch (error) {
-        alert("Failed to attach file. Please try again!");
-      }
-    }
-  };
-  // ....................    attachment management  (end)     .............................
-
-  // ......................  save file to fire storage (start) ................
-  const uploadFiles = (file: File) => {
-    const storageRef = ref(storage, `gmailClone/files/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const prog = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        dispatch(setAttachmentUploadProgg(prog));
-      },
-      (err) => console.log(`Error Occured Uploading: ${err}`),
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((url) =>
-          //  console.log(url)
-          dispatch(setFirebaseUrl(url))
-        );
-      }
-    );
-  };
-
-  // ......................  save file to fire storage (end) ................
 
   return !isSendingMailLoading.isComponentVisible ? (
     <div className={classes.container}>
@@ -274,13 +236,14 @@ const SendEmailButton = () => {
           type="file"
           accept=".jpg,.jpeg,.png"
           onChange={attachmentSelectHandler}
+          
         />
         <span className={`material-symbols-outlined ${classes.attchmentIcon}`}>
           attach_file
         </span>
       </div>
     </div>
-  ) : null
+  ) : null;
 };
 
 export default SendEmailButton;

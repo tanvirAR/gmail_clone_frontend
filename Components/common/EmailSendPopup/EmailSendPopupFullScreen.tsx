@@ -13,42 +13,63 @@ import {
   sentAEmailSubject,
   sentEmailTo,
   sentAEmailMessage,
+  setFirebaseUrl,
   setAttachment,
+  clearEmailInputs,
 } from "../../../features/UI/UISlice";
-import React, { useState } from "react";
+import React from "react";
 import storeStateInterface from "../../../interface/Store.interface";
-import  SendEmailButton  from "../SendEmailButton/SendEmailButton";
+import SendEmailButton from "../SendEmailButton/SendEmailButton";
+import { deleteFile } from "../../../utils/deleteFileFromFirebase";
 
-function EmailSendPopupFullScreen() {
-  const { sentAEmail, sentBoxLargeScreen } = useSelector((state: storeStateInterface) => state.UI);
+interface props {
+  attachmentFile: any;
+  setAttachmentFile: any;
+}
+
+function EmailSendPopupFullScreen(props: props) {
+  const { attachmentFile, setAttachmentFile } = props;
+
+  const { sentAEmail, attachment, attachmentUploadProgressBar } = useSelector(
+    (state: storeStateInterface) => state.UI
+  );
 
   const dispatch = useDispatch();
 
   const closeFullScreenPopup = () => {
+    closeAttchmentHandler();
+    dispatch(clearEmailInputs());
+
     dispatch(sentEmailBoxLarge(false));
-
-    // clear written text input from fields
-    dispatch(sentEmailTo(""));
-    dispatch(sentAEmailSubject(""));
-    dispatch(sentAEmailMessage(""));
-
-    // if a file is attached to attachment , clear the name , type , size info 
-    dispatch(setAttachment(null))
   };
 
-  const minimizeFullScreenPopup = async () => {
+  const closeAttchmentHandler = () => {
+    if (attachment?.name) {
+      if (
+        attachmentUploadProgressBar > 0 &&
+        attachmentUploadProgressBar < 100
+      ) {
+        dispatch(setAttachment(null));
+        setAttachmentFile(null);
+      } else {
+        // delete file from firebase
+        deleteFile(attachment?.name);
+      }
+      dispatch(setAttachment(null));
+      setAttachmentFile(null);
+      setFirebaseUrl("");
+    }
+  };
+
+  const minimizeFullScreenPopup = () => {
     dispatch(sentEmailBoxLarge(false));
     dispatch(sentEmailMinimizePopup(true));
   };
 
-  const fullScreenToSmallScreenPopup = async () => {
-    await dispatch(sentEmailBoxLarge(false));
+  const fullScreenToSmallScreenPopup = () => {
+    dispatch(sentEmailBoxLarge(false));
     dispatch(sentEmailBoxSmall(true));
   };
-
-if(!sentBoxLargeScreen){
-  return null;
-}
 
   return (
     <div className={classes.sent_box}>
@@ -102,13 +123,14 @@ if(!sentBoxLargeScreen){
         <div className={classes.fourth_column}>
           <textarea
             value={sentAEmail.message}
+            placeholder="Message"
             onChange={(e) => dispatch(sentAEmailMessage(e.target.value))}
           ></textarea>
           <div>
-            <Email_Attachment />
+            <Email_Attachment closeAttachmentHandler={closeAttchmentHandler} />
           </div>
         </div>
-        <SendEmailButton />
+        <SendEmailButton file={attachmentFile} setFile={setAttachmentFile} />
       </div>
     </div>
   );

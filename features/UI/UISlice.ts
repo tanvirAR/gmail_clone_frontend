@@ -31,6 +31,7 @@ const initialState: InitialState = {
   attachmentFirebaseReturnedUrl: "",
   attachmentUploadProgressBar: 0,
 
+  
   snoozedMailTimeSelectComponent: false,
   mailIdForMarkingSnoozed: '',
   scheduledSentTimeSelectComponent: false,
