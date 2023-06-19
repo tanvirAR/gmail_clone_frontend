@@ -61,28 +61,28 @@ export const emailApi = apiSlice.injectEndpoints({
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         /* @Socket Implementation */
-        const socket = io("https://gmail-clone-ar.vercel.app", {
-          reconnectionDelay: 1000,
-          reconnection: true,
-          reconnectionAttempts: 10,
-          transports: ["websocket"],
-          agent: false,
-          upgrade: false,
-          rejectUnauthorized: false,
-        });
+        // const socket = io("https://gmail-clone-ar.vercel.app", {
+        //   reconnectionDelay: 1000,
+        //   reconnection: true,
+        //   reconnectionAttempts: 10,
+        //   transports: ["websocket"],
+        //   agent: false,
+        //   upgrade: false,
+        //   rejectUnauthorized: false,
+        // });
 
         try {
           await cacheDataLoaded;
 
-          socket.on("newEmail", (data) => {
-            if (data) {
-              updateCachedData((draft) => {
-                if (draft.userId == data.data.receiverId) {
-                  draft.mails.unshift(data?.data);
-                }
-              });
-            }
-          });
+          // socket.on("newEmail", (data) => {
+          //   if (data) {
+          //     updateCachedData((draft) => {
+          //       if (draft.userId == data.data.receiverId) {
+          //         draft.mails.unshift(data?.data);
+          //       }
+          //     });
+          //   }
+          // });
         } catch (err) {}
 
         await cacheEntryRemoved;
