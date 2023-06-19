@@ -8,7 +8,7 @@ import Sidebar from "../Components/sidebar/Sidebar";
 import MinimizedEmail from "../Components/common/EmailSendPopup/MinimizedEmail";
 import ConditionalComponent from "../Components/common/conditionalComponent/ConditionalComponent";
 
-import { sidebarVisibleComponents } from "./type";
+import { sidebarVisibleComponents } from "../interface/pagesType";
 import { useState } from "react";
 import AuthCheck from "../auth/AuthCheck";
 import InitialLoadingComponent from "../Components/common/Loader/InitialLoadingComponent";
