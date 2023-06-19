@@ -86,7 +86,7 @@ export const emailApi = apiSlice.injectEndpoints({
         } catch (err) {}
 
         await cacheEntryRemoved;
-        socket.close();
+        // socket.close();
       },
     }),
   }),
