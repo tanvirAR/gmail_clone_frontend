@@ -61,7 +61,7 @@ export const emailApi = apiSlice.injectEndpoints({
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
         /* @Socket Implementation */
-        const socket = io("https://gmail-clone-ar.vercel.app, {
+        const socket = io("https://gmail-clone-ar.vercel.app", {
           reconnectionDelay: 1000,
           reconnection: true,
           reconnectionAttempts: 10,
