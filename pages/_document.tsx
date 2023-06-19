@@ -27,12 +27,12 @@ class MyDocument extends Document {
             href="https://cdn.jsdelivr.net/gh/mortezaom/google-sans-cdn@master/fonts.css"
           />
 
-          <script
+{/*           <script
             src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.2/socket.io.min.js"
             integrity="sha512-mUWPbwx6PZatai4i3+gevCw6LeuQxcMgnJs/DZij22MZ4JMpqKaEvMq0N9TTArSWEb5sdQ9xH68HMUc30eNPEA=="
             crossOrigin="anonymous"
             referrerPolicy="no-referrer"
-            async
+            async */}
           ></script>
         </Head>
         <body>
