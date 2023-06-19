@@ -13,8 +13,11 @@ import { useState } from "react";
 import AuthCheck from "../auth/AuthCheck";
 import InitialLoadingComponent from "../Components/common/Loader/InitialLoadingComponent";
 
+import SignInPage from "./index";
+import SignupPage from "./signup"
+
 export default function App({ Component, pageProps }: AppProps) {
-  const showSidebar: boolean = sidebarVisibleComponents.includes(Component.name);
+  const showSidebar: boolean = Component !== SignInPage && Component !== SignupPage
   const [loading, setLoading] = useState(true);
 
 
