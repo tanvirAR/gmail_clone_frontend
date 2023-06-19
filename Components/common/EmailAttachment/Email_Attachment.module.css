@@ -1,6 +1,6 @@
 
 .attachment_div {
-   height: 27px;
+   height: auto;
    background: #e1ecfc;
    width: 80%;
    margin-top: 10px;
@@ -11,10 +11,12 @@
 }
 
 .attachment_div p {
+  margin: 0  auto;
   margin-left: 10px;
   font-weight: 550;
   font-size: 14px;
   color: #2d56cc;
+  text-overflow: ellipsis;
 
 }
 
@@ -25,19 +27,19 @@
 .close_icon {
   scale: 0.8;
   font-weight: 600;
-  color: rgb(187, 187, 187);
+  color: #121212;
   cursor: pointer;
-  border-radius: 20%;
+  border-radius: 50%;
+  border: 1px solid transparent;
+
 }
 
 .close_icon:hover {
-  background-color: rgb(222, 218, 218);
-  color: rgb(136, 135, 135);
+  background-color: rgb(233, 243, 247);
   border: 1px solid rgb(200, 200, 200);
 }
 
 .loadingBar {
-  /* background-color: red; */
   height: 100%;
   width: 40%;
 }

@@ -11,6 +11,8 @@ export const searchMailApi = apiSlice.injectEndpoints({
           "content-type": "application/json",
         },
       }),
+      /** not keeping any @cache so that user @always get the most @latest data */
+      keepUnusedDataFor: 1
     }),
   }),
 });

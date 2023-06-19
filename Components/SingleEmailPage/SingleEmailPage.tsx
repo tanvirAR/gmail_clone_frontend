@@ -13,7 +13,7 @@ import { setAttachmentView } from "../../features/UI/UISlice";
 import storeStateInterface from "../../interface/Store.interface";
 import { useGetSingleMailQuery } from "../../features/singleEmail/singleEmailApi";
 import { useGetAdditionalSingleMailPropertyQuery } from "../../features/additionalEmailData/additionalEmailDataApi";
-import { inboxType, scheduledType } from "../../interface/EmailType";
+import { searchedEmailType, scheduledType } from "../../interface/EmailType";
 import { useMarkMailAsStarredMutation } from "../../features/starredEmail/starredEmailApi";
 import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
 import { useCancellSnoozeMailMutation } from "../../features/snoozedMail/snoozedMailApi";
@@ -46,7 +46,7 @@ const SingleEmailPage = (props: prop) => {
       const padding =
         parseFloat(computedStyle.paddingTop) +
         parseFloat(computedStyle.paddingBottom);
-        
+
       const border =
         parseFloat(computedStyle.borderTopWidth) +
         parseFloat(computedStyle.borderBottomWidth);
@@ -72,7 +72,14 @@ const SingleEmailPage = (props: prop) => {
     },
   ] = useMarkMailAsStarredMutation();
 
-  const [markMailAsUnStarred, {isLoading: markUnStarredIsLoading, data: markUnStarredResponse, isError: markUnStarredError}] = useMarkMailAsUnStarredMutation()
+  const [
+    markMailAsUnStarred,
+    {
+      isLoading: markUnStarredIsLoading,
+      data: markUnStarredResponse,
+      isError: markUnStarredError,
+    },
+  ] = useMarkMailAsUnStarredMutation();
 
   const { data: additiionalEmailData } =
     useGetAdditionalSingleMailPropertyQuery(mailId || "", {
@@ -112,9 +119,9 @@ const SingleEmailPage = (props: prop) => {
       if (starred) {
         markMailAsUnStarred(mailId);
       } else {
-      markMailAsStarred({ mailId, emailProperty: mail });
+        markMailAsStarred({ mailId, emailProperty: mail });
+      }
     }
-  }
   };
 
   useEffect(() => {
@@ -124,7 +131,11 @@ const SingleEmailPage = (props: prop) => {
   }, [message]);
 
   const redirectToEmailListPageHandler = () => {
-    router.push(`/mail/u/${accountNumber}/${type}`);
+    if (type === searchedEmailType) {
+      router.back();
+    } else {
+      router.push(`/mail/u/${accountNumber}/${type}`);
+    }
   };
 
   const [

@@ -29,7 +29,7 @@ import {
 } from "../../features/readMail/readMailApi";
 import { useMarkTrashSingleInboxMailMutation } from "../../features/trashMail/trashMailApi";
 import { emailType } from "../../interface/EmailTypeForSpecificPage.interface";
-import { searchedEmailType, sentType } from "../../interface/EmailType";
+import { scheduledType, searchedEmailType, sentType } from "../../interface/EmailType";
 import SnoozeOption from "./SnoozeOption";
 import {
   setMailIdForSnoozed,
@@ -214,6 +214,9 @@ export default function SingleEmail(props: props) {
 
  const emailSenderName = pageType===sentType ? "You" : ( senderEmail == auth?.user?.email ? "You" : senderName);
 
+ const showDeleteOption = pageType!==scheduledType;
+ const showSnoozeOption = pageType!==scheduledType;
+
   return (
     <div className={classesForMainDiv} onClick={openSingleMailHandler}>
       <AdditionalEmailDataHandler
@@ -232,7 +235,8 @@ export default function SingleEmail(props: props) {
         checkBoxChecked={checkBox}
         emailId={id}
       />
-      <div
+
+       <div
         onClick={(e) => e.stopPropagation()}
         className={`${styles["emailRow_options"]} ${
           important ? styles.labelFill : ""
@@ -256,19 +260,30 @@ export default function SingleEmail(props: props) {
         >
           label_important
         </span>
+      </div> 
+      <div onClick={(e) => e.stopPropagation()} className={styles.checkboxSmallScreen}>
+        <span
+          onClick={() => setCheckBox((prev) => !prev)}
+          className={`material-symbols-outlined`}
+        >
+          {checkBox ? "check_box" : "check_box_outline_blank"}
+        </span>
       </div>
-      <h3 className={styles["emailRow_title"]}>{emailSenderName}</h3>
-      <div className={styles["emailRow_message"]}>
-        <h4>
-          {subject}
-          <span className={styles["emailRow_description"]}>{message}</span>
-        </h4>
-      </div>
+      <>
+        <h3 className={styles["emailRow_title"]}>{emailSenderName}</h3>
+        <div className={styles["emailRow_message"]}>
+          <h4>
+            {subject.trim().length > 0 ? subject : "no subject"}
+            <span className={styles["emailRow_description"]}>{message.trim().length > 0 ? message : "no message"}</span>
+          </h4>
+        </div>
+      </>
+
       <div onClick={(e) => e.stopPropagation()} className={styles.leftDiv}>
         <div onClick={(e) => e.stopPropagation()} className={styles.icons}>
-          <div onClick={markDeleteMailHandler} className={styles.leftIcon}>
+          {showDeleteOption && <div onClick={markDeleteMailHandler} className={styles.leftIcon}>
             <span className="material-symbols-outlined">delete</span>
-          </div>
+          </div>}
           <div
             onClick={manualUpdataMailReadUnreadProp}
             className={styles.leftIcon}
@@ -277,7 +292,7 @@ export default function SingleEmail(props: props) {
               {read ? "mail" : "drafts"}
             </span>
           </div>
-          <div
+        {showSnoozeOption &&  <div
             onClick={showSnoozeOptionHandler}
             className={`${styles.leftIcon} ${styles.clock}`}
           >
@@ -287,7 +302,7 @@ export default function SingleEmail(props: props) {
             >
               schedule
             </span>
-          </div>
+          </div>}
         </div>
         <div className={styles.time}>{time.format("MMM D")}</div>
         {snoozeOptionShow && (

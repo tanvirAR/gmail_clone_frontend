@@ -13,6 +13,12 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
+@media (max-width: 550px) {
+  .emailSearchFilterDiv {
+  left: 18%;
+  }
+}
+
 .emailSearchFilterDiv input {
   border: none;
   border-color: transparent;

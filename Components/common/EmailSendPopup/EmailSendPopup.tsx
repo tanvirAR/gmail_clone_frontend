@@ -1,8 +1,4 @@
 import classes from "./EmailSendPopup.module.css";
-import schedule_send_icon from "../../assets/schedule_send_icon.svg";
-import open_in_full from "../../assets/open_in_full.svg";
-import close_icon_2 from "../../assets/close_icon.svg";
-import Image from "next/image";
 import Email_Attachment from "../EmailAttachment/Email_Attachment";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,44 +9,61 @@ import {
   sentEmailTo,
   sentAEmailMessage,
   setAttachment,
+  setFirebaseUrl,
+  clearEmailInputs,
 } from "../../../features/UI/UISlice";
-import React, { useState } from "react";
+import React from "react";
 import storeStateInterface from "../../../interface/Store.interface";
-import  SendEmailButton  from "../SendEmailButton/SendEmailButton";
+import SendEmailButton from "../SendEmailButton/SendEmailButton";
+import { deleteFile } from "../../../utils/deleteFileFromFirebase";
 
-function EmailSendPopup() {
-  const [scheduleSend, setScheduleSend] = useState(false);
+interface props {
+  attachmentFile: any;
+  setAttachmentFile: any;
+}
 
-  const { sentAEmail, sentBoxSmallScreen } = useSelector((state: storeStateInterface) => state.UI);
+function EmailSendPopup(props: props) {
+  const { attachmentFile, setAttachmentFile } = props;
+  const { sentAEmail, attachment, attachmentUploadProgressBar } = useSelector(
+    (state: storeStateInterface) => state.UI
+  );
 
   const dispatch = useDispatch();
 
   const closeSentMailBox = () => {
+    closeAttchmentHandler();
+    dispatch(clearEmailInputs());
+
     dispatch(sentEmailBoxSmall(false));
-
-    // clear written text input from fields
-    dispatch(sentEmailTo(""));
-    dispatch(sentAEmailSubject(""));
-    dispatch(sentAEmailMessage(""));
-
-    // if a file is attached to attachment , clear the name , type , size info
-    dispatch(setAttachment(null));
   };
 
-  const smallScreenToFullScreen = async () => {
-    dispatch(sentEmailBoxSmall(false));
+  const closeAttchmentHandler = () => {
+    if (attachment?.name) {
+      if (
+        attachmentUploadProgressBar > 0 &&
+        attachmentUploadProgressBar < 100
+      ) {
+        dispatch(setAttachment(null));
+        setAttachmentFile(null);
+      } else {
+        // delete file from firebase
+        deleteFile(attachment?.name);
+      }
+      dispatch(setAttachment(null));
+      setAttachmentFile(null);
+      setFirebaseUrl("");
+    }
+  };
 
+  const smallScreenToFullScreen = () => {
     dispatch(sentEmailBoxLarge(true));
+    dispatch(sentEmailBoxSmall(false));
   };
 
-  const smallScreenToMinimize = async () => {
-     dispatch(sentEmailBoxSmall(false));
+  const smallScreenToMinimize = () => {
     dispatch(sentEmailMinimizePopup(true));
+    dispatch(sentEmailBoxSmall(false));
   };
-
-  if(!sentBoxSmallScreen){
-    return null;
-  }
 
   return (
     <div className={classes.sent_box}>
@@ -63,18 +76,18 @@ function EmailSendPopup() {
           >
             minimize
           </span>
-           <span
-              onClick={smallScreenToFullScreen}
-              className={`material-symbols-outlined ${classes.open_in_full}`}
-            >
-              close_fullscreen
-            </span>
-            <span
-              onClick={closeSentMailBox}
-              className={`material-symbols-outlined ${classes.close_icon_2}`}
-            >
-              close
-            </span>
+          <span
+            onClick={smallScreenToFullScreen}
+            className={`material-symbols-outlined ${classes.open_in_full}`}
+          >
+            close_fullscreen
+          </span>
+          <span
+            onClick={closeSentMailBox}
+            className={`material-symbols-outlined ${classes.close_icon_2}`}
+          >
+            close
+          </span>
         </div>
       </div>
 
@@ -89,7 +102,6 @@ function EmailSendPopup() {
       </div>
       <div className={classes.br}></div>
       <div className={classes.third_column}>
-        {/* <p>Subject</p> */}
         <input
           value={sentAEmail.subject}
           onChange={(e) => dispatch(sentAEmailSubject(e.target.value))}
@@ -101,15 +113,18 @@ function EmailSendPopup() {
 
       <div className={classes.fourth_column}>
         <textarea
-         maxLength={2000}
+          maxLength={2000}
+          placeholder="Message"
           value={sentAEmail.message}
           onChange={(e) => dispatch(sentAEmailMessage(e.target.value))}
         ></textarea>
         <div>
-          <Email_Attachment />
+          <Email_Attachment
+            closeAttachmentHandler={closeAttchmentHandler}
+          />
         </div>
       </div>
-      <SendEmailButton />
+      <SendEmailButton file={attachmentFile} setFile={setAttachmentFile} />
     </div>
   );
 }

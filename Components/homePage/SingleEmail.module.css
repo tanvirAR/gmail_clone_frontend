@@ -11,14 +11,21 @@
   border: 1px solid transparent;
   border-left: 2px solid transparent;
   border-top: 1px solid transparent;
+  position: relative;
 }
 
 .email_row > * {
   margin-left: 1%;
 }
 
+.checkboxSmallScreen {
+  display: none;
+}
+
 .read {
   background-color: #f2f6fc;
+  /* background-color: red;
+  border: 1px solid black; */
 }
 
 .selected {
@@ -227,7 +234,6 @@
   border: 1px solid rgb(207, 207, 207);
   top: 100%;
   border-radius: 5%;
-  /* box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.13), 0 1px 2px 0 rgba(0, 0, 0, 0.11); */
 }
 
 .snoozeOptionDiv:hover {
@@ -236,4 +242,54 @@
 
 .email_row:hover .snoozeOptionDiv p {
   display: block;
+}
+
+@media (max-width: 550px) {
+  .email_row {
+    height: 5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .leftDiv {
+    align-self: flex-end;
+    position: absolute;
+  }
+
+  .emailRow_title {
+    margin: 0;
+    margin-top: 1rem;
+    margin-bottom: 0;
+    /* margin-left: 0.5rem; */
+    margin-left: 2rem;
+  }
+
+  .emailRow_message h4 {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    margin-left: 1.5rem;
+  }
+
+  .emailRow_message h4 span {
+    width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-left: 0;
+    margin-top: 0.25rem;
+  }
+
+  .checkboxSmallScreen {
+    display: block;
+    position: absolute;
+    color:  #adadad;
+    scale: 0.8;
+    margin-left: 0;
+  }
+
+  .emailRow_options {
+    display: none;
+  }
 }

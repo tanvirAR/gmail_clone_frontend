@@ -33,7 +33,7 @@ const AttachmentView = () => {
           src={
             url
           }
-          style={{ objectFit: "cover", userSelect: "none", pointerEvents: 'none'}}
+          style={{ objectFit: "contain", userSelect: "none", pointerEvents: 'none'}}
             sizes="(min-width: 200px) 100vw, 50vw"
         />
       </div>

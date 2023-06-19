@@ -31,7 +31,7 @@ export default function SentPage() {
     emailList = <p>Something went wrong! Please try again.</p>;
   }
 
-  if (data && data.mails.length == 0) {
+  if (data && data.mails.length === 0) {
     emailList = <p>No Email found!</p>;
      numberOfMails = 0;
   }
