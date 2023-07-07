@@ -116,7 +116,7 @@ const Header = () => {
             <div className={styles.creator}>
               <p>Created By:</p>
 
-                <p>Tanvir ARR</p>
+                <p>Tanvir AR.</p>
 
               <p>tanvir.ar.47@gmail.com</p>
             </div>
