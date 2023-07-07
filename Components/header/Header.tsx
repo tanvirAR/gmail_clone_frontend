@@ -49,8 +49,8 @@ const Header = () => {
       e.key === "Enter" &&
       !searchContainer &&
       primarySearchQuerey.length > 0
-    ) {
-      const queryData: emailSearchQuery = {
+    ) {          
+      const  queryData: emailSearchQuery = {
         type: "allmail",
         dateWithIn: 365,
         hasWords: primarySearchQuerey.split(" "),
