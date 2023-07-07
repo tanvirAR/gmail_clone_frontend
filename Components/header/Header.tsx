@@ -115,9 +115,9 @@ const Header = () => {
             <span className="material-symbols-outlined">help</span>
             <div className={styles.creator}>
               <p>Created By:</p>
-              <Link href={process.env.NEXT_PUBLIC_PORTFOLIO_LINK || ""} target="_blank">
+{/*               <Link href={process.env.NEXT_PUBLIC_PORTFOLIO_LINK || ""} target="_blank"> */}
                 <p>Tanvir AR</p>
-              </Link>
+{/*               </Link> */}
               <p>tanvir.ar.47@gmail.com</p>
             </div>
           </div>
